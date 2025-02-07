@@ -28,7 +28,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Helper.getDefaultLanguage();
+    Future.delayed(Duration.zero, () {
+      Helper.getDefaultLanguage(); // Ensures Get.updateLocale runs after build
+    });
     Helper.getCurrentLocal();
     _handleDeepLink();
     Future.delayed(const Duration(milliseconds: 200), () {

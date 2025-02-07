@@ -478,7 +478,7 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Upload Image From',
+                          'Upload Image From'.tr,
                           style: TextStyle(
                             fontSize: 14.fSize,
                             color: AppColors.primaryColor,
@@ -507,7 +507,7 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
                                     SizedBox(height: 6.h),
                                     FittedBox(
                                       child: Text(
-                                        'Take Photo',
+                                        'Take Photo'.tr,
                                         style: TextStyle(
                                           fontSize: 12.fSize,
                                           color: AppColors.primaryColor,
@@ -538,7 +538,7 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
                                     SizedBox(height: 6.h), // Corrected height
                                     FittedBox(
                                       child: Text(
-                                        'From Gallery',
+                                        'From Gallery'.tr,
                                         style: TextStyle(
                                           fontSize: 12.fSize,
                                           color: AppColors.primaryColor,

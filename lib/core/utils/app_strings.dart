@@ -13,7 +13,7 @@ class AppStrings{
   static const String arCountryCode = 'AR';
   static const enCountry = 'EN';
   static const String local = 'local';
-  static const String appName = 'Technician';
+  static  String appName = 'Technician'.tr;
 
   static const String login = 'Login';
 
@@ -31,7 +31,7 @@ class AppStrings{
 
   static const String help = "https://claimizer.com/help";
 
-  static const String privacyPolicy = "https://claimizer.com/page/privacy-policy";
+  static const String privacyPolicy = "https://befalcon.com/privacy-policy-for-claimfixer-mobile-app/";
 
   static const String contact = "https://claimizer.com/contact";
 

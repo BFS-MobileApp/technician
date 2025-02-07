@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:technician/config/PrefHelper/helper.dart';
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/config/arguments/routes_arguments.dart';
 import 'package:technician/config/routes/app_routes.dart';
@@ -38,19 +39,24 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
     getPastFiveMonths();
   }
 
-   getPastFiveMonths() {
+  void getPastFiveMonths() {
     final now = DateTime.now();
     List<String> pastMonths = [];
+
     for (int i = 0; i < 5; i++) {
       final pastMonth = DateTime(now.year, now.month - i);
       final formattedMonth = DateFormat('MMMM').format(pastMonth);
-      pastMonths.add(formattedMonth);
+
+      // Add translated month
+      pastMonths.add(formattedMonth.tr);
     }
+
     setState(() {
       filterList = pastMonths;
       filterList.insert(0, 'all'.tr);
       chooseFilter = filterList[0];
     });
+
     print(filterList);
   }
 
@@ -175,12 +181,12 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal, // Allow horizontal scrolling
-          child: FittedBox(
+        Container(
+          width: double.infinity, // Make it take full width
+          child: SingleChildScrollView(
             child: DataTable(
+              columnSpacing: MediaQuery.of(context).size.width * 0.05, // Adjust spacing based on screen width
               horizontalMargin: 10,
-              columnSpacing: 10.w,
               headingRowHeight: 40,
               columns: [
                 DataColumn(
@@ -236,7 +242,7 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
                                 : Icons.arrow_circle_left,
                             color: model!.data[index].checkinAddress != null ? Colors.green : Colors.red,
                           ),
-                          const SizedBox(width: 4), // Reduced the width of the spacing
+                          const SizedBox(width: 4),
                           Text(
                             model!.data[index].checkinAddress != null ? 'in'.tr : 'out'.tr,
                             style: TextStyle(
@@ -250,7 +256,7 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
                     ),
                     DataCell(
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0), // Reduced padding
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
                         child: Text(
                           model!.data[index].clockInTime != '' ? formatDateTime(model!.data[index].clockInTime) : formatDateTime(model!.data[index].clockOutTime),
                           style: TextStyle(
@@ -263,7 +269,7 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
                     ),
                     DataCell(
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0), // Reduced padding
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
                         child: Text(
                           model!.data[index].note.length > 10
                               ? '${model!.data[index].note.substring(0, 7)}...'
@@ -300,13 +306,12 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
                                   ? getTimeOnly(model!.data[index].clockInTime)
                                   : getTimeOnly(model!.data[index].clockOutTime),
                               checkType: model!.data[index].checkoutAddress != null
-                                ? 'checkOut'.tr
-                                : 'checkIn'.tr,
+                                  ? 'checkOut'.tr
+                                  : 'checkIn'.tr,
                               color: model!.data[index].checkoutAddress != null
-                                ? const Color(0xFFFF0000)
-                                : const Color(0xFF00A800)
-                            )
-                        ),
+                                  ? const Color(0xFFFF0000)
+                                  : const Color(0xFF00A800),
+                            )),
                       ),
                     ),
                   ],
@@ -314,7 +319,9 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
               }),
             ),
           ),
-        ),
+        )
+
+
       ],
     );
   }

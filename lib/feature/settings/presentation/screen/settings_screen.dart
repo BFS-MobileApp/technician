@@ -238,7 +238,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 SVGImageWidget(image: AssetsManager.language, width: 26.w, height: 26.h),
                 SizedBox(width: 5.w,),
-                Text('language'.tr, style: TextStyle(fontSize: 18.fSize, fontWeight: FontWeight.w500, color: AppColors.lightTextColor.withOpacity(0.8))),
+                Text('language'.tr, style: TextStyle(fontSize: 18.fSize, fontWeight: FontWeight.w500,
+                    color: AppColors.lightTextColor.withOpacity(0.8))),
                 const Spacer(),
                 Transform.scale(
                     scale: 0.6.w,

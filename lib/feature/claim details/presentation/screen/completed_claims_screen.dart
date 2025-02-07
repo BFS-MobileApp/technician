@@ -179,7 +179,7 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
             children: [
               Text(
                 'submitAsClosed'.tr,
-                style: TextStyle(color: AppColors.whiteColor , fontSize: 16.fSize , fontWeight: FontWeight.w500),
+                style: TextStyle(color: AppColors.whiteColor , fontSize: 20.fSize , fontWeight: FontWeight.w500),
               )
             ],
           ),

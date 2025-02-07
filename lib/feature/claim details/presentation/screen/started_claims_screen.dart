@@ -175,22 +175,24 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
   }
 
   Widget _techWorkButtons(){
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8.h , horizontal: 8.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          InkWell(
-            onTap: (){
-              BlocProvider.of<ClaimDetailsCubit>(context).startAndEndWork(widget.claimId).then((value){
-                if(value){
-                  getData();
-                }
-              });
-            },
-            child: AssignButton(borderColor: AppColors.mainColor , horizontalMargin: 0 , btText: btName , image: '',width: 125 , height: 40 , btColor: AppColors.whiteColor , btTextColor: AppColors.mainColor,),
-          ),
-        ],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30.w),
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: (){
+                BlocProvider.of<ClaimDetailsCubit>(context).startAndEndWork(widget.claimId).then((value){
+                  if(value){
+                    getData();
+                  }
+                });
+              },
+              child: AssignButton(borderColor: AppColors.mainColor , horizontalMargin: 0 , btText: btName , image: '',width: 327 , height: 40 , btColor: AppColors.whiteColor , btTextColor: AppColors.mainColor,),
+            ),
+          ],
+        ),
       ),
     );
   }

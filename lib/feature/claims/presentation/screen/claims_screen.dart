@@ -380,7 +380,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
                         }),
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.search , color: Colors.black38,),
-                          hintText: 'Search',
+                          hintText: 'search'.tr,
                           contentPadding: EdgeInsets.only(top: 12.h),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.0), // Rounded corners
@@ -639,6 +639,10 @@ class _ClaimScreenState extends State<ClaimScreen> {
     return BlocBuilder<ClaimsCubit , ClaimsState>(builder: (context , state){
       return WillPopScope(
         onWillPop: () async {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              Routes.main,
+                  (Route<dynamic> route) => false,
+            );
           return true;
         },
         child: Scaffold(

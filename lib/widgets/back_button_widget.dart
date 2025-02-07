@@ -4,6 +4,8 @@ import 'package:technician/core/utils/app_strings.dart';
 import 'package:technician/core/utils/assets_manager.dart';
 import 'package:technician/core/utils/size_utils.dart';
 
+import '../config/routes/app_routes.dart';
+
 class BackButtonWidget extends StatelessWidget {
   const BackButtonWidget({super.key});
 
@@ -13,7 +15,10 @@ class BackButtonWidget extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            Navigator.pop(context , true);
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              Routes.main,
+                  (Route<dynamic> route) => false,
+            );
           },
           child: Container(
             width: 20.w, // Set the size of the container

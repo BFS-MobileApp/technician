@@ -58,12 +58,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   goToClaimScreen(int screenId) async{
-    final result = await Navigator.pushNamed(context, Routes.claims , arguments: ClaimsArguments(screenId: screenId));
+    final result = await Navigator.pushReplacementNamed(context, Routes.claims , arguments: ClaimsArguments(screenId: screenId));
     if (result == true) {
       getData();
     }
   }
-
   Widget notificationIcon(){
     if(Prefs.isContain(AppStrings.userNotification) && Prefs.getBool(AppStrings.userNotification) == true){
       return InkWell(
@@ -83,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min, // Ensure it doesn't take infinite height
+            mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(height: 10.h),
               Padding(
@@ -211,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontColor: model!.data.claimColor.completed,
                           title: 'completedClaims'.tr,
                           imageIcon: AssetsManager.completedClaims,
-                          value: '1',
+                          value: model!.data.claims.completed.toString(),
                           onTap: (){
                             goToClaimScreen(4);
                           },
@@ -329,20 +328,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  getData(){
+  void getData() {
     setState(() {
       loadedData = false;
     });
+
     final data = {
-      "status":"assigned",
-      "per_page":"200"
+      "status": "assigned",
+      "per_page": "200"
     };
-    BlocProvider.of<ClaimsCubit>(context).getStartedClaims(data).then((val){
-      setState(() {
-        claimsModel = val!.data;
-      });
-      sortList();
+
+    BlocProvider.of<ClaimsCubit>(context).getStartedClaims(data).then((val) {
+      if (val != null && val.data != null) {
+        setState(() {
+          claimsModel = val.data;
+        });
+        sortList();
+      } else {
+        // Handle null case appropriately
+        debugPrint("Error: Received null data from getStartedClaims");
+      }
       BlocProvider.of<HomeCubit>(context).getUserInfo();
+    }).catchError((error) {
+      debugPrint("Error fetching claims: $error");
     });
   }
 

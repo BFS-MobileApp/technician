@@ -50,6 +50,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  timelines: ^0.1.0
+  flutter_timeline: ^0.3.0
 
 dev_dependencies:
   flutter_test:

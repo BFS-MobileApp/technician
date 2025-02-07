@@ -8,8 +8,8 @@ import 'package:technician/widgets/app_bar_widget.dart';
 import '../core/utils/app_colors.dart';
 
 class EmptyDataWidget extends StatelessWidget {
-
   AlignmentWidget alignmentWidget = AlignmentWidget();
+
   EmptyDataWidget({super.key});
 
   @override
@@ -17,21 +17,30 @@ class EmptyDataWidget extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.symmetric(vertical: 20.h , horizontal: 10.w),
+          margin: EdgeInsets.symmetric(vertical: 20.h, horizontal: 10.w),
           alignment: alignmentWidget.returnAlignment(),
           child: ClaimizerAppBar(title: ''),
         ),
         const Spacer(),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset(AssetsManager.noDataImage, width: 80.w, height: 80.h),
-            Text(
-              'noData'.tr,
-              style: TextStyle(
-                fontSize: 20.fSize,
-                color: AppColors.grey,
-                fontWeight: FontWeight.w600,
+            Center(
+              child: Icon(
+                Icons.warning_amber_rounded,
+                size: 150.adaptSize,
+                color: AppColors.mainColor,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 12.w),
+              child: Text(
+                'noData'.tr,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20.fSize),
               ),
             ),
           ],
@@ -39,6 +48,5 @@ class EmptyDataWidget extends StatelessWidget {
         const Spacer(),
       ],
     );
-
   }
 }

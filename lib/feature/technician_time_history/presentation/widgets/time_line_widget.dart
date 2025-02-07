@@ -23,25 +23,28 @@ class TimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 16.0.h),
-      child: Stack(
-        //alignment: Alignment.center,
-        children: [
-          Row(
-            children: [
-              if (isLeft)
-                Expanded(
-                  child: buildContent(context, CrossAxisAlignment.end),
-                ),
-              SizedBox(width: 27.w), // Spacer for alignment
-              if (!isLeft)
-                Expanded(
-                  child: buildContent(context, CrossAxisAlignment.start),
-                ),
-            ],
-          ),
-        ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 16.0.h),
+        child: Stack(
+          //alignment: Alignment.center,
+          children: [
+            Row(
+              children: [
+                if (isLeft)
+                  Expanded(
+                    child: buildContent(context, CrossAxisAlignment.end),
+                  ),
+                SizedBox(width: 27.w), // Spacer for alignment
+                if (!isLeft)
+                  Expanded(
+                    child: buildContent(context, CrossAxisAlignment.start),
+                  ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -62,63 +65,72 @@ class TimelineItem extends StatelessWidget {
   }
 
   Widget buildContent(BuildContext context, CrossAxisAlignment alignment) {
-    return Container(
-      margin: !isLeft ? EdgeInsets.only(right: 25.w) : EdgeInsets.only(left: 25.w),
-      child: Column(
-        crossAxisAlignment: alignment,
-        children: [
-          isLeft ? Row(
-            //mainAxisAlignment:MainAxisAlignment.end ,
-            children: [
-              Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 150.w),
-                    child: Divider(color: color,),
-                  )
-              ),
-              buildCircle(),
-              SizedBox(width: 5.w,),
-              Text(
-                status,
-                style: TextStyle(
-                  fontSize: 16.fSize,
-                  fontWeight: FontWeight.bold,
-                  color: color,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Container(
+        margin: !isLeft ? EdgeInsets.only(right: 25.w) : EdgeInsets.only(left: 25.w),
+        child: Column(
+          crossAxisAlignment: alignment,
+          children: [
+            isLeft ? Row(
+              //mainAxisAlignment:MainAxisAlignment.end ,
+              children: [
+                Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 150.w),
+                      child: Divider(color: color,),
+                    )
                 ),
-              ),
-            ],
-          ) : Row(
-            //mainAxisAlignment:MainAxisAlignment.start ,
-            children: [
-              Text(
-                status,
-                style: TextStyle(
-                  fontSize: 16.fSize,
-                  fontWeight: FontWeight.bold,
-                  color: color,
+                buildCircle(),
+                SizedBox(width: 5.w,),
+                Text(
+                  status,
+                  style: TextStyle(
+                    fontSize: 16.fSize,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
                 ),
+              ],
+            ) : Row(
+              //mainAxisAlignment:MainAxisAlignment.start ,
+              children: [
+                Text(
+                  status,
+                  style: TextStyle(
+                    fontSize: 16.fSize,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+                SizedBox(width: 5.w,),
+                buildCircle(),
+                Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(right: 150.w),
+                      child: Divider(color: color,),
+                    )
+                )
+              ],
+            ),
+            SizedBox(height: 4.h),
+            Text(
+              dateTime,
+              style: TextStyle(fontSize: 14.fSize, color: Colors.black54),
+            ),
+            SizedBox(height: 4.h),
+            SizedBox(
+              width: 85, // Set your desired width
+              child: Text(
+                user,
+                style: TextStyle(fontSize: 14.fSize, color: Colors.black54),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(width: 5.w,),
-              buildCircle(),
-              Expanded(
-                  child: Container(
-                    margin: EdgeInsets.only(right: 150.w),
-                    child: Divider(color: color,),
-                  )
-              )
-            ],
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            dateTime,
-            style: TextStyle(fontSize: 14.fSize, color: Colors.black54),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            user,
-            style: TextStyle(fontSize: 14.fSize, color: Colors.black54),
-          ),
-        ],
+            )
+
+          ],
+        ),
       ),
     );
   }

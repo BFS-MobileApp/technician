@@ -33,9 +33,11 @@ class _TechnicianHistoryState extends State<TechnicianHistory>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+
+    // Add listener to detect swipe changes
     _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {});
+      if (!_tabController.indexIsChanging) {
+        setState(() {}); // This ensures UI updates when user swipes
       }
     });
   }
@@ -218,9 +220,9 @@ class _TechnicianHistoryState extends State<TechnicianHistory>
         labelColor: AppColors.primaryColor,
         unselectedLabelColor: Colors.black12,
         tabs: [
-          _buildTab('Timeline', 0),
-          _buildTab('Working Hours', 1),
-          _buildTab('Staff', 2),
+          _buildTab('timeline'.tr, 0),
+          _buildTab('workingHours'.tr, 1),
+          _buildTab('staff'.tr, 2),
         ],
       ),
     );

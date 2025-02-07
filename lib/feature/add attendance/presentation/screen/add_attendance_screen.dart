@@ -130,7 +130,7 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
                 children: [
                   Text(userName , style: TextStyle(fontSize: 20.fSize , fontWeight: FontWeight.w700 ,color: AppColors.black),),
                   SizedBox(height: 5.h,),
-                  Text('Technician' , style: TextStyle(fontSize: 16.fSize , fontWeight: FontWeight.w500 ,color: AppColors.black),),
+                  Text('Technician'.tr , style: TextStyle(fontSize: 16.fSize , fontWeight: FontWeight.w500 ,color: AppColors.black),),
                 ],
               )
             ],

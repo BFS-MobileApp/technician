@@ -161,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void moveToLoginScreen() {
     Future.delayed(const Duration(milliseconds: 500), () {
-      Navigator.of(context).pushNamedAndRemoveUntil(Routes.home, (Route<dynamic> route) => false);
+      Navigator.of(context).pushNamedAndRemoveUntil(Routes.main, (Route<dynamic> route) => false);
       context.read<LoginCubit>().initLoginPage();
     });
   }
