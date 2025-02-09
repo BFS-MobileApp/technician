@@ -63,8 +63,8 @@ android {
         applicationId "com.befalcon.technician"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()+2
-        versionName "1.0.2"
+        versionCode flutterVersionCode.toInteger()+3
+        versionName "1.0.3"
     }
 
 //    lintOptions {
@@ -85,8 +85,8 @@ android {
 
     buildTypes {
         release {
-//            signingConfig signingConfigs.release
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
+//            signingConfig signingConfigs.debug
             minifyEnabled true
             shrinkResources false
         }
