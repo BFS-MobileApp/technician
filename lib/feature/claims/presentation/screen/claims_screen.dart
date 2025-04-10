@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/arguments/routes_arguments.dart';
 import 'package:technician/config/routes/app_routes.dart';
 import 'package:technician/core/utils/app_colors.dart';
@@ -22,6 +23,8 @@ import 'package:technician/widgets/empty_data_widget.dart';
 import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 import 'package:pdf/widgets.dart' as pw;
+
+import '../../../login/presentation/screen/login_screen.dart';
 
 class ClaimScreen extends StatefulWidget {
 
@@ -104,6 +107,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
     BlocProvider.of<ClaimsCubit>(context).getAllClaims(data);
   }
 
+
   Widget screenWidget(){
     return Column(
       children: [
@@ -127,7 +131,12 @@ class _ClaimScreenState extends State<ClaimScreen> {
             switchScreen(pos);
           }
         },
-        child: ClaimCardItem(unitNo: model!.data[pos].unit.name , ctx: context , key: ValueKey(model!.data[pos].id),estimateTime: model!.data[pos].subCategory.estimationTime.toString() ,claimId: model!.data[pos].id.toString(), referenceId: model!.data[pos].referenceId,buildingName: model!.data[pos].unit.building , status: model!.data[pos].status,availableTime: Helper.getAvailableTime(model!.data[pos].availableTime),date: Helper.formatDateTime(model!.data[pos].createdAt),priority: model!.data[pos].priority,type: '${model!.data[pos].category.name}- ${model!.data[pos].subCategory.name} - ${model!.data[pos].type.name}',screenId: widget.screenId,),
+        child: ClaimCardItem(unitNo: model!.data[pos].unit.name , ctx: context , key: ValueKey(model!.data[pos].id),
+          estimateTime: model!.data[pos].subCategory.estimationTime.toString() ,claimId: model!.data[pos].id.toString(),
+          referenceId: model!.data[pos].referenceId,buildingName: model!.data[pos].unit.building , status: model!.data[pos].status,
+          availableTime: Helper.getAvailableTime(model!.data[pos].availableTime),date: Helper.formatDateTime(model!.data[pos].createdAt),
+          priority: model!.data[pos].priority,type: '${model!.data[pos].category.name}- ${model!.data[pos].subCategory.name} - ${model!.data[pos].type.name}'
+          ,screenId: widget.screenId,),
       );
     });
   }
@@ -348,7 +357,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
       child: Card(
         elevation: 1,
         child: Container(
-          color: Colors.white,
+          color: Theme.of(context).scaffoldBackgroundColor,
           padding: EdgeInsets.all(10.adaptSize),
           child: Column(
             children: [
@@ -607,7 +616,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.96,
@@ -621,7 +630,16 @@ class _ClaimScreenState extends State<ClaimScreen> {
     if(state is ClaimsIsLoading){
       return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
     } else if(state is ClaimsError){
-      return ErrorWidgetItem(onTap: ()=>getData());
+      bool isUnauthenticated = state.msg.contains('Unauthenticated.');
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if(state is ClaimsLoaded) {
       if(state.model.data.isEmpty){
         return EmptyDataWidget();
@@ -647,7 +665,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
         },
         child: Scaffold(
             floatingActionButton: _addNewClaim(),
-            body: checkState(state)
+            body: SafeArea(child: checkState(state))
         ),
       );
     });

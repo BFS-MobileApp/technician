@@ -13,7 +13,7 @@ class AppBarWidget extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
       child: Card(
         elevation: 0,
-        color: AppColors.whiteColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 15.h),
           child: AppHeadline(title: 'addNewClaim'.tr,),

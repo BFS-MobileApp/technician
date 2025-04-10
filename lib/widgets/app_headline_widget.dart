@@ -48,7 +48,7 @@ class AppHeadline extends StatelessWidget {
           ) : const SizedBox(),
           AutoSizeText(title,
               maxLines: 1,
-              style: TextStyle(color: AppColors.headlineTextColor, fontWeight: FontWeight.w600 , fontSize: 18.fSize)),
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color, fontWeight: FontWeight.w600 , fontSize: 18.fSize)),
         ],
       ),
     );

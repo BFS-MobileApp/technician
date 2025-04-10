@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/core/utils/app_consts.dart';
 import 'package:technician/core/utils/size_utils.dart';
@@ -48,7 +49,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
@@ -65,7 +66,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
                         style: TextStyle(
                           fontSize: 18.0.fSize,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.black,
+                          color: Theme.of(context).textTheme.bodySmall!.color,
                         ),
                       ),
                     ),
@@ -74,7 +75,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
                       text: 'selectTechnician'.tr,
                       fontSize: 14.fSize,
                       fontWeight: FontWeight.w500,
-                      fontColor: AppColors.black,
+                      fontColor: Theme.of(context).textTheme.bodySmall!.color,
                     ),
                     technicalList.isNotEmpty
                         ? DropdownButtonFormField<String>(
@@ -102,7 +103,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
                     TextWidget(
                       text: 'startDate'.tr,
                       fontSize: 16.fSize,
-                      fontColor: AppColors.black,
+                      fontColor: Theme.of(context).textTheme.bodySmall!.color,
                       fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 3.h),
@@ -156,7 +157,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
                     TextWidget(
                       text: 'endDate'.tr,
                       fontSize: 16.fSize,
-                      fontColor: AppColors.black,
+                      fontColor: Theme.of(context).textTheme.bodySmall!.color,
                       fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 3.h),
@@ -299,19 +300,19 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
           decoration: BoxDecoration(
             border: Border.all(
               width: 1.0,
-              color: const Color(0x145686E1),
+              color: Colors.blueAccent,
             ),
             borderRadius: const BorderRadius.all(
               Radius.circular(20.0),
             ),
-            color: const Color(0x145686E1),
+            color: Colors.blueAccent,
           ),
           child: Center(
             child: TextWidget(
               text: 'assign'.tr,
               fontSize: 16.fSize,
               fontWeight: FontWeight.w600,
-              fontColor: widget.screenId == 1 ? AppColors.mainColor : AppColors.whiteColor,
+              fontColor:  Colors.white,
             ),
           ),
         ),
@@ -335,7 +336,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
             text: widget.status,
             fontSize: 14.fSize,
             fontWeight: FontWeight.w500,
-            fontColor: AppColors.whiteColor,
+            fontColor: Colors.white,
           ),
         ),
       );
@@ -349,7 +350,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 5.w , vertical: 3.w),
       child: Card(
-        color: AppColors.whiteColor,
+        color: Theme.of(context).scaffoldBackgroundColor,
         elevation: 2.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
@@ -359,18 +360,18 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 5.w),
             child: SizedBox(
-              height: 215.h,
+              height: 180.h,
               child: ListView(
                 physics:  const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          TextWidget(text: widget.referenceId, fontSize: 16.fSize , fontWeight: FontWeight.w600, fontColor: AppColors.black,),
+                          TextWidget(text: widget.referenceId, fontSize: 16.fSize , fontWeight: FontWeight.w600, fontColor: Theme.of(context).textTheme.bodyMedium!.color,),
                           SizedBox(height: 3.h,),
                           SizedBox(
                             width: 170.w,
@@ -387,7 +388,7 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextWidget(text: 'priority'.tr, fontSize: 12.fSize , fontColor: AppColors.notificationHomeTittleColor, fontWeight: FontWeight.w500,),
+                      TextWidget(text: 'priority'.tr, fontSize: 12.fSize , fontColor: Theme.of(context).textTheme.bodyMedium!.color, fontWeight: FontWeight.w500,),
                       TextWidget(text: widget.priority, fontSize: 12.fSize , fontColor: Helper.getPriorityColor(widget.priority), fontWeight: FontWeight.w500,),
                     ],
                   ),
@@ -395,24 +396,24 @@ class _ClaimCardItemState extends State<ClaimCardItem> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextWidget(text: 'type'.tr, fontSize: 12.fSize , fontColor: AppColors.notificationHomeTittleColor, fontWeight: FontWeight.w500,),
-                      TextWidget(text: widget.type, fontSize: 12.fSize , fontColor: AppColors.notificationHomeTittleColor, fontWeight: FontWeight.w500,maxLine: 4,),
+                      TextWidget(text: 'type'.tr, fontSize: 12.fSize , fontColor: Theme.of(context).textTheme.bodyMedium!.color, fontWeight: FontWeight.w500,),
+                      TextWidget(text: widget.type, fontSize: 12.fSize , fontColor: Theme.of(context).textTheme.bodyMedium!.color, fontWeight: FontWeight.w500,maxLine: 4,),
                     ],
                   ),
                   SizedBox(height: space.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextWidget(text: 'createdDate'.tr, fontSize: 12.fSize , fontColor: AppColors.notificationHomeTittleColor, fontWeight: FontWeight.w500,),
-                      TextWidget(text: widget.date, fontSize: 12.fSize , fontColor: AppColors.notificationHomeTittleColor, fontWeight: FontWeight.w500,maxLine: 2,),
+                      TextWidget(text: 'createdDate'.tr, fontSize: 12.fSize , fontColor: Theme.of(context).textTheme.bodyMedium!.color, fontWeight: FontWeight.w500,),
+                      TextWidget(text: widget.date, fontSize: 12.fSize , fontColor: Theme.of(context).textTheme.bodyMedium!.color, fontWeight: FontWeight.w500,maxLine: 2,),
                     ],
                   ),
                   SizedBox(height: space.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TextWidget(text: 'availableTime'.tr, fontSize: 12.fSize , fontColor: AppColors.notificationHomeTittleColor, fontWeight: FontWeight.w500,),
-                      TextWidget(text: widget.availableTime, fontSize: 12.fSize , fontColor: AppColors.notificationHomeTittleColor, fontWeight: FontWeight.w500,maxLine: 2,),
+                      TextWidget(text: 'availableTime'.tr, fontSize: 12.fSize , fontColor: Theme.of(context).textTheme.bodyMedium!.color, fontWeight: FontWeight.w500,),
+                      TextWidget(text: widget.availableTime, fontSize: 12.fSize , fontColor: Theme.of(context).textTheme.bodyMedium!.color, fontWeight: FontWeight.w500,maxLine: 2,),
                     ],
                   ),
                   SizedBox(height: space.h,),

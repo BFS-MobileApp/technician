@@ -16,6 +16,7 @@ import 'package:technician/feature/claim%20details/domain/use_cases/assign_claim
 import 'package:technician/feature/claim%20details/domain/use_cases/change_claim_status_usecase.dart';
 import 'package:technician/feature/claim%20details/domain/use_cases/change_priority_usecase.dart';
 import 'package:technician/feature/claim%20details/domain/use_cases/download_signature_usecase.dart';
+import 'package:technician/feature/claim%20details/domain/use_cases/material_usecase.dart';
 import 'package:technician/feature/claim%20details/domain/use_cases/start_and_end_work_usecase.dart';
 import 'package:technician/feature/claim%20details/presentation/cubit/claim_details_cubit.dart';
 import 'package:technician/feature/claims/data/data_sources/claims_data_source.dart';
@@ -110,6 +111,7 @@ import 'core/api/api_consumer.dart';
 import 'core/api/app_interceptor.dart';
 import 'core/api/dio_consumer.dart';
 import 'core/network/network_info.dart';
+import 'feature/claim details/domain/use_cases/upload_file_usecase.dart';
 
 final sl = GetIt.instance;
 
@@ -122,7 +124,10 @@ Future<void> init() async{
   sl.registerFactory(() => SettingsCubit(settingsUseCase: sl() , settingsChangeLangUseCase: sl()));
   sl.registerFactory(() => EditProfileCubit(updateProfileUseCase: sl() , editProfileUseCase: sl() , changePasswordUseCase: sl()));
   sl.registerFactory(() => DialogCubit());
-  sl.registerFactory(() => ClaimDetailsCubit(changeClaimStatusUseCase: sl() , addSignatureUseCase: sl() , addCommentUseCase: sl() , startAndEndWorkUseCase: sl() , downloadSignatureUseCase: sl() , assignClaimUseCase: sl() , changePriorityUseCase: sl() , claimDetailsUseCase: sl()));
+  sl.registerFactory(() => ClaimDetailsCubit(changeClaimStatusUseCase: sl() , addSignatureUseCase: sl() ,
+      addCommentUseCase: sl() , startAndEndWorkUseCase: sl() , downloadSignatureUseCase: sl() ,
+      assignClaimUseCase: sl() , changePriorityUseCase: sl() , claimDetailsUseCase: sl(),
+      uploadCommentFileUseCase: sl(),materialUseCase: sl(), deleteMaterialUseCase: sl(), editMaterialQuantityUseCase: sl(), addMaterialUseCase: sl()));
   sl.registerFactory(() => ClaimsCubit(allClaimsUseCase: sl() , technicianUseCase: sl()));
   sl.registerFactory(() => TechnicalCubit(technicianUseCase: sl()));
   sl.registerFactory(() => ForgotPasswordCubit(forgotPasswordUseCase: sl()));
@@ -136,7 +141,12 @@ Future<void> init() async{
   //UseCase
   sl.registerLazySingleton(() => SplashUseCase(splashRepository: sl()));
   sl.registerLazySingleton(() => LoginUseCase(loginRepository: sl()));
+  sl.registerLazySingleton(() => UploadCommentFileUseCase(sl()));
   sl.registerLazySingleton(() => HomeUseCase(homeRepository: sl()));
+  sl.registerLazySingleton(() => MaterialUseCase(claimsDetailsRepository: sl()));
+  sl.registerLazySingleton(() => DeleteMaterialUseCase(claimsDetailsRepository: sl()));
+  sl.registerLazySingleton(() => EditMaterialQuantityUseCase(claimsDetailsRepository: sl()));
+  sl.registerLazySingleton(() => AddMaterialUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => SettingsUseCase(settingRepository: sl()));
   sl.registerLazySingleton(() => SettingsChangeLangUseCase(settingRepository: sl()));
   sl.registerLazySingleton(() => EditProfileUseCase(editProfileRepository: sl()));

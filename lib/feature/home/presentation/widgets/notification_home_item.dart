@@ -73,7 +73,7 @@ class NotificationHomeItem extends StatelessWidget {
                   },
                   child: Card(
                     elevation: 1,
-                    color: Colors.white,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),

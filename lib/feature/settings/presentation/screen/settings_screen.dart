@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import 'package:provider/provider.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/config/routes/app_routes.dart';
+import 'package:technician/config/theme/dark_theme_provider.dart';
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/core/utils/app_strings.dart';
 import 'package:technician/core/utils/assets_manager.dart';
@@ -17,6 +20,8 @@ import 'package:technician/widgets/image_loader_widget.dart';
 import 'package:technician/widgets/loading_item.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 import 'package:technician/widgets/text_widget.dart';
+
+import '../../../login/presentation/screen/login_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -147,7 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget profileWidget() => Card(
     elevation: 3,
     child: Container(
-      decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(8)),
       padding: EdgeInsets.symmetric(horizontal: 15.w,),
       child: Column(
         children: [
@@ -176,10 +181,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   );
 
   Widget accountWidget() {
+    final themeChange = Provider.of<DarkThemeProvider>(context);
     return Card(
       elevation: 3,
       child: Container(
-        decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(8)),
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
         child: Column(
           children: [
@@ -200,6 +206,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Prefs.setBool(AppStrings.userNotification, value);
                           });
                         }
+                    )),
+              ],
+            ),
+            divider(),
+            Row(
+              children: [
+                Icon(Icons.dark_mode,color: const Color(0xff44A4F2),),
+                SizedBox(width: 5.w,),
+                Text("Dark Mode".tr, style: TextStyle(fontSize: 18.fSize, fontWeight: FontWeight.w500, color: AppColors.lightTextColor.withOpacity(0.8))),
+                const Spacer(),
+                Transform.scale(
+                    scale: 0.6.w,
+                    child: CupertinoSwitch(
+                      activeColor: Color(0xff44A4F2),
+                      value: themeChange.darkTheme,
+                      onChanged: (bool value) {
+                        themeChange.darkTheme = value;
+                      },
                     )),
               ],
             ),
@@ -229,7 +253,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Card(
       elevation: 3,
       child: Container(
-        decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(8)),
+        decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(8)),
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
         child: Column(
           children: [
@@ -255,6 +279,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     )),
               ],
             ),
+
             divider(),
             const URLWidget(itemName: 'help', url: AppStrings.help, image: AssetsManager.help , isSVG: true,),
             divider(),
@@ -283,7 +308,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if(state is SettingsIsLoading){
       return const LoadingItem();
     } else if(state is SettingsError){
-      return ErrorWidgetItem(onTap: (){});
+      bool isUnauthenticated = state.msg.contains('Unauthenticated.');
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if(state is SettingsLoaded) {
       setData(state.userInfo.name , state.userInfo.email , state.userInfo.image);
       return _screenWidget();
@@ -299,7 +333,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return  BlocBuilder<SettingsCubit , SettingsState>(builder: (context , state){
       return Scaffold(
-          body: checkState(state)
+          body: SafeArea(child: checkState(state))
       );
     });
   }

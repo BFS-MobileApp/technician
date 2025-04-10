@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/core/utils/app_strings.dart';
 import 'package:technician/feature/settings/data/data_sources/settings_local_data_source.dart';

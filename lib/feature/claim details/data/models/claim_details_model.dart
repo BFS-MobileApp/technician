@@ -47,6 +47,7 @@ class Data {
   Creator creator;
   List<Log> logs;
   List<Time> times;
+  List<ClaimMaterials> material;
 
   Data({
     required this.id,
@@ -71,6 +72,7 @@ class Data {
     required this.creator,
     required this.logs,
     required this.times,
+    required this.material,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -101,6 +103,7 @@ class Data {
     creator: Creator.fromJson(json["creator"]),
     logs: List<Log>.from(json["logs"].map((x) => Log.fromJson(x))??[]),
     times: List<Time>.from(json["times"].map((x) => Time.fromJson(x))??[]),
+    material: List<ClaimMaterials>.from(json["materials"].map((x) => ClaimMaterials.fromJson(x))??[]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -258,6 +261,81 @@ class Employee {
     "name": name,
     "image_url": imageUrl,
     "created_at":created_at
+  };
+}
+class ClaimMaterials {
+  int id;
+  int productId;
+  int qty;
+  String name;
+  String code;
+  String unit;
+  String category;
+  String group;
+  String image;
+  UserMat user;
+  String createdAt;
+
+  ClaimMaterials({
+    required this.id,
+    required this.productId,
+    required this.qty,
+    required this.name,
+    required this.code,
+    required this.image,
+    required this.user,
+    required this.createdAt,
+    required this.unit,
+    required this.group,
+    required this.category,
+  });
+
+  factory ClaimMaterials.fromJson(Map<String, dynamic> json) => ClaimMaterials(
+    id: json["id"] ?? 0,
+    name: json["name"] ?? '',
+    image: json["image"] ?? '',
+    createdAt: json["created_at"] ??'',
+    productId: json["product_id"] ?? 0,
+    qty: json["qty"] ?? 0,
+    code: json["code"] ?? '',
+    user: UserMat.fromJson(json["user"]??{}),
+    unit: json["unit"] ?? '',
+    group: json["group"] ?? '',
+    category: json["category"] ?? '',
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "productId":productId,
+    "qty" : qty,
+    "code" : code,
+    "user" : user,
+    "image": image,
+    "created_at":createdAt
+  };
+}
+class UserMat {
+  int id;
+  String avatar;
+  String name;
+
+  UserMat({
+    required this.id,
+    required this.avatar,
+    required this.name,
+  });
+
+  factory UserMat.fromJson(Map<String, dynamic> json) => UserMat(
+    id: json["id"]??0,
+    avatar: json['avatar'] ?? "",
+    name: json["name"]??'',
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "avatar" : avatar,
   };
 }
 class Category {

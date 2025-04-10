@@ -68,7 +68,7 @@ class AppBarItem extends StatelessWidget {
               child: Center(
                 child: AutoSizeText(
                   capitalize(title),
-                  style: TextStyle(fontSize:  fontSize.fSize , fontWeight: textFontWeight , color: fontColor),
+                  style: TextStyle(fontSize:  fontSize.fSize , fontWeight: textFontWeight , color: Theme.of(context).textTheme.bodySmall!.color),
                 ),
               ),
             )

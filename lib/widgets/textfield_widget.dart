@@ -47,7 +47,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         obscureText: passwordVisible,
         style: TextStyle(
           fontSize: 17.fSize,
-          color: AppColors.black,
+          color: Theme.of(context).textTheme.bodyMedium!.color,
           fontWeight: FontWeight.w500
         ),
         decoration: InputDecoration(
@@ -66,7 +66,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
               passwordVisible
                   ? Icons.visibility_off
                   : Icons.visibility,
-              color: Theme.of(context).primaryColorDark,
+              color: Theme.of(context).primaryColor,
             ),
             onPressed: () {
               setState(() {

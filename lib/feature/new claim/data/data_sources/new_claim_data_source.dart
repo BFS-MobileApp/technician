@@ -1,3 +1,5 @@
+import 'dart:io';
+
 abstract class NewClaimDataSource{
 
   Future<Map<String, dynamic>> getBuildings();
@@ -10,5 +12,6 @@ abstract class NewClaimDataSource{
 
   Future<Map<String, dynamic>> getAvailableTimes(String companyId);
 
-  Future<Map<String, dynamic>> addNewClaim(String unitId , String categoryId , String subCategoryId , String claimTypeId, String description , String availableTime , String availableDate);
+  Future<Map<String, dynamic>> addNewClaim(String unitId , String categoryId , String subCategoryId ,
+      String claimTypeId, String description , String availableTime , String availableDate, List<File> file,);
 }

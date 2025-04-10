@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/config/arguments/routes_arguments.dart';
 import 'package:technician/config/routes/app_routes.dart';
@@ -25,6 +26,8 @@ import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/image_loader_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 
+import '../../../login/presentation/screen/login_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -39,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Datum> claimsModel = [];
   bool loadedData = false;
 
+  bool loadingClaims = true;
 
   @override
   void initState() {
@@ -95,7 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         '${"welcome".tr}, $userName',
                         maxLines: 2,
                         style: TextStyle(
-                          color: AppColors.headlineTextColor,
+                          color: Theme.of(context).textTheme.bodySmall!.color,
                           fontSize: 22.fSize,
                           fontWeight: FontWeight.bold,
                         ),
@@ -157,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'allClaims'.tr,
                           imageIcon: AssetsManager.allClaims,
                           value: model!.data.claims.all.toString(),
-                          onTap: (){
+                          onTap: loadingClaims ? null : () {
                             goToClaimScreen(0);
                           },
                         ),
@@ -168,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'newClaims'.tr,
                           imageIcon: AssetsManager.newClaims,
                           value: model!.data.claims.claimsNew.toString(),
-                          onTap: (){
+                          onTap: loadingClaims ? null : () {
                             goToClaimScreen(1);
                           },
                         ),
@@ -184,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'assignedClaims'.tr,
                           imageIcon: AssetsManager.assignedClaims,
                           value: model!.data.claims.assigned.toString(),
-                          onTap: (){
+                          onTap: loadingClaims ? null : () {
                             goToClaimScreen(2);
                           },
                         ),
@@ -195,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'startedClaims'.tr,
                           imageIcon: AssetsManager.startedClaims,
                           value: model!.data.claims.inProgress.toString(),
-                          onTap: (){
+                          onTap: loadingClaims ? null : () {
                             goToClaimScreen(3);
                           },
                         ),
@@ -211,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'completedClaims'.tr,
                           imageIcon: AssetsManager.completedClaims,
                           value: model!.data.claims.completed.toString(),
-                          onTap: (){
+                          onTap: loadingClaims ? null : () {
                             goToClaimScreen(4);
                           },
                         ),
@@ -222,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'cancelledClaims'.tr,
                           imageIcon: AssetsManager.canceledClaims,
                           value: model!.data.claims.cancelled.toString(),
-                          onTap: (){
+                          onTap: loadingClaims ? null : () {
                             goToClaimScreen(5);
                           },
                         ),
@@ -238,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           title: 'closedClaims'.tr,
                           imageIcon: AssetsManager.closedClaims,
                           value: model!.data.claims.closed.toString(),
-                          onTap: (){
+                          onTap: loadingClaims ? null : () {
                             goToClaimScreen(6);
                           },
                         ),
@@ -274,7 +278,17 @@ class _HomeScreenState extends State<HomeScreen> {
     if(state is HomeIsLoading){
       return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
     } else if(state is HomeError){
-      return ErrorWidgetItem(onTap: ()=>getData());
+      bool isUnauthenticated = state.msg == 'Unauthenticated.';
+      print("${state.msg}++++++++++++++++++++++");
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if(state is HomeLoaded) {
       print('here');
       Helper.setPermissionRoles(state.userInfo.permissions);
@@ -331,6 +345,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void getData() {
     setState(() {
       loadedData = false;
+      loadingClaims = true; // Start loading
     });
 
     final data = {
@@ -339,20 +354,22 @@ class _HomeScreenState extends State<HomeScreen> {
     };
 
     BlocProvider.of<ClaimsCubit>(context).getStartedClaims(data).then((val) {
-      if (val != null && val.data != null) {
-        setState(() {
+      setState(() {
+        if (val != null && val.data != null) {
           claimsModel = val.data;
-        });
-        sortList();
-      } else {
-        // Handle null case appropriately
-        debugPrint("Error: Received null data from getStartedClaims");
-      }
+          sortList();
+        }
+        loadingClaims = false; // Finished loading
+      });
       BlocProvider.of<HomeCubit>(context).getUserInfo();
     }).catchError((error) {
       debugPrint("Error fetching claims: $error");
+      setState(() {
+        loadingClaims = false; // Even on error, stop loading
+      });
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

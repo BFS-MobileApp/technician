@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:technician/core/error/failures.dart';
 import 'package:technician/feature/new%20claim/data/models/avaliable_time_model.dart';
@@ -19,7 +21,9 @@ abstract class NewClaimRepository {
 
   Future<Either<Failures , AvailableTimeModel>> getAvailableTimes(String companyId);
 
-  Future<Either<Failures , AddNewClaim>> addNewClaim(String unitId , String categoryId , String subCategoryId , String claimTypeId, String description , String availableTime , String availableDate);
+  Future<Either<Failures , AddNewClaim>> addNewClaim(String unitId , String categoryId ,
+      String subCategoryId , String claimTypeId,
+      String description , String availableTime , String availableDate, List<File> file);
 
 
 }

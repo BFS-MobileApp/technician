@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/core/utils/assets_manager.dart';
 import 'package:technician/core/utils/size_utils.dart';
@@ -12,6 +13,8 @@ import 'package:technician/feature/notification/presentation/widgets/notificatio
 import 'package:technician/widgets/bar_widget.dart';
 import 'package:technician/widgets/empty_data_widget.dart';
 import 'package:technician/widgets/error_widget.dart';
+
+import '../../../login/presentation/screen/login_screen.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -61,7 +64,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
     if(state is NotificationIsLoading){
       return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
     } else if(state is NotificationError){
-      return ErrorWidgetItem(onTap: ()=>getData());
+      bool isUnauthenticated = state.error.contains('Unauthenticated.');
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if(state is NotificationLoaded){
       if(state.model.data.isEmpty){
         return EmptyDataWidget();

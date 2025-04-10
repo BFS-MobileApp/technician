@@ -30,9 +30,14 @@ class EndPoints{
 
   static const String assignClaim = 'claims/assign';
 
+  static const String addMaterial = 'claims/add_claim_product';
+
   static String changePriority(int claimId) => 'claims/$claimId/priority';
 
   static String claimDetails(String referenceId) => 'claim/$referenceId';
+  static String material(int page) => 'materials?page=$page';
+  static String deleteMaterial(String materialId) => 'claims/delete_claim_item/$materialId';
+  static String editMaterial(String materialId) => 'claims/update_qty/$materialId';
 
   static const String changePassword = 'change-password';
 

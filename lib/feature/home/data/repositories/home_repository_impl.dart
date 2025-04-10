@@ -20,25 +20,32 @@ class HomeRepositoryImpl extends HomeRepository {
   HomeRepositoryImpl({required this.networkInfo ,required this.homeRemoteDataSource});
 
   @override
-  Future<Either<Failures, UserInfo>> getUserInfo() async{
-    if(await networkInfo.isConnected){
-      try{
+  Future<Either<Failures, UserInfo>> getUserInfo() async {
+    if (await networkInfo.isConnected) {
+      try {
         final response = await homeRemoteDataSource.getUserInfo();
         final int statusCode = response['statusCode'];
-        if(statusCode == 200){
+
+        if (statusCode == 200) {
           final ProfileModel model = ProfileModel.fromJson(response['data']);
-          saveUserInfo(model.email, model.name, model.image, model.mobile, model.permissions , model.id , model.emailNotification);
+          saveUserInfo(model.email, model.name, model.image, model.mobile, model.permissions, model.id, model.emailNotification);
           return Right(model);
         } else {
-          return Left(ServerFailure(msg: 'error'.tr));
+          final String errorMsg = response['data']['error'] ?? 'error'.tr;
+          return Left(ServerFailure(msg: errorMsg));
         }
-      } on ServerException{
+      } on ServerException catch (e) {
+        // If ServerException has a message field
+        return Left(ServerFailure(msg: e.message!));
+      } catch (e) {
+        // Catch any unexpected error (optional but good practice)
         return Left(ServerFailure(msg: 'error'.tr));
       }
     } else {
       return Left(CashFailure(msg: 'connectionError'.tr));
     }
   }
+
 
   @override
   Future<void> saveUserInfo(String email, String name, String image, String phone, List<String> permissions , int userId , int emailNotification) async{

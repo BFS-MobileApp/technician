@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 import 'package:technician/core/api/api_consumer.dart';
@@ -12,10 +14,10 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import '../../../../core/api/end_points.dart';
+import '../../../../core/error/exceptions.dart';
 
 class ClaimsDetailsDataSourceImpl extends ClaimsDetailsDataSource {
   ApiConsumer consumer;
-
   ClaimsDetailsDataSourceImpl({required this.consumer});
 
   @override
@@ -72,6 +74,47 @@ class ClaimsDetailsDataSourceImpl extends ClaimsDetailsDataSource {
     final res = await consumer.get(EndPoints.claimDetails(referenceId));
     return res;
   }
+  @override
+  Future<Map<String, dynamic>> getMaterial(String referenceId, int page, String? search) async {
+    final bool isSearching = search != null && search.isNotEmpty;
+
+    final response = await consumer.get(
+      'materials',
+      queryParams: {
+        'claim_id': referenceId,
+        'page': page,
+        if (!isSearching) 'is_featured': 'true',
+        if (isSearching) 'search': search,
+      },
+    );
+    return response;
+  }
+
+
+
+
+  @override
+  Future<Map<String, dynamic>> deleteMaterial(String materialId) async {
+    final res = await consumer.delete(EndPoints.deleteMaterial(materialId));
+    return res;
+  }
+  @override
+  Future<Map<String, dynamic>> editMaterialQuantity(String materialId, int quantity) async {
+    final response = await consumer.patch(
+      EndPoints.editMaterial(materialId),
+      body: {'qty': quantity},
+    );
+    return response;
+  }
+  @override
+  Future<Map<String, dynamic>> addMaterial(Map<String, dynamic> data) async {
+    final response = await consumer.post(
+      EndPoints.addMaterial,
+      body: data,
+    );
+    return response;
+  }
+
 
   @override
   Future<Map<String, dynamic>> startAndEndWork(String claimId) async {
@@ -87,6 +130,29 @@ class ClaimsDetailsDataSourceImpl extends ClaimsDetailsDataSource {
     final res = await consumer.post(EndPoints.addComment, body: data);
     return res;
   }
+
+  @override
+  Future<Map<String, dynamic>> uploadCommentFile(String claimId, String commentId, List<File> file, String status) async {
+
+    final data = {
+      'claim_id': claimId,
+      'comment': "File Upload",
+      'status': status,
+    };
+
+    final Map<String, File> fileMap = {
+      for (int i = 0; i < file.length; i++) 'file[$i]': file[i],
+    };
+
+    print("Uploading file with data: $data");
+
+    // Call `postFile` with correctly formatted files
+    final res = await consumer.postFile(EndPoints.addComment, files: fileMap, data: data);
+
+    print("File upload response: $res");
+    return res;
+  }
+
 
   @override
   Future<Map<String, dynamic>> addSignature(String claimId, File signatureFile, String comment) async {

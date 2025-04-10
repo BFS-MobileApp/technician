@@ -8,7 +8,23 @@ class ClaimDetailsInitial extends ClaimDetailsState {
   @override
   List<Object> get props => [];
 }
+class UploadingCommentFile extends ClaimDetailsState {
+  @override
+  List<Object> get props => [];
+}
 
+class UploadCommentFileSuccess extends ClaimDetailsState {
+  @override
+  List<Object> get props => [];
+}
+
+class UploadCommentFileError extends ClaimDetailsState {
+  final String msg;
+  const UploadCommentFileError({required this.msg});
+
+  @override
+  List<Object> get props => [];
+}
 
 class AssignedClaimInitialState extends ClaimDetailsInitial{}
 
@@ -22,6 +38,28 @@ class ClaimDetailsLoaded extends ClaimDetailsInitial{
   @override
   List<Object> get props =>[model];
 }
+class MaterialLoaded extends ClaimDetailsInitial{
+
+  final MaterialResponse model;
+
+  MaterialLoaded({required this.model});
+  @override
+  List<Object> get props =>[model];
+}
+
+class MaterialDeleted extends ClaimDetailsState {
+  @override
+  List<Object?> get props => [];
+}
+class MaterialEdited extends ClaimDetailsState {
+  @override
+  List<Object?> get props => [];
+}
+class MaterialAdded extends ClaimDetailsState {
+  @override
+  List<Object?> get props => [];
+}
+
 
 class ClaimDetailsError extends ClaimDetailsInitial{
   final String msg;

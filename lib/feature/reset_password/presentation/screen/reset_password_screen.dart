@@ -109,7 +109,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-              child: TextWidget(text: 'resetPassword'.tr, fontSize: 20.fSize,fontColor: AppColors.black,fontWeight: FontWeight.w700,),
+              child: TextWidget(text: 'resetPassword'.tr, fontSize: 20.fSize,fontColor: Theme.of(context).textTheme.bodySmall!.color,fontWeight: FontWeight.w700,),
             ),
             SizedBox(height: 20.h,),
             buildPasswordField(context),

@@ -110,8 +110,8 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
               Container(
                 width: 100.w,
                 height: 100.h,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE7E7E7),
+                decoration:  BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   shape: BoxShape.circle, // Makes the container circular
                 ),
                 child: Center(
@@ -128,9 +128,9 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
               SizedBox(width: 20.w,),
               Column(
                 children: [
-                  Text(userName , style: TextStyle(fontSize: 20.fSize , fontWeight: FontWeight.w700 ,color: AppColors.black),),
+                  Text(userName , style: TextStyle(fontSize: 20.fSize , fontWeight: FontWeight.w700 ,color: Theme.of(context).textTheme.bodySmall!.color),),
                   SizedBox(height: 5.h,),
-                  Text('Technician'.tr , style: TextStyle(fontSize: 16.fSize , fontWeight: FontWeight.w500 ,color: AppColors.black),),
+                  Text('Technician'.tr , style: TextStyle(fontSize: 16.fSize , fontWeight: FontWeight.w500 ,color: Theme.of(context).textTheme.bodySmall!.color),),
                 ],
               )
             ],
@@ -145,7 +145,7 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
               style: TextStyle(
                 fontSize: 25.fSize,
                 fontWeight: FontWeight.w600,
-                color: Colors.black,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
               ),
             ),
             SizedBox(height: 8.h), // Space between date and time
@@ -154,7 +154,7 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
               style: TextStyle(
                 fontSize: 30.fSize,
                 fontWeight: FontWeight.w500,
-                color: Colors.black,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
               ),
             ),
           ],
@@ -185,6 +185,7 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 15.0), // Reduced horizontal margin
           child: TextField(
+            style: const TextStyle(color: Colors.black),
             controller: remarksController,
             textInputAction: TextInputAction.done,
             decoration: InputDecoration(
@@ -193,15 +194,7 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
               fillColor: Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20.0),
-                borderSide: const BorderSide(color: AppColors.whiteColor),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                borderSide: const BorderSide(color: AppColors.whiteColor),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-                borderSide: const BorderSide(color: AppColors.whiteColor),
+                borderSide:  BorderSide(color: Theme.of(context).textTheme.bodyMedium!.color!),
               ),
             ),
           ),
@@ -404,7 +397,7 @@ class _AddAttendanceScreenState extends State<AddAttendanceScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-      backgroundColor: const Color(0xFFF6F6F6),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: screenWidget(),
     ), onWillPop: () async{
           return true;

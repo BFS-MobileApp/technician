@@ -31,11 +31,8 @@ class HomeCubit extends Cubit<HomeState>{
   Future<ClaimsModel?> getStartedClaims(Map<String , dynamic> data) async {
     emit(HomeIsLoading());
 
-    // Log when the request starts
-
     Either<Failures, ClaimsModel> response = await allClaimsUseCase(ClaimsParams(data: data));
 
-    // Emit the appropriate state based on the response
     return response.fold(
           (failures) {
         // Log failure case

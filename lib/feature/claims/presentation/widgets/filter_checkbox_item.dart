@@ -35,7 +35,7 @@ class _FilterCheckboxItemState extends State<FilterCheckboxItem> {
         ),
         SVGImageWidget(image: widget.image, width: 24.w, height: 24.h),
         SizedBox(width: 5.w,),
-        TextWidget(text: widget.text, fontSize: 17.fSize , fontWeight: FontWeight.w700, fontColor: AppColors.black,)
+        TextWidget(text: widget.text, fontSize: 17.fSize , fontWeight: FontWeight.w700, fontColor: Theme.of(context).textTheme.bodySmall!.color,)
       ],
     ));
   }

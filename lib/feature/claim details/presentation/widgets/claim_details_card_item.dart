@@ -11,7 +11,7 @@ class ClaimDetailsCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: AppColors.whiteColor,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 8.w , vertical: 5.w),
         child: cardChildWidget,

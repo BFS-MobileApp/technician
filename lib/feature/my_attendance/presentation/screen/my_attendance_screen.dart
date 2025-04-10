@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/config/arguments/routes_arguments.dart';
 import 'package:technician/config/routes/app_routes.dart';
@@ -15,6 +16,8 @@ import 'package:technician/feature/my_attendance/presentation/cubit/my_attendanc
 import 'package:technician/feature/my_attendance/presentation/cubit/my_attendance_state.dart';
 import 'package:technician/widgets/bar_widget.dart';
 import 'package:technician/widgets/error_widget.dart';
+
+import '../../../login/presentation/screen/login_screen.dart';
 
 class MyAttendanceScreen extends StatefulWidget {
   const MyAttendanceScreen({super.key});
@@ -247,7 +250,7 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
                             model!.data[index].checkinAddress != null ? 'in'.tr : 'out'.tr,
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
-                              color: AppColors.black,
+                              color: Theme.of(context).textTheme.bodySmall!.color,
                               fontSize: 14.fSize,
                             ),
                           ),
@@ -261,7 +264,7 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
                           model!.data[index].clockInTime != '' ? formatDateTime(model!.data[index].clockInTime) : formatDateTime(model!.data[index].clockOutTime),
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            color: AppColors.black,
+                            color: Theme.of(context).textTheme.bodySmall!.color,
                             fontSize: 14.fSize,
                           ),
                         ),
@@ -276,7 +279,7 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
                               : model!.data[index].note,
                           style: TextStyle(
                             fontWeight: FontWeight.w500,
-                            color: AppColors.black,
+                            color: Theme.of(context).textTheme.bodySmall!.color,
                             fontSize: 14.fSize,
                           ),
                         ),
@@ -407,7 +410,16 @@ class _MyAttendanceScreenState extends State<MyAttendanceScreen> {
         child: CircularProgressIndicator(color: AppColors.mainColor),
       );
     } else if (state is MyAttendanceError) {
-      return ErrorWidgetItem(onTap: () => getData());
+      bool isUnauthenticated = state.msg.contains('Unauthenticated.');
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if (state is MyAttendanceLoaded) {
       model = state.model;
       String jsonString = jsonEncode(state.model.toJson());

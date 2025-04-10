@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/config/arguments/routes_arguments.dart';
 import 'package:technician/config/routes/app_routes.dart';

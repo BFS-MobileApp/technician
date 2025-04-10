@@ -112,7 +112,7 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
               style: TextStyle(
                   fontSize: 18.0.fSize,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.black
+                  color: Theme.of(context).textTheme.bodySmall!.color
               ),
             ),
           ),
@@ -125,7 +125,7 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWidget(text: 'startDate'.tr, fontSize: 16.fSize , fontColor: AppColors.black, fontWeight: FontWeight.w500,),
+                TextWidget(text: 'startDate'.tr, fontSize: 16.fSize , fontColor: Theme.of(context).textTheme.bodySmall!.color, fontWeight: FontWeight.w500,),
                 SizedBox(height: 3.h,),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -163,7 +163,7 @@ class _FilterBottomSheetContentState extends State<FilterBottomSheetContent> {
                   ),
                 ),
                 SizedBox(height: 15.h,),
-                TextWidget(text: 'endDate'.tr, fontSize: 16.fSize , fontColor: AppColors.black, fontWeight: FontWeight.w500,),
+                TextWidget(text: 'endDate'.tr, fontSize: 16.fSize , fontColor: Theme.of(context).textTheme.bodySmall!.color, fontWeight: FontWeight.w500,),
                 SizedBox(height: 3.h,),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(

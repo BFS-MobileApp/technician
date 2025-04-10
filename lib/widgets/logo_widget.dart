@@ -54,7 +54,7 @@ class _LogoWidgetState extends State<LogoWidget> {
             Center(
               child: Text(
                 'beFalconSolutions'.tr,
-                style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.black, fontSize: 14.fSize),
+                style: TextStyle(fontWeight: FontWeight.w800, color: Theme.of(context).textTheme.bodySmall!.color, fontSize: 14.fSize),
               ),
             ),
             Center(

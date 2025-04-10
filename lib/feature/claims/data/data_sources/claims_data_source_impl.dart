@@ -10,15 +10,22 @@ class ClaimsDataSourceImpl extends ClaimsDataSource{
   ClaimsDataSourceImpl({required this.consumer});
 
   @override
-  Future<Map<String, dynamic>> getAllClaims(Map<String, dynamic> data) async{
-    print(data);
+  Future<Map<String, dynamic>> getAllClaims(Map<String, dynamic> data) async {
+    print("Data being sent: $data");
+
     String queryString = data.entries
         .map((entry) => '${entry.key}=${entry.value}')
         .join('&');
-    print(queryString);
+
+    print("Query String: $queryString");
+
     final res = await consumer.get('${EndPoints.claims}?$queryString');
+
+    print("Response: $res");
+
     return res;
   }
+
 
   @override
   Future<Map<String, dynamic>> getAllTechnician(String claimId) async{

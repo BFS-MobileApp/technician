@@ -18,7 +18,7 @@ class ClaimSummaryWidget extends StatelessWidget {
         children: [
           TextWidget(text: name, fontSize: 16.fSize , fontWeight: FontWeight.w600,fontColor: const Color(0xFF2E435C),),
           SizedBox(height: 10.h,),
-          TextWidget(text: value, fontSize: 14.fSize , fontWeight: FontWeight.w400,fontColor: AppColors.black,maxLine: 3,),
+          TextWidget(text: value, fontSize: 14.fSize , fontWeight: FontWeight.w400,fontColor: Theme.of(context).textTheme.bodySmall!.color,maxLine: 3,),
         ],
       ),
     );

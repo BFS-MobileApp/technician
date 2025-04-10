@@ -63,8 +63,8 @@ android {
         applicationId "com.befalcon.technician"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()+3
-        versionName "1.0.3"
+        versionCode flutterVersionCode.toInteger()+4
+        versionName "1.0.4"
     }
 
 //    lintOptions {

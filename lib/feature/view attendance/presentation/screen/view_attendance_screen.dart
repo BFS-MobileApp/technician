@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/core/utils/assets_manager.dart';
 import 'package:technician/core/utils/size_utils.dart';
 import 'package:technician/widgets/app_headline_widget.dart';

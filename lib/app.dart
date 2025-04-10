@@ -1,7 +1,9 @@
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:technician/config/theme/app_theme.dart';
 import 'package:technician/core/utils/app_strings.dart';
 import 'package:technician/core/utils/local_strings.dart';
@@ -22,6 +24,9 @@ import 'package:technician/feature/reset_password/presentation/cubit/reset_passw
 import 'package:technician/feature/settings/presentation/cubit/settings_cubit.dart';
 import 'package:technician/feature/splash/presentation/cubit/splash_cubit.dart';
 import 'config/routes/app_routes.dart';
+import 'config/theme/dark_theme_provider.dart';
+import 'config/theme/dark_theme_style.dart';
+import 'config/theme/light_theme_style.dart';
 import 'injection_container.dart' as di;
 import 'widgets/message_widget.dart';
 
@@ -35,10 +40,17 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  DarkThemeProvider themeChangeProvider = DarkThemeProvider();
+
+  void getCurrentTheme() async {
+    themeChangeProvider.darkTheme =
+    await themeChangeProvider.darkThemePreference.getTheme();
+  }
+
   @override
   void initState() {
     super.initState();
-
+    getCurrentTheme();
     // Handle the initial deep link if provided
     if (widget.initialUri != null) {
       _handleDeepLink(widget.initialUri!);
@@ -66,6 +78,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => DarkThemeProvider()),
         BlocProvider(create: (context) => di.sl<SplashCubit>()),
         BlocProvider(create: (context) => di.sl<LoginCubit>()),
         BlocProvider(create: (context) => di.sl<HomeCubit>()),
@@ -83,15 +96,34 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => di.sl<MyAttendanceCubit>()),
         BlocProvider(create: (context) => di.sl<AddAttendanceCubit>()),
       ],
-      child: GetMaterialApp(
-        translations: LocalStrings(),
-        locale: const Locale('en', 'US'),
-        fallbackLocale: const Locale('en', 'US'),
-        theme: appTheme(),
-        debugShowCheckedModeBanner: false,
-        title: AppStrings.appName,
-        onGenerateRoute: AppRoutes.onGenerateRoute,
-        scaffoldMessengerKey: MessageWidget.scaffoldMessengerKey,
+      child: ChangeNotifierProvider(
+        create: (_)=> themeChangeProvider,
+        child: Consumer<DarkThemeProvider>(
+          builder: (context,darkThemeProvider,child) {
+            return ScreenUtilInit(
+              designSize: const Size(360, 690),
+              minTextAdapt: true,
+              splitScreenMode: true,
+              builder: (context, child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                  child: GetMaterialApp(
+                    translations: LocalStrings(),
+                    locale: const Locale('en', 'US'),
+                    fallbackLocale: const Locale('en', 'US'),
+                    theme: darkThemeProvider.darkTheme ? DarkStyle.darkTheme(context) // Apply Dark Theme
+                        :
+                    LightStyles.lightTheme(context),
+                    debugShowCheckedModeBanner: false,
+                    title: AppStrings.appName,
+                    onGenerateRoute: AppRoutes.onGenerateRoute,
+                    scaffoldMessengerKey: MessageWidget.scaffoldMessengerKey,
+                  ),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

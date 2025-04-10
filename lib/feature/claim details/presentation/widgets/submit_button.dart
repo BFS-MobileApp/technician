@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/core/utils/size_utils.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
@@ -36,7 +37,7 @@ class SubmitButton extends StatelessWidget {
               text: text,
               fontSize: 16.fSize,
               fontWeight: FontWeight.w600,
-              fontColor: AppColors.black,
+              fontColor: Theme.of(context).textTheme.bodySmall!.color,
             ),
           ],
         ),

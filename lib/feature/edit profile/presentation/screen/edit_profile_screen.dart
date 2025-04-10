@@ -21,6 +21,8 @@ import 'package:technician/widgets/message_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 import 'package:technician/widgets/text_widget.dart';
 
+import '../../../login/presentation/screen/login_screen.dart';
+
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
 
@@ -121,7 +123,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Widget editProfileWidgets(String image){
     return Scaffold(
-      backgroundColor: AppColors.pageBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -144,7 +146,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         child: const SVGImageWidget(image: AssetsManager.whiteBack,width: 39,height: 39,),
                       ),
                       SizedBox(width: 20.w,),
-                      TextWidget(text: 'editProfile'.tr,fontSize: 18.fSize,fontWeight: FontWeight.w400,fontColor: Colors.white,)
+                      TextWidget(text: 'editProfile'.tr,fontSize: 18.fSize,fontWeight: FontWeight.w400,fontColor:Theme.of(context).textTheme.bodyMedium!.color,)
                     ],
                   ),
                   SizedBox(height: 10.h,),
@@ -195,7 +197,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                   buttonsWidget(),
                   Container(
-                    color: AppColors.pageBackground,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     padding: EdgeInsets.symmetric(horizontal: 6.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -315,14 +317,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Widget _buildUpdatePasswordContent() {
     return Container(
-      decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(8)),
       padding: EdgeInsets.symmetric(vertical: 20.w, horizontal: 20.h),
       child: Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextWidget(text: 'updatePassword'.tr, fontSize: 20.fSize,fontColor: AppColors.black,fontWeight: FontWeight.w700,),
+            TextWidget(text: 'updatePassword'.tr, fontSize: 20.fSize,fontColor: Theme.of(context).textTheme.bodySmall!.color,fontWeight: FontWeight.w700,),
             SizedBox(height: 15.h,),
             buildOldPasswordField(context),
             SizedBox(height: 20.h,),
@@ -339,7 +341,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Widget _buildBasicInfoContent() {
     return Container(
-      decoration: BoxDecoration(color: AppColors.whiteColor, borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor, borderRadius: BorderRadius.circular(8)),
       padding: EdgeInsets.symmetric(vertical: 10.w, horizontal: 20.h),
       margin: EdgeInsets.only(bottom:20.h),
       child: Form(
@@ -347,7 +349,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextWidget(text: 'basicInfo'.tr, fontSize: 20.fSize,fontColor: AppColors.black,fontWeight: FontWeight.w700,),
+            TextWidget(text: 'basicInfo'.tr, fontSize: 20.fSize,fontColor: Theme.of(context).textTheme.bodySmall!.color,fontWeight: FontWeight.w700,),
             SizedBox(height: 8.h,),
             buildNameField(context),
             SizedBox(height: 8.h,),
@@ -375,7 +377,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           Text(
             'name'.tr,
-            style: TextStyle(fontSize: 17.fSize , color: AppColors.black , fontWeight: FontWeight.w700),
+            style: TextStyle(fontSize: 17.fSize , color: Theme.of(context).textTheme.bodySmall!.color , fontWeight: FontWeight.w700),
           ),
           EditProfileTextFieldWidget(isPassword: false ,  controller: nameController),
         ],
@@ -392,7 +394,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           Text(
             'email'.tr,
-            style: TextStyle(fontSize: 17.fSize , color: AppColors.black , fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 17.fSize , color: Theme.of(context).textTheme.bodySmall!.color , fontWeight: FontWeight.w500),
           ),
           EditProfileTextFieldWidget(inputType: TextInputType.emailAddress , readOnly: true , isPassword: false , controller: emailController),
         ],
@@ -409,7 +411,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         children: [
           Text(
             'phone'.tr,
-            style: TextStyle(fontSize: 17.fSize , color: AppColors.black , fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 17.fSize , color: Theme.of(context).textTheme.bodySmall!.color , fontWeight: FontWeight.w500),
           ),
           IntlPhoneField(
               style: TextStyle(fontWeight: FontWeight.w500 , fontSize: 15.fSize),
@@ -536,8 +538,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
       builder: (BuildContext context) {
         return Container(
-          decoration: const BoxDecoration(
-            color: AppColors.whiteColor,
+          decoration:  BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(30),
               topRight: Radius.circular(30),
@@ -551,7 +553,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 text: 'profilePhoto'.tr,
                 fontSize: 18.fSize,
                 fontWeight: FontWeight.w700,
-                fontColor: AppColors.black,
+                fontColor: Theme.of(context).textTheme.bodySmall!.color,
               ),
               SizedBox(height: 20.h),
               Container(
@@ -578,7 +580,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(width: 20.w),
                       Text(
                         'uploadPhoto'.tr,
-                        style: TextStyle(color: AppColors.black, fontSize: 14.fSize, fontWeight: FontWeight.w500),
+                        style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color, fontSize: 14.fSize, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -611,7 +613,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         SizedBox(width: 20.w),
                         Text(
                           'takeNewPhoto'.tr,
-                          style: TextStyle(color: AppColors.black, fontSize: 14.fSize, fontWeight: FontWeight.w500),
+                          style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color, fontSize: 14.fSize, fontWeight: FontWeight.w500),
                         ),
                       ],
                     ),
@@ -681,7 +683,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if(state is EditProfileIsLoading){
       return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
     } else if(state is EditProfileError){
-      return ErrorWidgetItem(onTap: ()=>getData());
+      bool isUnauthenticated = state.msg.contains('Unauthenticated.');
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if(state is EditProfileLoaded) {
       if (!_dataLoaded) {
         setData(state.userInfo.name, state.userInfo.email, state.userInfo.phone , state.userInfo.emailNotification);

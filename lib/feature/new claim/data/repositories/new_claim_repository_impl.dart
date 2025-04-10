@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:get/get.dart';
 import 'package:technician/core/error/exceptions.dart';
@@ -125,10 +127,12 @@ class NewClaimRepositoryImpl extends NewClaimRepository{
   }
 
   @override
-  Future<Either<Failures, AddNewClaim>> addNewClaim(String unitId, String categoryId, String subCategoryId, String claimTypeId, String description, String availableTime, String availableDate) async{
+  Future<Either<Failures, AddNewClaim>> addNewClaim(String unitId, String categoryId, String subCategoryId,
+      String claimTypeId, String description, String availableTime, String availableDate, List<File> file,) async{
     if(await networkInfo.isConnected){
       try{
-        final response = await newClaimDataSource.addNewClaim(unitId , categoryId , subCategoryId , claimTypeId , description , availableTime , availableDate);
+        final response = await newClaimDataSource.addNewClaim(unitId , categoryId ,
+            subCategoryId , claimTypeId , description , availableTime , availableDate,file);
         final int statusCode = response['statusCode'];
         print(response['data']);
         if(statusCode == 200){

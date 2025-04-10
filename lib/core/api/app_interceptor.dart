@@ -1,8 +1,9 @@
   import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/core/utils/app_strings.dart';
+
+import '../../config/PrefHelper/helper.dart';
 
 class AppInterceptor extends Interceptor{
 
@@ -31,20 +32,28 @@ class AppInterceptor extends Interceptor{
   Map<String , dynamic> getHeaders(){
     String token = '';
     String local = '';
+
     if(Prefs.isContain(AppStrings.token)){
       token = Prefs.getString(AppStrings.token);
     }
+
+    print("Retrieved Token: $token");  // Debugging step
+
     if(Helper.getCurrentLocal() == 'US'){
       local = 'en';
     } else {
       local = 'ar';
     }
+
     Map<String , dynamic> header = {
       "Accept":"application/json",
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
-      'lang':local
+      'lang': local
     };
+
+    print("Request Headers: $header");  // Debugging step
     return header;
   }
+
 }

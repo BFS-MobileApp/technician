@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:technician/core/error/failures.dart';
@@ -70,13 +72,40 @@ class NewClaimCubit extends Cubit<NewClaimState>{
             (model) => AvailableTimesLoaded(availableTimeModel: model)));
   }
 
-  Future<void> addNewClaim(String unitId , String categoryId , String subCategoryId , String claimTypeId, String description , String availableTime , String availableDate) async{
+  Future<void> addNewClaim(
+      String unitId,
+      String categoryId,
+      String subCategoryId,
+      String claimTypeId,
+      String description,
+      String availableTime,
+      String availableDate,
+      List<File> file,
+      ) async {
     emit(NewClaimIsLoading());
-    Either<Failures , AddNewClaim> response = await addNewClaimUseCase(AddNewClaimParams(unitId: unitId , categoryId: categoryId , subCategoryId: subCategoryId , claimTypeId: claimTypeId , description: description , availableTime:  availableTime, availableDate: availableDate));
+
+    // Validate files: only keep files that exist and have a path
+    List<File> validFiles = file.where((f) => f.path.isNotEmpty && f.existsSync()).toList();
+
+    Either<Failures, AddNewClaim> response = await addNewClaimUseCase(
+      AddNewClaimParams(
+        unitId: unitId,
+        categoryId: categoryId,
+        subCategoryId: subCategoryId,
+        claimTypeId: claimTypeId,
+        description: description,
+        availableTime: availableTime,
+        availableDate: availableDate,
+        file: validFiles, // <-- Send empty list if no valid files
+      ),
+    );
+
     emit(response.fold(
-            (failures) => NewClaimError(msg: failures.msg),
-            (model) => AddNewClaimLoaded(addNewClaim: model)));
+          (failures) => NewClaimError(msg: failures.msg),
+          (model) => AddNewClaimLoaded(addNewClaim: model),
+    ));
   }
+
 
   String mapFailureToMsg(Failures failures){
     switch (failures.runtimeType){

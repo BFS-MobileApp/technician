@@ -10,8 +10,11 @@ import 'package:technician/core/network/network_info.dart';
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/feature/claim%20details/data/data_sources/claims_details_data_source.dart';
 import 'package:technician/feature/claim%20details/data/models/claim_details_model.dart';
+import 'package:technician/feature/claim%20details/data/models/material_model.dart';
 import 'package:technician/feature/claim%20details/domain/repositories/claims_details_repository.dart';
 import 'package:technician/widgets/message_widget.dart';
+
+import '../../../../core/usecase/use_case.dart';
 
 class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
 
@@ -98,6 +101,82 @@ class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
       return Left(CashFailure(msg: 'connectionError'.tr));
     }
   }
+  @override
+  Future<Either<Failures, MaterialResponse>> getMaterial(String referenceId,int page,String? search) async {
+    if(await networkInfo.isConnected){
+      try{
+        final response = await claimsDetailsDataSource.getMaterial(referenceId,page,search);
+        print(response['data']);
+        final int statusCode = response['statusCode'];
+        if(statusCode == 200){
+          final MaterialResponse claims = MaterialResponse.fromJson(response['data']);
+          return Right(claims);
+        } else {
+          return Left(ServerFailure(msg: 'error'.tr));
+        }
+      } on ServerException{
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+  @override
+  Future<Either<Failures, bool>> deleteMaterial(String materialId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await claimsDetailsDataSource.deleteMaterial(materialId);
+        print(response['data']);
+        final int statusCode = response['statusCode'];
+        if (statusCode == 200) {
+          return const Right(true); // Deletion was successful
+        } else {
+          return Left(ServerFailure(msg: 'error'.tr));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+  @override
+  Future<Either<Failures, bool>> editMaterialQuantity(String materialId, int quantity) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await claimsDetailsDataSource.editMaterialQuantity(materialId, quantity);
+        final int statusCode = response['statusCode'];
+        if (statusCode == 200) {
+          return const Right(true);
+        } else {
+          return Left(ServerFailure(msg: 'error'.tr));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+  @override
+  Future<Either<Failures, bool>> addMaterial(AddMaterialParams params) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await claimsDetailsDataSource.addMaterial(params.toJson());
+        final int statusCode = response['statusCode'];
+        if (statusCode == 200) {
+          return const Right(true);
+        } else {
+          return Left(ServerFailure(msg: 'error'.tr));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+
 
   @override
   Future<Either<Failures, bool>> startAndEndWork(String claimId) async{
@@ -140,6 +219,25 @@ class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
       }
     } else {
       return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+  @override
+  Future<Either<Failures, bool>> uploadCommentFile(String claimId, String commentId, List<File> file, String status) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await claimsDetailsDataSource.uploadCommentFile(claimId, commentId, file,status);
+        final int statusCode = response['statusCode'];
+
+        if (statusCode == 200) {
+          return const Right(true);
+        } else {
+          return Left(ServerFailure(msg: 'Failed to upload file'.tr));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'Server error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'No internet connection'.tr));
     }
   }
 

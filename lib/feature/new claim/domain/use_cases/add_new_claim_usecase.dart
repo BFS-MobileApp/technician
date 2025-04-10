@@ -10,6 +10,6 @@ class AddNewClaimUseCase implements UseCase<AddNewClaim , AddNewClaimParams>{
   AddNewClaimUseCase({required this.newClaimRepository});
 
   @override
-  Future<Either<Failures, AddNewClaim>> call(AddNewClaimParams params) => newClaimRepository.addNewClaim(params.unitId , params.categoryId , params.subCategoryId , params.claimTypeId , params.description , params.availableTime , params.availableDate);
+  Future<Either<Failures, AddNewClaim>> call(AddNewClaimParams params) => newClaimRepository.addNewClaim(params.unitId , params.categoryId , params.subCategoryId , params.claimTypeId , params.description , params.availableTime , params.availableDate,params.file);
 
 }

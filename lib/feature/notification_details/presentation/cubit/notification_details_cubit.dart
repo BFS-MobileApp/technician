@@ -17,7 +17,7 @@ class NotificationDetailsCubit extends Cubit<NotificationDetailsState>{
 
   Future<void> getNotificationDetails(String referenceId) async{
     emit(NotificationDetailsIsLoading());
-    Either<Failures , ClaimDetailsModel> response = await notificationDetailsUseCase(ClaimsDetailsParams(referenceId: referenceId));
+    Either<Failures , ClaimDetailsModel> response = await notificationDetailsUseCase(ClaimsDetailsParams(referenceId: referenceId, page: 0));
     emit(response.fold(
             (failures) => NotificationDetailsError(error: failures.msg),
             (model) => NotificationDetailsLoaded(model: model)));

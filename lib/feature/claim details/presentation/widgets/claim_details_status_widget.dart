@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/core/utils/assets_manager.dart';
 import 'package:technician/core/utils/size_utils.dart';
@@ -86,7 +87,7 @@ class ClaimDetailsStatusWidget extends StatelessWidget {
             children: [
               isStatus ? SVGImageWidget(image: checkStatusImage(), width: 20.w, height: 20.h) : SVGImageWidget(image: checkPriorityImage(), width: 20.w, height: 20.h) ,
               SizedBox(width: 5.w,),
-              isStatus ? TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: AppColors.black,) : TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: Helper.getPriorityColor(itemValue),) ,
+              isStatus ? TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: Theme.of(context).textTheme.bodySmall!.color,) : TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: Helper.getPriorityColor(itemValue),) ,
             ],
           )
         ],

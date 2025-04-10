@@ -30,6 +30,7 @@ import 'package:technician/widgets/svg_image_widget.dart';
 import 'package:technician/widgets/text_widget.dart';
 import 'package:technician/feature/new%20claim/data/models/avaliable_time_model.dart' as time_model;
 import '../../../../widgets/error_widget.dart';
+import '../../../login/presentation/screen/login_screen.dart';
 
 class NewClaimScreen extends StatefulWidget {
   const NewClaimScreen({super.key});
@@ -56,6 +57,8 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
 
   List<XFile> imageFiles = [];
 
+  List<File> claimImages = [];
+
   BuildingModel? buildingModel;
 
   UnitModel? unitModel;
@@ -75,6 +78,195 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
   bool chooseAvailableTime = false;
 
   String _buildingName = '' , _unitName = '', _claimCategoryName = '' , _claimSubCategoryName = '' , _claimTypeName = '' , _claimError = '';
+  void showAttachmentDialog() {
+    List<XFile> selectedFiles = [];
+
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Add Attachment',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  SizedBox(
+                    width: 220,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final picked = await picker.pickMultiImage();
+                        if (picked.isNotEmpty) {
+                          if (picked.length + selectedFiles.length > 4 || picked.length + claimImages.length > 4) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: AppColors.errorColor,
+                                content: Text('Only 4 Images Allowed'),
+                              ),
+                            );
+                            return;
+                          }
+                          setModalState(() {
+                            selectedFiles.addAll(picked);
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.upload, color: Colors.blue),
+                      label: const Text(
+                        'Upload Photo',
+                        style: TextStyle(fontSize: 16, color: Colors.blue),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: const BorderSide(color: Colors.blue),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  SizedBox(
+                    width: 220,
+                    child: ElevatedButton.icon(
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        final pickedFile = await picker.pickImage(source: ImageSource.camera);
+                        if (pickedFile != null) {
+                          if (selectedFiles.length + claimImages.length >= 4) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                backgroundColor: AppColors.errorColor,
+                                content: Text('Only 4 Images Allowed'),
+                              ),
+                            );
+                            return;
+                          }
+                          setModalState(() {
+                            selectedFiles.add(pickedFile);
+                          });
+                        }
+                      },
+                      icon: const Icon(Icons.camera_alt, color: Colors.blue),
+                      label: const Text(
+                        'Take a New Photo',
+                        style: TextStyle(fontSize: 16, color: Colors.blue),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: const BorderSide(color: Colors.blue),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  if (selectedFiles.isNotEmpty) ...[
+                    const Text("Selected Files:", style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 80,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: selectedFiles.length,
+                        itemBuilder: (context, index) {
+                          return Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.file(
+                                    File(selectedFiles[index].path),
+                                    width: 70,
+                                    height: 70,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                top: -5,
+                                right: -5,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setModalState(() {
+                                      selectedFiles.removeAt(index);
+                                    });
+                                  },
+                                  child: const CircleAvatar(
+                                    radius: 12,
+                                    backgroundColor: Colors.red,
+                                    child: Icon(Icons.close, size: 14, color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+
+                  const SizedBox(height: 20),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      if (selectedFiles.isNotEmpty) {
+                        setState(() {
+                          // Merge with global claimImages list
+                          claimImages.addAll(selectedFiles.map((x) => File(x.path)));
+                          if (claimImages.length > 4) {
+                            claimImages = claimImages.sublist(0, 4); // Ensure max of 4
+                          }
+                        });
+                      }
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Use',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      minimumSize: const Size(double.infinity, 45),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
 
 
   @override
@@ -466,146 +658,42 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
           ),
           SizedBox(height: 15.h,),
           GestureDetector(
-            onTap: () async {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    insetPadding: EdgeInsets.all(14.adaptSize),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 30.h),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Upload Image From'.tr,
-                          style: TextStyle(
-                            fontSize: 14.fSize,
-                            color: AppColors.primaryColor,
-                          ).copyWith(color: AppColors.primaryTextColor),
-                        ),
-                        SizedBox(height: 30.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            GestureDetector(
-                              onTap: (){
-                                Navigator.pop(context);
-                                getImageFromCamera();
-                              },
-                              child: Container(
-                                width: 80.w, // Increased width
-                                padding: EdgeInsets.all(14.adaptSize),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryColor.withOpacity(.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.camera_alt, color: AppColors.primaryColor),
-                                    SizedBox(height: 6.h),
-                                    FittedBox(
-                                      child: Text(
-                                        'Take Photo'.tr,
-                                        style: TextStyle(
-                                          fontSize: 12.fSize,
-                                          color: AppColors.primaryColor,
-                                        ).copyWith(color: AppColors.primaryColor),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-                            GestureDetector(
-                              onTap: (){
-                                Navigator.pop(context);
-                                pickImages();
-                              },
-                              child: Container(
-                                width: 80.w, // Increased width
-                                padding: EdgeInsets.all(14.adaptSize),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryColor.withOpacity(.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(Icons.photo_library, color: AppColors.primaryColor),
-                                    SizedBox(height: 6.h), // Corrected height
-                                    FittedBox(
-                                      child: Text(
-                                        'From Gallery'.tr,
-                                        style: TextStyle(
-                                          fontSize: 12.fSize,
-                                          color: AppColors.primaryColor,
-                                        ).copyWith(color: AppColors.primaryColor),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
+            onTap: () {
+              showAttachmentDialog();
             },
             child: Container(
+              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
                 border: Border.all(color: AppColors.textFieldBorder),
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: EdgeInsets.all(8.adaptSize),
               child: Row(
                 children: [
-                  const SVGImageWidget(image: AssetsManager.upload, width: 15, height: 15),
-                  SizedBox(width: 8.w),
-                  filePicker.path != ''
-                      ? ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.file(
-                      filePicker,
-                      width: 40.w,
-                      height: 40.w,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                      : imageFiles.isNotEmpty
+                  Icon(Icons.upload),
+                  SizedBox(width: 10),
+                  claimImages.isNotEmpty
                       ? Row(
                     children: [
-                      const Icon(Icons.image, color: AppColors.rejectedColor),
-                      Text(imageFiles.length.toString() + " " + 'images'),
+                      Icon(Icons.image),
+                      Text(" ${claimImages.length} images selected"),
                     ],
                   )
-                      : Text(
-                    'uploadAnyFiles'.tr,
-                    style: GoogleFonts.montserrat(
-                      fontSize: 14.fSize,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.mainColor,
+                      : Text("Upload Images"),
+                  Spacer(),
+                  if (claimImages.isNotEmpty)
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          claimImages.clear();
+                        });
+                      },
+                      child: Icon(Icons.close),
                     ),
-                  ),
-                  const Spacer(),
-                  imageFiles .isEmpty ? const SizedBox() : InkWell(
-                    onTap: () async {
-                      setState(() {
-                        imageFiles.clear();
-                        filePicker.path == '';
-                      });
-                    },
-                    child: const Icon(Icons.close),
-                  ),
                 ],
               ),
             ),
           ),
+
           SizedBox(height: 20.h,),
           ButtonWidget(width: 334, height: 44, onTap: (){
             if(descriptionController.value.text.isEmpty){
@@ -644,7 +732,7 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
               ),
             ),
             Card(
-              color: Colors.white,
+              color: Theme.of(context).scaffoldBackgroundColor,
               elevation: 0,
               child: Column(
                 children: [
@@ -652,16 +740,14 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
                     text: 'addNewClaim'.tr,
                     fontSize: 18.fSize,
                     fontWeight: FontWeight.w600,
-                    fontColor: AppColors.black,
+                    fontColor: Theme.of(context).textTheme.bodySmall!.color,
                   ),
                   SizedBox(
                     height: 600.h,
                     child: Theme(
                       data: ThemeData(
                         shadowColor: Colors.transparent,
-                        colorScheme: const ColorScheme.light(
-                          primary: AppColors.primaryColor, // Change active color to blue
-                        ),
+                        colorScheme: Theme.of(context).colorScheme,
                       ),
                       child: Stepper(
                         elevation: 0,
@@ -801,7 +887,7 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
 
   Widget claimSummary(){
     return Container(
-      color: const Color(0xFFFAF9F6),
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: ListView(
         children: [
           SizedBox(height: 10.h,),
@@ -810,7 +896,7 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 10.w),
             child: Card(
-              color: AppColors.whiteColor,
+              color: Theme.of(context).scaffoldBackgroundColor,
               elevation: 0,
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 10.w , vertical: 15.h),
@@ -837,10 +923,30 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
                     ClaimSummaryWidget(name: 'description'.tr, value: descriptionController.value.text.isEmpty ? '' : descriptionController.value.text.toString()),
                     SizedBox(height: 20.h,),
                     ButtonWidget(width: 334, height: 44,
-                      onTap: (){
-                        BlocProvider.of<NewClaimCubit>(context).addNewClaim(_unitId.toString(), _categoryId.toString(), _subCategoryId.toString(), _claimsTypeId.toString(), descriptionController.value.text.toString(), convertDate(),chooseAvailableTime ? _availableTimeId.toString() : availableTimeModel!.data[0].id.toString());
-                      //showCustomAlertDialog(context);
-                    }, name: 'confirm'.tr , btColor: AppColors.mainColor,),
+                      onTap: () {
+                        if (descriptionController.value.text.isEmpty) {
+                          MessageWidget.showSnackBar('pleaseAddDescriptionFirst'.tr, AppColors.errorColor);
+                          return;
+                        }
+
+                        BlocProvider.of<NewClaimCubit>(context).addNewClaim(
+                          _unitId.toString(),
+                          _categoryId.toString(),
+                          _subCategoryId.toString(),
+                          _claimsTypeId.toString(),
+                          descriptionController.value.text.toString(),
+                          convertDate(),
+                          chooseAvailableTime
+                              ? _availableTimeId.toString()
+                              : availableTimeModel!.data[0].id.toString(),
+                          claimImages.isNotEmpty ? claimImages : [File('')], // Send images or empty file
+                        );
+
+                        setState(() {
+                          _claimSummary = true;
+                        });
+                      },
+                      name: 'confirm'.tr , btColor: AppColors.mainColor,),
                     SizedBox(height: 10.h,),
                     Center(
                       child: ElevatedButton(
@@ -907,44 +1013,59 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
     );
   }
 
-  Future<void> pickImages() async {
+  Future<void> pickImages(Function(List<XFile>) updateImages) async {
+    final ImagePicker picker = ImagePicker();
     final pickedFiles = await picker.pickMultiImage();
+
     if (pickedFiles.length > 4) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           backgroundColor: AppColors.errorColor,
-          margin: EdgeInsets.all(8.adaptSize),
+          margin: EdgeInsets.all(8),
           behavior: SnackBarBehavior.floating,
-          content: const Text('only 4 Images Allowed')));
-      return ;
+          content: const Text('Only 4 Images Allowed'),
+        ),
+      );
+      return;
     }
+
     if (pickedFiles.isNotEmpty) {
-      setState(() {
-        imageFiles = pickedFiles;
-      });
+      updateImages(pickedFiles); // Call function to update images inside bottom sheet
     }
   }
 
-  Future getImageFromCamera() async {
+  Future<void> getImageFromCamera(Function(List<XFile>) updateImages) async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        filePicker = File(pickedFile.path);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: AppColors.primaryColor,
-            margin: EdgeInsets.all(8.adaptSize),
-            behavior: SnackBarBehavior.floating,
-            content: const Text('only 4 Images Allowed')));
-        Navigator.pop(context);
-      }
-    });
+
+    if (pickedFile != null) {
+      updateImages([XFile(pickedFile.path)]); // Pass the new image as an XFile list
+    } else {
+      // Show a snackbar if no image was selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppColors.primaryColor,
+          margin: EdgeInsets.all(8),
+          behavior: SnackBarBehavior.floating,
+          content: const Text('No Image Captured'),
+        ),
+      );
+    }
   }
 
   Widget checkState(NewClaimState state){
     if(state is NewClaimIsLoading){
       return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
     } else if(state is NewClaimError){
-      return ErrorWidgetItem(onTap: (){});
+      bool isUnauthenticated = state.msg.contains('Unauthenticated.');
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if(state is BuildingsLoaded) {
       buildingModel = state.buildingModel;
       return !_claimSummary  ? newClaimsWidget() : claimSummary();

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:technician/core/utils/app_strings.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+
+import '../../../../config/PrefHelper/helper.dart';
+
 
 abstract class AlignmentType{
 

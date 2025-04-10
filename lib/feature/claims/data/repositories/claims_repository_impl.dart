@@ -19,25 +19,28 @@ class ClaimsRepositoryImpl extends ClaimsRepository{
   ClaimsRepositoryImpl({required this.networkInfo , required this.claimsDataSource});
 
   @override
-  Future<Either<Failures, ClaimsModel>> getAllClaims(Map<String, dynamic> data) async{
-    if(await networkInfo.isConnected){
-      try{
+  Future<Either<Failures, ClaimsModel>> getAllClaims(Map<String, dynamic> data) async {
+    if (await networkInfo.isConnected) {
+      try {
         final response = await claimsDataSource.getAllClaims(data);
         print(response['data']);
         final int statusCode = response['statusCode'];
-        if(statusCode == 200){
+
+        if (statusCode == 200) {
           final ClaimsModel claims = ClaimsModel.fromJson(response['data']);
           return Right(claims);
         } else {
-          return Left(ServerFailure(msg: 'error'.tr));
+          final String errorMsg = response['data']['error'];
+          return Left(ServerFailure(msg: errorMsg));
         }
-      } on ServerException{
-        return Left(ServerFailure(msg: 'error'.tr));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(msg: e.message!));
       }
     } else {
       return Left(CashFailure(msg: 'connectionError'.tr));
     }
   }
+
 
   @override
   Future<Either<Failures, TechnicianModel>> getAllTechnician(String claimId) async{

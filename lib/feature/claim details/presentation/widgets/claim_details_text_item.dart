@@ -57,7 +57,7 @@ class ClaimDetailsTextItem extends StatelessWidget {
             },
             child: TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: Colors.blueAccent,),
           )
-              : TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: AppColors.black,),
+              : TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: Theme.of(context).textTheme.bodySmall!.color,),
         ],
       ),
     );

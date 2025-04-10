@@ -58,15 +58,49 @@ class ClaimsParams extends Equatable{
   List<Object?> get props => [data];
 }
 
-class ClaimsDetailsParams extends Equatable{
+class ClaimsDetailsParams {
+  final String referenceId;
+  final int page;
+  final String? search;
 
-  String referenceId;
-
-  ClaimsDetailsParams({required this.referenceId});
-
-  @override
-  List<Object?> get props => [referenceId];
+  ClaimsDetailsParams({required this.referenceId, required this.page, this.search});
 }
+
+class AddMaterialParams {
+  final int claimId;
+  final List<ProductItem> products;
+
+  AddMaterialParams({required this.claimId, required this.products});
+
+  Map<String, dynamic> toJson() {
+    return {
+      "claim_id": claimId,
+      "products": products.map((e) => e.toJson()).toList(),
+    };
+  }
+}
+
+class ProductItem {
+  final int id;
+  final int qty;
+
+  ProductItem({required this.id, required this.qty});
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "qty": qty,
+    };
+  }
+}
+
+class EditMaterialParams {
+  final String id;
+  final int quantity;
+
+  EditMaterialParams({required this.id, required this.quantity});
+}
+
 
 class UnitParams extends Equatable{
 
@@ -77,6 +111,7 @@ class UnitParams extends Equatable{
   @override
   List<Object?> get props => [buildingId];
 }
+
 
 class CategoryParams extends Equatable{
 
@@ -127,8 +162,9 @@ class AddNewClaimParams extends Equatable{
   String description;
   String availableTime;
   String availableDate;
+  List<File> file;
 
-  AddNewClaimParams({required this.unitId, required this.categoryId,required this.subCategoryId, required this.claimTypeId, required this.description, required this.availableTime, required this.availableDate});
+  AddNewClaimParams({required this.unitId, required this.categoryId,required this.subCategoryId, required this.claimTypeId, required this.description, required this.availableTime, required this.availableDate,required this.file});
 
   @override
   List<Object?> get props => [unitId , categoryId , subCategoryId , claimTypeId , description , availableTime , availableDate];

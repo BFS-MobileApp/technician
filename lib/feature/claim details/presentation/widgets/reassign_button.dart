@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/core/utils/app_consts.dart';
 import 'package:technician/core/utils/assets_manager.dart';
 import 'package:technician/core/utils/size_utils.dart';
@@ -67,7 +68,7 @@ class _ReassignButtonState extends State<ReassignButton> {
                         style: TextStyle(
                           fontSize: 18.0.fSize,
                           fontWeight: FontWeight.w700,
-                          color: AppColors.black,
+                          color: Theme.of(context).textTheme.bodySmall!.color,
                         ),
                       ),
                     ),
@@ -76,7 +77,7 @@ class _ReassignButtonState extends State<ReassignButton> {
                       text: 'selectTechnician'.tr,
                       fontSize: 14.fSize,
                       fontWeight: FontWeight.w500,
-                      fontColor: AppColors.black,
+                      fontColor: Theme.of(context).textTheme.bodySmall!.color,
                     ),
                     widget.technicalList.isNotEmpty
                         ? DropdownButtonFormField<String>(
@@ -104,7 +105,7 @@ class _ReassignButtonState extends State<ReassignButton> {
                     TextWidget(
                       text: 'startDate'.tr,
                       fontSize: 16.fSize,
-                      fontColor: AppColors.black,
+                      fontColor: Theme.of(context).textTheme.bodySmall!.color,
                       fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 3.h),
@@ -158,7 +159,7 @@ class _ReassignButtonState extends State<ReassignButton> {
                     TextWidget(
                       text: 'endDate'.tr,
                       fontSize: 16.fSize,
-                      fontColor: AppColors.black,
+                      fontColor: Theme.of(context).textTheme.bodySmall!.color,
                       fontWeight: FontWeight.w500,
                     ),
                     SizedBox(height: 3.h),

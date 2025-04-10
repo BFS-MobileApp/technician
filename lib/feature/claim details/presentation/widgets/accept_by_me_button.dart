@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/core/utils/app_consts.dart';
@@ -56,7 +57,7 @@ class _AcceptByMeButtonState extends State<AcceptByMeButton> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextWidget(text: 'startDate'.tr, fontSize: 16.fSize , fontColor: AppColors.black, fontWeight: FontWeight.w500,),
+                      TextWidget(text: 'startDate'.tr, fontSize: 16.fSize , fontColor: Theme.of(context).textTheme.bodySmall!.color, fontWeight: FontWeight.w500,),
                       SizedBox(height: 3.h,),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -107,7 +108,7 @@ class _AcceptByMeButtonState extends State<AcceptByMeButton> {
                         ),
                       ),
                       SizedBox(height: 15.h,),
-                      TextWidget(text: 'endDate'.tr, fontSize: 16.fSize , fontColor: AppColors.black, fontWeight: FontWeight.w500,),
+                      TextWidget(text: 'endDate'.tr, fontSize: 16.fSize , fontColor: Theme.of(context).textTheme.bodySmall!.color, fontWeight: FontWeight.w500,),
                       SizedBox(height: 3.h,),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(

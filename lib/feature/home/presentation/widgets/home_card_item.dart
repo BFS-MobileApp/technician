@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/core/utils/app_colors.dart';
 import 'package:technician/core/utils/size_utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -51,7 +52,7 @@ class HomeCardItem extends StatelessWidget {
             const Spacer(),
             SizedBox(
               width: 130.w,
-              child: TextWidget(maxLine: 2, fontWeight: FontWeight.w500 , fontSize: 16.fSize,fontColor: AppColors.homeCardTitleColor,text: title,),
+              child: TextWidget(maxLine: 2, fontWeight: FontWeight.w500 , fontSize: 16.fSize,fontColor: Theme.of(context).textTheme.bodySmall!.color,text: title,),
             ),
           ],
         ),

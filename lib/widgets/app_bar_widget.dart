@@ -7,6 +7,8 @@ import 'package:technician/core/utils/app_strings.dart';
 import 'package:technician/core/utils/assets_manager.dart';
 import 'package:technician/core/utils/size_utils.dart';
 
+import '../config/routes/app_routes.dart';
+
 class ClaimizerAppBar extends StatelessWidget {
 
   final String title;
@@ -34,8 +36,11 @@ class ClaimizerAppBar extends StatelessWidget {
         child:Row(
           children: [
             InkWell(
-                onTap: () {
-                  Navigator.pop(context , true);
+                onTap:() async {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    Routes.main,
+                        (Route<dynamic> route) => false,
+                  );
                 },
                 child: AppStrings.appLocal != 'en'
                     ? RotatedBox(

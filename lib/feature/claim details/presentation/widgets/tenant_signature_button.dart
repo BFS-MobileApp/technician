@@ -84,7 +84,7 @@ class _TenantSignatureButtonState extends State<TenantSignatureButton> {
                           key: _signaturePadKey,
                           minimumStrokeWidth: 1,
                           maximumStrokeWidth: 3,
-                          strokeColor: AppColors.black,
+                          strokeColor: Theme.of(context).textTheme.bodySmall!.color,
                           backgroundColor: AppColors.whiteColor,
                         ),
                       ),
@@ -92,7 +92,7 @@ class _TenantSignatureButtonState extends State<TenantSignatureButton> {
                         margin: EdgeInsets.only(top: 10.h, right: 10.w, left: 10.w),
                         alignment: Alignment.topLeft,
                         child: TextWidget(
-                          text: 'subscriber'.tr,
+                          text: 'signerName'.tr,
                           fontSize: 16.fSize,
                           fontWeight: FontWeight.w500,
                           fontColor: const Color(0xFF031D3C),
@@ -148,113 +148,123 @@ class _TenantSignatureButtonState extends State<TenantSignatureButton> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          InkWell(
-                            onTap: (){
-                              _signaturePadKey.currentState?.clear();
-                              subsriberController.clear();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 3.h, bottom: 3.h, left: 13.w, right: 13.w),
-                              decoration: BoxDecoration(
-                                  color: AppColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  border: Border.all(color: AppColors.red)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SVGImageWidget(image: AssetsManager.clearIcon, width: 18, height: 18),
-                                  SizedBox(width: 5.w),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5.h),
-                                    child: TextWidget(
-                                      text: 'clear'.tr,
-                                      fontSize: 17.fSize,
-                                      fontWeight: FontWeight.w500,
-                                      fontColor: AppColors.errorColor,
-                                    ),
-                                  )
-                                ],
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: (){
+                                  _signaturePadKey.currentState?.clear();
+                                  subsriberController.clear();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 3.h, bottom: 3.h, left: 13.w, right: 13.w),
+                                  decoration: BoxDecoration(
+                                      color: AppColors.whiteColor,
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      border: Border.all(color: AppColors.red)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SVGImageWidget(image: AssetsManager.clearIcon, width: 18, height: 18),
+                                      SizedBox(width: 5.w),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 5.h),
+                                        child: TextWidget(
+                                          text: 'clear'.tr,
+                                          fontSize: 17.fSize,
+                                          fontWeight: FontWeight.w500,
+                                          fontColor: AppColors.errorColor,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () async {
-                              if (subsriberController.value.text.isEmpty) {
-                                setState(() {
-                                  checkIfTextEmpty = true;
-                                });
-                                return;
-                              }
-                              final signatureFile = await getSignatureFile();
-                              context.read<ClaimDetailsCubit>().addSignature(
-                                widget.claimId,
-                                signatureFile,
-                                subsriberController.value.text.toString(),
-                              ).then((value) {
-                                if(value){
-                                  setState(() {
-                                    checkIfTextEmpty = false;
-                                    subsriberController.clear();
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: () async {
+                                  if (subsriberController.value.text.isEmpty) {
+                                    setState(() {
+                                      checkIfTextEmpty = true;
+                                    });
+                                    return;
+                                  }
+                                  final signatureFile = await getSignatureFile();
+                                  context.read<ClaimDetailsCubit>().addSignature(
+                                    widget.claimId,
+                                    signatureFile,
+                                    subsriberController.value.text.toString(),
+                                  ).then((value) {
+                                    if(value){
+                                      setState(() {
+                                        checkIfTextEmpty = false;
+                                        subsriberController.clear();
+                                      });
+                                      Navigator.pop(context);
+                                      BlocProvider.of<ClaimDetailsCubit>(widget.ctx).getClaimDetails(widget.referenceId);
+                                    }
                                   });
-                                  Navigator.pop(context);
-                                  BlocProvider.of<ClaimDetailsCubit>(widget.ctx).getClaimDetails(widget.referenceId);
-                                }
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 5.h, bottom: 5.h, left: 13.w, right: 12.w),
-                              decoration: BoxDecoration(
-                                  color: AppColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  border: Border.all(color: const Color(0xFF679C0D))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SVGImageWidget(image: AssetsManager.checkIcon, width: 15, height: 15),
-                                  SizedBox(width: 5.w),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5.h),
-                                    child: TextWidget(
-                                      text: 'submit'.tr,
-                                      fontSize: 17.fSize,
-                                      fontWeight: FontWeight.w500,
-                                      fontColor: const Color(0xFF679C0D),
-                                    ),
-                                  )
-                                ],
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 5.h, bottom: 5.h, left: 13.w, right: 12.w),
+                                  decoration: BoxDecoration(
+                                      color: AppColors.whiteColor,
+                                      borderRadius: BorderRadius.circular(25.0),
+                                      border: Border.all(color: const Color(0xFF679C0D))),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const SVGImageWidget(image: AssetsManager.checkIcon, width: 15, height: 15),
+                                      SizedBox(width: 5.w),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 5.h),
+                                        child: TextWidget(
+                                          text: 'submit'.tr,
+                                          fontSize: 17.fSize,
+                                          fontWeight: FontWeight.w500,
+                                          fontColor: const Color(0xFF679C0D),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              context.read<ClaimDetailsCubit>().downloadSignature(_signaturePadKey).then((_) {
-                                Navigator.pop(context);
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(top: 5.h, bottom: 5.h, left: 13.w, right: 12.w),
-                              decoration: BoxDecoration(
-                                  color: AppColors.mainColor,
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  border: Border.all(color: AppColors.mainColor)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SVGImageWidget(image: AssetsManager.downloadIcon, width: 15, height: 15),
-                                  SizedBox(width: 5.w),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5.h),
-                                    child: TextWidget(
-                                      text: 'downloadSignature'.tr,
-                                      fontSize: 17.fSize,
-                                      fontWeight: FontWeight.w500,
-                                      fontColor: AppColors.whiteColor,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          )
+                          // InkWell(
+                          //   onTap: () {
+                          //     context.read<ClaimDetailsCubit>().downloadSignature(_signaturePadKey).then((_) {
+                          //       Navigator.pop(context);
+                          //     });
+                          //   },
+                          //   child: Container(
+                          //     padding: EdgeInsets.only(top: 5.h, bottom: 5.h, left: 13.w, right: 12.w),
+                          //     decoration: BoxDecoration(
+                          //         color: AppColors.mainColor,
+                          //         borderRadius: BorderRadius.circular(25.0),
+                          //         border: Border.all(color: AppColors.mainColor)),
+                          //     child: Row(
+                          //       mainAxisAlignment: MainAxisAlignment.center,
+                          //       children: [
+                          //         const SVGImageWidget(image: AssetsManager.downloadIcon, width: 15, height: 15),
+                          //         SizedBox(width: 5.w),
+                          //         Container(
+                          //           margin: EdgeInsets.only(top: 5.h),
+                          //           child: TextWidget(
+                          //             text: 'downloadSignature'.tr,
+                          //             fontSize: 17.fSize,
+                          //             fontWeight: FontWeight.w500,
+                          //             fontColor: AppColors.whiteColor,
+                          //           ),
+                          //         )
+                          //       ],
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       ),
                       SizedBox(height: 15.h),

@@ -18,7 +18,7 @@ class FilterLabelItem extends StatelessWidget {
         SizedBox(width: 8.w,),
         Container(
           margin: EdgeInsets.only(top: 8.h),
-          child: TextWidget(text: labelText, fontSize: 20.fSize , fontWeight: FontWeight.w600, fontColor: AppColors.black,),
+          child: TextWidget(text: labelText, fontSize: 20.fSize , fontWeight: FontWeight.w600, fontColor: Theme.of(context).textTheme.bodySmall!.color,),
         )
       ],
     );

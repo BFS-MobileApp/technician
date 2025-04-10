@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:technician/config/PrefHelper/helper.dart';
+import '../../../../config/PrefHelper/helper.dart';
+
 import 'package:technician/config/arguments/routes_arguments.dart';
 import 'package:technician/config/routes/app_routes.dart';
 import 'package:technician/core/utils/app_colors.dart';
@@ -20,6 +21,7 @@ import 'package:technician/widgets/app_headline_widget.dart';
 import 'package:technician/widgets/bar_widget.dart';
 import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
+import '../../../login/presentation/screen/login_screen.dart';
 import '../widgets/claim_details_card_item.dart';
 import '../widgets/claim_details_text_item.dart';
 
@@ -63,7 +65,7 @@ class _CancelledClaimsScreenState extends State<CancelledClaimsScreen> {
         ClaimDetailsTextItem(itemName: 'availableTime'.tr, itemValue: '${Helper.convertSecondsToDate(claimDetailsModel!.data.availableDate.toString())} - ${Helper.getAvailableTime(claimDetailsModel!.data.availableTime)}' , isClickable: false, type: '',),
         //ClaimDetailsStatusWidget(itemName: 'status'.tr, isStatus: true, itemValue: claimDetailsModel!.data.status),
         ClaimDetailsDescriptionItem(itemValue: claimDetailsModel!.data.description),
-        AllFilesWidget(images: claimDetailsModel!.data.files,)
+        AllFilesWidget(images: claimDetailsModel!.data.comments,files: claimDetailsModel!.data.files)
       ],
     ));
   }
@@ -104,7 +106,7 @@ class _CancelledClaimsScreenState extends State<CancelledClaimsScreen> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: Container(
-        color: AppColors.offWhite,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Column(
           children: [
             SizedBox(height: 20.h,),
@@ -151,7 +153,16 @@ class _CancelledClaimsScreenState extends State<CancelledClaimsScreen> {
     if(state is ClaimDetailsIsLoading){
       return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
     } else if(state is ClaimDetailsError){
-      return ErrorWidgetItem(onTap: ()=>getData());
+      bool isUnauthenticated = state.msg.contains('Unauthenticated.');
+      return ErrorWidgetItem(onTap: (){
+        if(isUnauthenticated){
+          Get.offAll(const LoginScreen());
+        }else{
+          getData();
+        }
+      },
+        isUnauthenticated: isUnauthenticated,
+      );
     } else if(state is ClaimDetailsLoaded) {
       claimDetailsModel = state.model;
       return _detailsWidget();

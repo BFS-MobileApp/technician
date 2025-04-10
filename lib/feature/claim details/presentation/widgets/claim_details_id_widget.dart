@@ -23,7 +23,7 @@ class ClaimDetailsIdWidget extends StatelessWidget {
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(6), color: AppColors.mainColor),
           ),
           SizedBox(width: 5.w,),
-          TextWidget(text: id, fontSize: 16.fSize , fontWeight: FontWeight.w600, fontColor: AppColors.black,),
+          TextWidget(text: id, fontSize: 16.fSize , fontWeight: FontWeight.w600, fontColor: Theme.of(context).textTheme.bodySmall!.color,),
         ],
       ),
     );

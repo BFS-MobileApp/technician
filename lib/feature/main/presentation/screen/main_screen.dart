@@ -58,7 +58,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
         elevation: 3,
-        backgroundColor: AppColors.whiteColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         currentIndex: _selectedIndex,
         selectedItemColor: AppColors.mainColor,
         selectedLabelStyle: const TextStyle(color: AppColors.mainColor),
