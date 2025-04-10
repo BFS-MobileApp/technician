@@ -2,7 +2,7 @@ name: technician
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.4+8
+version: 1.0.5+1
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
