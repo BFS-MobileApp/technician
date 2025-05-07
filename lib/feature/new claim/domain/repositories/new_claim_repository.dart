@@ -21,9 +21,17 @@ abstract class NewClaimRepository {
 
   Future<Either<Failures , AvailableTimeModel>> getAvailableTimes(String companyId);
 
+  Future<Either<Failures, bool>> deleteFile(String claimId,String fileId);
+
   Future<Either<Failures , AddNewClaim>> addNewClaim(String unitId , String categoryId ,
       String subCategoryId , String claimTypeId,
       String description , String availableTime , String availableDate, List<File> file);
 
-
+  Future<Either<Failures , AddNewClaim>> updateClaim( String categoryId ,
+      String subCategoryId , String claimTypeId,
+      String description , String availableTime , String availableDate,
+      // List<File> file,
+      String claimId,
+      String priority
+      );
 }

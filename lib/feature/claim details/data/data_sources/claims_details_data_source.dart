@@ -17,6 +17,8 @@ abstract class ClaimsDetailsDataSource{
 
   Future<Map<String , dynamic>> deleteMaterial(String materialId);
 
+  Future<Map<String , dynamic>> deleteClaim(String claimId);
+
   Future<Map<String , dynamic>> editMaterialQuantity(String materialId,int qty);
 
   Future<Map<String , dynamic>> addMaterial(Map<String, dynamic> data);
@@ -30,6 +32,8 @@ abstract class ClaimsDetailsDataSource{
   Future<Map<String , dynamic>> changeClaimStatus(String claimId, String status);
 
   Future<Map<String, dynamic>> uploadCommentFile(String claimId, String comment,List<File> file, String status);
+  Future<Map<String, dynamic>> uploadFile(String claimId, List<File> files);
+
 
 
 }

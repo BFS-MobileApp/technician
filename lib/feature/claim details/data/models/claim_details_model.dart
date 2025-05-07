@@ -419,27 +419,31 @@ class CreatorData {
 }
 
 class FileElement {
+  int fileId;
   String fileName;
   String fileUrl;
 
   FileElement({
     required this.fileName,
     required this.fileUrl,
-  });
+    required this.fileId });
 
   factory FileElement.fromJson(Map<String, dynamic> json) => FileElement(
     fileName: json["file_name"]??'',
     fileUrl: json["file_url"]??'',
+    fileId: json['file_id'] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {
     "file_name": fileName,
     "file_url": fileUrl,
+    "file_id" : fileId,
   };
 }
 
 class Unit {
   int id;
+  int companyId;
   String code;
   String name;
   String type;
@@ -455,6 +459,7 @@ class Unit {
     required this.building,
     required this.startAt,
     required this.endAt,
+    required this.companyId,
   });
 
   factory Unit.fromJson(Map<String, dynamic> json) => Unit(
@@ -465,6 +470,7 @@ class Unit {
     building: json["building"]??'',
     startAt: json["start_at"]??'',
     endAt: json["end_at"]??'',
+    companyId: json["building_id"] ?? 0,
   );
 
   Map<String, dynamic> toJson() => {
@@ -475,6 +481,7 @@ class Unit {
     "building": building,
     "start_at": startAt,
     "end_at": endAt,
+    "building_id" : companyId,
   };
 }
 

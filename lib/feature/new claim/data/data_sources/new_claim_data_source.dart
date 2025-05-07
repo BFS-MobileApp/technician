@@ -12,6 +12,15 @@ abstract class NewClaimDataSource{
 
   Future<Map<String, dynamic>> getAvailableTimes(String companyId);
 
+  Future<Map<String , dynamic>> deleteFile(String claimId,String fileId);
+
   Future<Map<String, dynamic>> addNewClaim(String unitId , String categoryId , String subCategoryId ,
       String claimTypeId, String description , String availableTime , String availableDate, List<File> file,);
+
+  Future<Map<String, dynamic>> updateClaim( String categoryId , String subCategoryId ,
+      String claimTypeId, String description , String availableTime , String availableDate,
+      // List<File> file,
+      String claimId,
+      String priority,
+      );
 }

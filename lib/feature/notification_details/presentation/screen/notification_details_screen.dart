@@ -67,7 +67,7 @@ class _NotificationDetailsScreenState extends State<NotificationDetailsScreen> {
         ClaimDetailsStatusWidget(itemName: 'priority'.tr, isStatus: false, itemValue: claimDetailsModel!.data.priority),
         ClaimDetailsStatusWidget(itemName: 'status'.tr, isStatus: true, itemValue: claimDetailsModel!.data.status),
         ClaimDetailsDescriptionItem(itemValue: claimDetailsModel!.data.description),
-        AllFilesWidget(images: claimDetailsModel!.data.comments,files: claimDetailsModel!.data.files)
+        AllFilesWidget(images: claimDetailsModel!.data.comments,files: claimDetailsModel!.data.files,ifUpdate: false,claimId: widget.claimId,)
       ],
     ));
   }

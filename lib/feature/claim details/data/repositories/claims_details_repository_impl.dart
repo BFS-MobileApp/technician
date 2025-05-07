@@ -141,6 +141,25 @@ class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
     }
   }
   @override
+  Future<Either<Failures, bool>> deleteClaim(String claimId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await claimsDetailsDataSource.deleteClaim(claimId);
+        print(response['data']);
+        final int statusCode = response['statusCode'];
+        if (statusCode == 200) {
+          return const Right(true); // Deletion was successful
+        } else {
+          return Left(ServerFailure(msg: 'error'.tr));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+  @override
   Future<Either<Failures, bool>> editMaterialQuantity(String materialId, int quantity) async {
     if (await networkInfo.isConnected) {
       try {
@@ -240,6 +259,26 @@ class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
       return Left(CashFailure(msg: 'No internet connection'.tr));
     }
   }
+  @override
+  Future<Either<Failures, bool>> uploadFile(String claimId, List<File> files) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await claimsDetailsDataSource.uploadFile(claimId, files);
+        final int statusCode = response['statusCode'];
+
+        if (statusCode == 200) {
+          return const Right(true);
+        } else {
+          return Left(ServerFailure(msg: 'Failed to upload file'));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'Server error'));
+      }
+    } else {
+      return Left(CashFailure(msg: 'No internet connection'));
+    }
+  }
+
 
   @override
   Future<Either<Failures, bool>> addSignature(String claimId, File signatureFile , String comment) async{

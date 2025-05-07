@@ -12,6 +12,8 @@ class EndPoints{
 
   static const String claims = 'claims';
 
+  static  String updateClaims(String claimId) => 'claims/$claimId/update';
+
   static const String homeClaims = 'statistics';
 
   static const String buildings = 'buildings';
@@ -35,9 +37,18 @@ class EndPoints{
   static String changePriority(int claimId) => 'claims/$claimId/priority';
 
   static String claimDetails(String referenceId) => 'claim/$referenceId';
+
   static String material(int page) => 'materials?page=$page';
+
   static String deleteMaterial(String materialId) => 'claims/delete_claim_item/$materialId';
+
+  static String deleteFile(String claimId) => 'claims/$claimId/deleteFile';
+
+  static String deleteClaim(String claimId) => 'claims/$claimId';
+
   static String editMaterial(String materialId) => 'claims/update_qty/$materialId';
+
+  static String uploadFile(String claimId) => 'claims/$claimId/addFile';
 
   static const String changePassword = 'change-password';
 

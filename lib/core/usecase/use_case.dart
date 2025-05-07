@@ -132,6 +132,16 @@ class ClaimsTypeParams extends Equatable{
   @override
   List<Object?> get props => [subCategoryId];
 }
+class DeleteFileParams extends Equatable{
+
+  String claimId;
+  String fileId;
+
+  DeleteFileParams({required this.claimId,required this.fileId});
+
+  @override
+  List<Object?> get props => [fileId,claimId];
+}
 
 class AvailableTimesParams extends Equatable{
 
@@ -168,6 +178,26 @@ class AddNewClaimParams extends Equatable{
 
   @override
   List<Object?> get props => [unitId , categoryId , subCategoryId , claimTypeId , description , availableTime , availableDate];
+
+}
+class UpdateClaimParams extends Equatable{
+
+  String categoryId;
+  String subCategoryId;
+  String claimTypeId;
+  String description;
+  String availableTime;
+  String availableDate;
+  // List<File> file;
+  String claimId;
+  String priority;
+
+  UpdateClaimParams({required this.claimId, required this.priority,required this.categoryId,required this.subCategoryId, required this.claimTypeId, required this.description, required this.availableTime, required this.availableDate,
+    // required this.file
+  });
+
+  @override
+  List<Object?> get props => [categoryId , subCategoryId , claimTypeId , description , availableTime , availableDate];
 
 }
 

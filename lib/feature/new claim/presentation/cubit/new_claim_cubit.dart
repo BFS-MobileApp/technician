@@ -26,9 +26,11 @@ class NewClaimCubit extends Cubit<NewClaimState>{
   final CategoryUseCase categoryUseCase;
   final ClaimsTypeUseCase claimsTypeUseCase;
   final AvailableTimesUseCase availableTimesUseCase;
+  final DeleteFileUseCase deleteFileUseCase;
   final AddNewClaimUseCase addNewClaimUseCase;
+  final UpdateClaimUseCase updateClaimUseCase;
 
-  NewClaimCubit({required this.buildingsUseCase , required this.unitUseCase , required this.categoryUseCase , required this.claimsTypeUseCase , required this.availableTimesUseCase , required this.addNewClaimUseCase}) : super(NewClaimInitial());
+  NewClaimCubit({required this.buildingsUseCase ,required this.deleteFileUseCase,required this.updateClaimUseCase, required this.unitUseCase , required this.categoryUseCase , required this.claimsTypeUseCase , required this.availableTimesUseCase , required this.addNewClaimUseCase}) : super(NewClaimInitial());
 
   void initLoginPage() => emit(NewClaimInitial());
 
@@ -71,7 +73,22 @@ class NewClaimCubit extends Cubit<NewClaimState>{
             (failures) => NewClaimError(msg: failures.msg),
             (model) => AvailableTimesLoaded(availableTimeModel: model)));
   }
+  Future<void> deleteFile(String claimId,String fileId) async {
+    emit(NewClaimIsLoading());
 
+    Either<Failures, bool> response = await deleteFileUseCase(DeleteFileParams(claimId: claimId, fileId: fileId));
+
+    emit(response.fold(
+          (failure) => NewClaimError(msg: failure.msg),
+          (success) {
+        if (success) {
+          return FileDeleted();
+        } else {
+          return NewClaimError(msg: "Failed to delete File.");
+        }
+      },
+    ));
+  }
   Future<void> addNewClaim(
       String unitId,
       String categoryId,
@@ -105,6 +122,43 @@ class NewClaimCubit extends Cubit<NewClaimState>{
           (model) => AddNewClaimLoaded(addNewClaim: model),
     ));
   }
+  Future<void> updateClaim(
+      String categoryId,
+      String subCategoryId,
+      String claimTypeId,
+      String description,
+      String availableTime,
+      String availableDate,
+      // List<File> file,
+      String claimId,
+      String priority,
+      ) async {
+    emit(NewClaimIsLoading());
+
+    // Validate files: only keep files that exist and have a path
+    // List<File> validFiles = file.where((f) => f.path.isNotEmpty && f.existsSync()).toList();
+
+    Either<Failures, AddNewClaim> response = await updateClaimUseCase(
+      UpdateClaimParams(
+        categoryId: categoryId,
+        subCategoryId: subCategoryId,
+        claimTypeId: claimTypeId,
+        description: description,
+        availableTime: availableTime,
+        availableDate: availableDate,
+        // file: validFiles,
+        claimId: claimId,
+        priority: priority
+
+      ),
+    );
+
+    emit(response.fold(
+          (failures) => NewClaimError(msg: failures.msg),
+          (model) => AddNewClaimLoaded(addNewClaim: model),
+    ));
+  }
+
 
 
   String mapFailureToMsg(Failures failures){

@@ -23,6 +23,8 @@ abstract class ClaimsDetailsRepository{
 
   Future<Either<Failures, bool>> deleteMaterial(String materialId);
 
+  Future<Either<Failures, bool>> deleteClaim(String claimId);
+
   Future<Either<Failures, bool>> editMaterialQuantity(String materialId, int quantity);
 
   Future<Either<Failures, bool>> addMaterial(AddMaterialParams params);
@@ -35,6 +37,9 @@ abstract class ClaimsDetailsRepository{
   Future<Either<Failures , bool>> addSignature(String claimId , File signatureFile , String comment);
 
   Future<Either<Failures , bool>> changeClaimStatus(String claimId , String status);
+
+  Future<Either<Failures, bool>> uploadFile(String claimId, List<File> files);
+
 
   Future<Either<Failures, bool>> uploadCommentFile(String claimId, String commentId, List<File> file, String status);
 

@@ -4,6 +4,7 @@ class LocalStrings extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'ar_AR': {
+      "editClaim":"تعديل الطلب",
       "welcome":"اهلا",
       "noData":"لا يوجد بيانات",
       "welcomePhase":"مرحبا بك في كلاميزر",
@@ -217,6 +218,7 @@ class LocalStrings extends Translations {
       "pleaseSignInAgain": "من فضلك سجل الدخول مجددا",
     },
     'en_US': {
+      "editClaim" : "Edit Claim",
       "From Gallery" : "From Gallery",
       "pleaseSignInAgain": "Please sign in again to continue",
   "Upload Image From" : "Upload Image From",

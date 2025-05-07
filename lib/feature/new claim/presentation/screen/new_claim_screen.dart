@@ -43,7 +43,9 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
 
   int _currentStep = 0;
 
-  bool _claimSummary = false , isDateTimeSelected = false , newClaimAdded = false;
+  bool _claimSummary = false ,
+      isDateTimeSelected = false
+  , newClaimAdded = false;
 
   DateTime selectedDate = DateTime.now();
 
@@ -922,6 +924,38 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
                     chooseAvailableTime ? ClaimSummaryWidget(name: 'availableTime'.tr, value: '${convertDate()} - ${selectedTimeAvailable!.name}') : ClaimSummaryWidget(name: 'availableTime'.tr, value: '${convertDate()} - ${availableTimeModel!.data[0].name}'),
                     ClaimSummaryWidget(name: 'description'.tr, value: descriptionController.value.text.isEmpty ? '' : descriptionController.value.text.toString()),
                     SizedBox(height: 20.h,),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: AppColors.textFieldBorder),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.upload),
+                          SizedBox(width: 10),
+                          claimImages.isNotEmpty
+                              ? Row(
+                            children: [
+                              Icon(Icons.image),
+                              Text(" ${claimImages.length} images selected"),
+                            ],
+                          )
+                              : Text("Upload Images"),
+                          Spacer(),
+                          if (claimImages.isNotEmpty)
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  claimImages.clear();
+                                });
+                              },
+                              child: Icon(Icons.close),
+                            ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20.h,),
                     ButtonWidget(width: 334, height: 44,
                       onTap: () {
                         if (descriptionController.value.text.isEmpty) {
@@ -935,10 +969,10 @@ class _NewClaimScreenState extends State<NewClaimScreen> {
                           _subCategoryId.toString(),
                           _claimsTypeId.toString(),
                           descriptionController.value.text.toString(),
-                          convertDate(),
                           chooseAvailableTime
                               ? _availableTimeId.toString()
                               : availableTimeModel!.data[0].id.toString(),
+                          convertDate(),
                           claimImages.isNotEmpty ? claimImages : [File('')], // Send images or empty file
                         );
 

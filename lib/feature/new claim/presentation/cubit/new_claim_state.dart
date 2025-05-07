@@ -20,6 +20,7 @@ class NewClaimInitialState extends NewClaimInitial{}
 class NewClaimIsLoading extends NewClaimInitial{}
 
 class NewClaimLoaded extends NewClaimInitial{}
+class FileDeleted extends NewClaimInitial{}
 
 class BuildingsLoaded extends NewClaimInitial{
 

@@ -150,6 +150,57 @@ class NewClaimRepositoryImpl extends NewClaimRepository{
       return Left(CashFailure(msg: 'connectionError'.tr));
     }
   }
+  @override
+  Future<Either<Failures, bool>> deleteFile(String claimId,String fileId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await newClaimDataSource.deleteFile(claimId,fileId);
+        print(response['data']);
+        final int statusCode = response['statusCode'];
+        if (statusCode == 200) {
+          return const Right(true); // Deletion was successful
+        } else {
+          return Left(ServerFailure(msg: 'error'.tr));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+  @override
+  Future<Either<Failures, AddNewClaim>> updateClaim(String categoryId, String subCategoryId,
+      String claimTypeId, String description, String availableTime, String availableDate,
+      // List<File> file,
+      String claimId,
+      String priority,
+      ) async{
+    if(await networkInfo.isConnected){
+      try{
+        final response = await newClaimDataSource.updateClaim(categoryId ,
+            subCategoryId , claimTypeId , description , availableTime , availableDate,
+            // file,
+            claimId,
+            priority,
+        );
+        final int statusCode = response['statusCode'];
+        print(response['data']);
+        if(statusCode == 200){
+          MessageWidget.showSnackBar(response['data']['message'], AppColors.green);
+          AddNewClaim addNewClaim = const AddNewClaim(result: true , claimId: "ok");
+          return Right(addNewClaim);
+        } else {
+          MessageWidget.showSnackBar(response['data']['message'], AppColors.red);
+          return Left(ServerFailure(msg: response['data']['errors'].toString()));
+        }
+      } on ServerException{
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
 
 
 }

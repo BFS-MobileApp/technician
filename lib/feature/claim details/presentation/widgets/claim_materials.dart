@@ -89,22 +89,23 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
               return const Center(child: CircularProgressIndicator());
             } else if (state is ClaimDetailsLoaded) {
               final materials = state.model.data.material;
-              if (materials.isEmpty) {
-                return Center(
-                  child: Text(
-                    'No materials added yet.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                );
-              }
+
               return Column(
                 children: [
+                  // If materials is empty, show text message, else show the list
                   Expanded(
-                    child: ListView.builder(
+                    child: materials.isEmpty
+                        ? Center(
+                      child: Text(
+                        'No materials added yet.',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    )
+                        : ListView.builder(
                       itemCount: materials.length,
                       itemBuilder: (context, index) {
                         final material = materials[index];
@@ -113,16 +114,25 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
                           material: material,
                           isSelected: isSelected,
                           onEdit: (material) {
-                            Navigator.push(context, MaterialPageRoute(builder:
-                                (context)=>EditMaterialScreen(material: material,id: widget.referenceId,)));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditMaterialScreen(
+                                  material: material,
+                                  id: widget.referenceId,
+                                ),
+                              ),
+                            );
                           },
                           onDelete: (id) {
                             _confirmDelete(context, material.id.toString());
-                          }, permissions: _permissions,
+                          },
+                          permissions: _permissions,
                         );
                       },
                     ),
                   ),
+                  // This button will always show
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: SizedBox(
@@ -130,21 +140,26 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () async {
-                          if (true) {
+                          if (_permissions.contains("add_items_to_claim_request")) {
                             final result = await Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => AddMaterialsScreen(referenceId: widget.referenceId, claimId: widget.claimId,),
+                                builder: (context) => AddMaterialsScreen(
+                                  referenceId: widget.referenceId,
+                                  claimId: widget.claimId,
+                                ),
                               ),
                             );
-                            
+
                             if (result == true) {
-                              // After adding material, refresh claim details
-                              context.read<ClaimDetailsCubit>().getClaimDetails(widget.referenceId);
+                              context
+                                  .read<ClaimDetailsCubit>()
+                                  .getClaimDetails(widget.referenceId);
                             }
-                          }else{
+                          } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('You do not have permission to Add materials.'),
+                                content: Text(
+                                    'You do not have permission to Add materials.'),
                               ),
                             );
                           }
@@ -237,7 +252,7 @@ class MaterialItem extends StatelessWidget {
               icon: Icons.edit,
               color: Colors.blue,
               onPressed: () {
-                if (permissions.contains('edit_materials_quantity_in_claim_request')) {
+                if (permissions.contains('edit_qty_item_claim')) {
                   onEdit(material);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -255,7 +270,7 @@ class MaterialItem extends StatelessWidget {
               icon: Icons.delete,
               color: Colors.red,
               onPressed: () {
-                if (permissions.contains('delete_materials_in_claim_request')) {
+                if (permissions.contains('delete_item_from_claim_request')) {
                   onDelete(material.id);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(

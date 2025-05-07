@@ -127,7 +127,10 @@ Future<void> init() async{
   sl.registerFactory(() => ClaimDetailsCubit(changeClaimStatusUseCase: sl() , addSignatureUseCase: sl() ,
       addCommentUseCase: sl() , startAndEndWorkUseCase: sl() , downloadSignatureUseCase: sl() ,
       assignClaimUseCase: sl() , changePriorityUseCase: sl() , claimDetailsUseCase: sl(),
-      uploadCommentFileUseCase: sl(),materialUseCase: sl(), deleteMaterialUseCase: sl(), editMaterialQuantityUseCase: sl(), addMaterialUseCase: sl()));
+      uploadCommentFileUseCase: sl(),materialUseCase: sl(), deleteMaterialUseCase: sl(),
+      editMaterialQuantityUseCase: sl(),
+      addMaterialUseCase: sl(),
+      deleteClaimUseCase: sl(), uploadFileUseCase: sl()));
   sl.registerFactory(() => ClaimsCubit(allClaimsUseCase: sl() , technicianUseCase: sl()));
   sl.registerFactory(() => TechnicalCubit(technicianUseCase: sl()));
   sl.registerFactory(() => ForgotPasswordCubit(forgotPasswordUseCase: sl()));
@@ -136,7 +139,9 @@ Future<void> init() async{
   sl.registerFactory(() => ResetPasswordCubit(resetPasswordUseCase: sl()));
   sl.registerFactory(() => MyAttendanceCubit(myAttendanceUseCase: sl()));
   sl.registerFactory(() => AddAttendanceCubit(checkOutUseCase: sl() , checkInUseCase: sl()));
-  sl.registerFactory(() => NewClaimCubit(buildingsUseCase: sl() , unitUseCase: sl() , categoryUseCase: sl() , claimsTypeUseCase: sl() , availableTimesUseCase: sl() , addNewClaimUseCase: sl()));
+  sl.registerFactory(() => NewClaimCubit(buildingsUseCase: sl() ,
+      unitUseCase: sl() , categoryUseCase: sl() , claimsTypeUseCase: sl()
+      , availableTimesUseCase: sl() , addNewClaimUseCase: sl(), updateClaimUseCase: sl(), deleteFileUseCase: sl()));
 
   //UseCase
   sl.registerLazySingleton(() => SplashUseCase(splashRepository: sl()));
@@ -145,6 +150,7 @@ Future<void> init() async{
   sl.registerLazySingleton(() => HomeUseCase(homeRepository: sl()));
   sl.registerLazySingleton(() => MaterialUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => DeleteMaterialUseCase(claimsDetailsRepository: sl()));
+  sl.registerLazySingleton(() => DeleteClaimUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => EditMaterialQuantityUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => AddMaterialUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => SettingsUseCase(settingRepository: sl()));
@@ -157,8 +163,10 @@ Future<void> init() async{
   sl.registerLazySingleton(() => UnitUseCase(newClaimRepository: sl()));
   sl.registerLazySingleton(() => CategoryUseCase(newClaimRepository: sl()));
   sl.registerLazySingleton(() => ClaimsTypeUseCase(newClaimRepository: sl()));
+  sl.registerLazySingleton(() => DeleteFileUseCase( deleteFileRepository: sl()));
   sl.registerLazySingleton(() => AvailableTimesUseCase(newClaimRepository: sl()));
   sl.registerLazySingleton(() => AddNewClaimUseCase(newClaimRepository: sl()));
+  sl.registerLazySingleton(() => UpdateClaimUseCase(newClaimRepository: sl()));
   sl.registerLazySingleton(() => TechnicianUseCase(claimsRepository: sl()));
   sl.registerLazySingleton(() => AssignClaimUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => ChangePriorityUseCase(claimsDetailsRepository: sl()));
@@ -167,6 +175,7 @@ Future<void> init() async{
   sl.registerLazySingleton(() => StartAndEndWorkUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => UpdateProfileUseCase(editProfileRepository: sl()));
   sl.registerLazySingleton(() => AddCommentUseCase(claimsDetailsRepository: sl()));
+  sl.registerLazySingleton(() => UploadFileUseCase(repository:sl()));
   sl.registerLazySingleton(() => AddSignatureUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => ChangeClaimStatusUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => ForgotPasswordUseCase(forgotPasswordRepository: sl()));

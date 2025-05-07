@@ -69,8 +69,8 @@ class NewClaimDataSourceImpl extends NewClaimDataSource {
       'sub_category_id': subCategoryId,
       'claim_type_id': claimTypeId,
       'description': description,
-      'available_date': availableTime,
-      'available_time': availableDate,
+      'available_date': availableDate,
+      'available_time': availableTime,
     };
 
     final Map<String, File> fileMap = {
@@ -80,6 +80,50 @@ class NewClaimDataSourceImpl extends NewClaimDataSource {
       EndPoints.claims,
       data: data,
       files: fileMap, // Send the entire list
+    );
+
+    return res;
+  }
+  @override
+  Future<Map<String, dynamic>> deleteFile(String claimId,String fileId) async {
+    Map<String, dynamic> data = {
+      'file_id': fileId,
+    };
+    final res = await consumer.post(EndPoints.deleteFile(claimId),
+      queryParams: data
+    );
+    return res;
+  }
+  @override
+  Future<Map<String, dynamic>> updateClaim(
+      String categoryId,
+      String subCategoryId,
+      String claimTypeId,
+      String description,
+      String availableTime,
+      String availableDate,
+      // List<File> files,
+      String claimId,
+      String priority,
+      ) async {
+    Map<String, dynamic> data = {
+      'category_id': categoryId,
+      'sub_category_id': subCategoryId,
+      'claim_type_id': claimTypeId,
+      'description': description,
+      'available_date': availableDate,
+      'available_time': availableTime,
+      'priority' : priority,
+    };
+
+    // final Map<String, File> fileMap = {
+    //   for (int i = 0; i < files.length; i++) 'file[$i]': files[i],
+    // };
+    print(data);
+    final res = await consumer.post(
+      EndPoints.updateClaims(claimId),
+      queryParams: data,
+      // files: fileMap, // Send the entire list
     );
 
     return res;

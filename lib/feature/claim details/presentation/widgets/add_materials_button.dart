@@ -11,16 +11,39 @@ import 'package:technician/feature/claim%20details/presentation/cubit/claim_deta
 import 'package:technician/widgets/svg_image_widget.dart';
 import 'package:technician/widgets/text_widget.dart';
 
+import '../../../../config/PrefHelper/prefs.dart';
 import '../../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_strings.dart';
 import '../../../claims/data/models/technician_model.dart';
 import '../../data/models/claim_details_model.dart';
 import 'claim_materials.dart';
-class AddMaterialsButton extends StatelessWidget {
+class AddMaterialsButton extends StatefulWidget {
   final List<ClaimMaterials> materials;
   final String referenceId;
   final int claimId;
   const AddMaterialsButton({super.key, required this.materials, required this.referenceId, required this.claimId});
 
+  @override
+  State<AddMaterialsButton> createState() => _AddMaterialsButtonState();
+}
+
+class _AddMaterialsButtonState extends State<AddMaterialsButton> {
+  List<String> _permissions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPermissions();
+  }
+
+  Future<void> _loadPermissions() async {
+    final permissions = Prefs.getStringList(AppStrings.permissions);
+    if (permissions != null) {
+      setState(() {
+        _permissions = permissions;
+      });
+    }
+  }
   Widget reAssignWidget() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 30.w),
@@ -62,11 +85,28 @@ class AddMaterialsButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) =>  ClaimMaterialsScreen(materials: materials,referenceId: referenceId, claimId: claimId,)),
-        );
+      onTap: () {
+        if (_permissions.contains("view_items_in_claim_request")){
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ClaimMaterialsScreen(
+                materials: widget.materials,
+                referenceId: widget.referenceId,
+                claimId: widget.claimId,
+              ),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('You do not have permission to view this screen.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
       },
-        child: reAssignWidget());
+      child: reAssignWidget(),
+    );
+
   }
 }

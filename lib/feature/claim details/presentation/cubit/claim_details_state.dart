@@ -29,6 +29,7 @@ class UploadCommentFileError extends ClaimDetailsState {
 class AssignedClaimInitialState extends ClaimDetailsInitial{}
 
 class ClaimDetailsIsLoading extends ClaimDetailsInitial{}
+class ClaimDeleteIsLoading extends ClaimDetailsInitial{}
 
 class ClaimDetailsLoaded extends ClaimDetailsInitial{
 
@@ -37,6 +38,10 @@ class ClaimDetailsLoaded extends ClaimDetailsInitial{
   ClaimDetailsLoaded({required this.model});
   @override
   List<Object> get props =>[model];
+}
+class ClaimDeleted extends ClaimDetailsState {
+  @override
+  List<Object?> get props => [];
 }
 class MaterialLoaded extends ClaimDetailsInitial{
 

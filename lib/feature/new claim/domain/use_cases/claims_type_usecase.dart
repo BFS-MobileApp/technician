@@ -10,6 +10,17 @@ class ClaimsTypeUseCase implements UseCase<ClaimsTypeModel , ClaimsTypeParams>{
   ClaimsTypeUseCase({required this.newClaimRepository});
 
   @override
-  Future<Either<Failures, ClaimsTypeModel>> call(ClaimsTypeParams params) => newClaimRepository.getClaimsType(params.subCategoryId);
+  Future<Either<Failures, ClaimsTypeModel>> call(ClaimsTypeParams params) =>
+      newClaimRepository.getClaimsType(params.subCategoryId);
+
+}
+class DeleteFileUseCase implements UseCase<bool, DeleteFileParams> {
+  final NewClaimRepository deleteFileRepository;
+
+  DeleteFileUseCase({required this.deleteFileRepository});
+
+  @override
+  Future<Either<Failures, bool>> call(DeleteFileParams params) =>
+     deleteFileRepository.deleteFile(params.claimId,params.fileId);
 
 }

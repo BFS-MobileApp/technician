@@ -21,14 +21,14 @@ class BackButtonWidget extends StatelessWidget {
             );
           },
           child: Container(
-            width: 20.w, // Set the size of the container
+            width: 20.w,
             height: 20.h,
             decoration: BoxDecoration(
-              color: Colors.transparent, // Transparent background
-              shape: BoxShape.circle,    // Rounded container
-              border: Border.all(        // Optional border
-                color: Colors.transparent,       // Border color (can customize)
-                width: 1.0,              // Border width
+              color: Colors.transparent,
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.transparent,
+                width: 1.0,
               ),
             ),
             child: Center(

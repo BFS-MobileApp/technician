@@ -30,37 +30,51 @@ import 'package:technician/widgets/bar_widget.dart';
 import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 
+import '../../../../config/PrefHelper/prefs.dart';
 import '../../../login/presentation/screen/login_screen.dart';
 import '../cubit/claim_details_cubit.dart';
 import '../widgets/add_materials_button.dart';
 import '../widgets/upload_image_widget.dart';
+import 'edit_claim_screen.dart';
 
 class StartedClaimsScreen extends StatefulWidget {
   String claimId;
   String referenceId;
-  StartedClaimsScreen({super.key , required this.referenceId , required this.claimId});
+
+  StartedClaimsScreen(
+      {super.key, required this.referenceId, required this.claimId});
 
   @override
   State<StartedClaimsScreen> createState() => _StartedClaimsScreenState();
 }
 
 class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
-
   ClaimDetailsModel? claimDetailsModel;
   AlignmentWidget alignmentWidget = AlignmentWidget();
   String btName = '';
+  List<String> _permissions = [];
 
   @override
   void initState() {
     super.initState();
     getData();
+    _loadPermissions();
   }
 
+  Future<void> _loadPermissions() async {
+    final permissions = Prefs.getStringList(AppStrings.permissions);
+    if (permissions != null) {
+      setState(() {
+        _permissions = permissions;
+      });
+    }
+  }
 
   checkEndDate() {
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      bool hasEmptyEndDate = claimDetailsModel!.data.times.any((record) => record.endOn == '');
-      if(hasEmptyEndDate){
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bool hasEmptyEndDate =
+          claimDetailsModel!.data.times.any((record) => record.endOn == '');
+      if (hasEmptyEndDate) {
         setState(() {
           btName = 'endWork'.tr;
         });
@@ -71,14 +85,14 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
       }
     });
   }
+
   File? _selectedFile;
 
   ImagePicker picker = ImagePicker();
   File filePicker = File('');
   List<XFile> imageFiles = [];
 
-
-  void uploadFile(BuildContext context,List<File> selectedFiles) {
+  void uploadFile(BuildContext context, List<File> selectedFiles) {
     if (selectedFiles.isNotEmpty) {
       context.read<ClaimDetailsCubit>().uploadCommentFile(
           context, // ✅ Pass context for Snackbar & Reload
@@ -86,16 +100,16 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
           "latestCommentId",
           selectedFiles,
           claimDetailsModel!.data.status.toLowerCase(),
-          widget.referenceId
-      );
-
+          widget.referenceId);
     }
   }
+
   Future<void> getImageFromCamera(Function(List<XFile>) updateImages) async {
     final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
-      updateImages([XFile(pickedFile.path)]); // Pass the new image as an XFile list
+      updateImages(
+          [XFile(pickedFile.path)]); // Pass the new image as an XFile list
     } else {
       // Show a snackbar if no image was selected
       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,10 +140,13 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
     }
 
     if (pickedFiles.isNotEmpty) {
-      updateImages(pickedFiles); // Call function to update images inside bottom sheet
+      updateImages(
+          pickedFiles); // Call function to update images inside bottom sheet
     }
   }
-  void showAttachmentDialog(BuildContext context, Function(List<File>) onFilesSelected) {
+
+  void showAttachmentDialog(
+      BuildContext context, Function(List<File>) onFilesSelected) {
     List<XFile> selectedFiles = [];
 
     showModalBottomSheet(
@@ -161,7 +178,8 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                       onPressed: () async {
                         await pickImages((List<XFile> images) {
                           setState(() {
-                            selectedFiles = images; // Update bottom sheet images
+                            selectedFiles =
+                                images; // Update bottom sheet images
                           });
                         });
                       },
@@ -187,7 +205,8 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                       onPressed: () async {
                         await getImageFromCamera((List<XFile> images) {
                           setState(() {
-                            selectedFiles.addAll(images); // Update bottom sheet images
+                            selectedFiles
+                                .addAll(images); // Update bottom sheet images
                           });
                         });
                       },
@@ -211,7 +230,8 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                   // Show selected files as thumbnails
                   if (selectedFiles.isNotEmpty) ...[
                     SizedBox(height: 10),
-                    Text("Selected Files:", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("Selected Files:",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
                     SizedBox(
                       height: 80,
@@ -223,7 +243,8 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                             clipBehavior: Clip.none,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.file(
@@ -246,7 +267,8 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                                   child: CircleAvatar(
                                     radius: 12,
                                     backgroundColor: Colors.red,
-                                    child: Icon(Icons.close, size: 14, color: Colors.white),
+                                    child: Icon(Icons.close,
+                                        size: 14, color: Colors.white),
                                   ),
                                 ),
                               ),
@@ -261,8 +283,11 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                   ElevatedButton(
                     onPressed: () {
                       if (selectedFiles.isNotEmpty) {
-                        List<File> filesToUpload = selectedFiles.map((xFile) => File(xFile.path)).toList();
-                        onFilesSelected(filesToUpload); // ✅ Pass list of selected files
+                        List<File> filesToUpload = selectedFiles
+                            .map((xFile) => File(xFile.path))
+                            .toList();
+                        onFilesSelected(
+                            filesToUpload); // ✅ Pass list of selected files
                       }
                       Navigator.pop(context);
                     },
@@ -288,50 +313,116 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
     );
   }
 
-
-  getData()=>BlocProvider.of<ClaimDetailsCubit>(context).getClaimDetails(widget.referenceId);
+  getData() => BlocProvider.of<ClaimDetailsCubit>(context)
+      .getClaimDetails(widget.referenceId);
 
   Widget _buildClaimCard() {
-    return ClaimDetailsCardItem(cardChildWidget: Column(
+    return ClaimDetailsCardItem(
+        cardChildWidget: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClaimDetailsIdWidget(id: claimDetailsModel!.data.referenceId),
-        ClaimDetailsTextItem(itemName: 'unit'.tr, itemValue: claimDetailsModel!.data.unit.building+' - '+claimDetailsModel!.data.unit.name , isClickable: false, type: '',),
+        ClaimDetailsTextItem(
+          itemName: 'unit'.tr,
+          itemValue: claimDetailsModel!.data.unit.building +
+              ' - ' +
+              claimDetailsModel!.data.unit.name,
+          isClickable: false,
+          type: '',
+        ),
         //ClaimDetailsTextItem(itemName: 'building'.tr, itemValue: claimDetailsModel!.data.unit.building , isClickable: false, type: '',),
         //ClaimDetailsTextItem(itemName: 'propertyUnit'.tr, itemValue: claimDetailsModel!.data.unit.name , isClickable: false, type: '',),
-        ClaimDetailsTextItem(itemName: 'type'.tr, itemValue: claimDetailsModel!.data.category.name+'-'+claimDetailsModel!.data.subCategory.name+'-'+claimDetailsModel!.data.type.name , isClickable: false, type: '',),
-        ClaimDetailsStatusWidget(itemName: 'status'.tr, isStatus: true, itemValue: claimDetailsModel!.data.status),
+        ClaimDetailsTextItem(
+          itemName: 'type'.tr,
+          itemValue: claimDetailsModel!.data.category.name +
+              '-' +
+              claimDetailsModel!.data.subCategory.name +
+              '-' +
+              claimDetailsModel!.data.type.name,
+          isClickable: false,
+          type: '',
+        ),
+        ClaimDetailsStatusWidget(
+            itemName: 'status'.tr,
+            isStatus: true,
+            itemValue: claimDetailsModel!.data.status),
         //ClaimDetailsTextItem(itemName: 'claimSubCategory'.tr, itemValue: claimDetailsModel!.data.subCategory.name , isClickable: false, type: '',),
         //ClaimDetailsTextItem(itemName: 'claimType'.tr, itemValue: claimDetailsModel!.data.type.name , isClickable: false, type: '',),
         //ClaimDetailsTextItem(itemName: 'createdAt'.tr, itemValue: Helper.convertSecondsToDate(claimDetailsModel!.data.createdAt.toString()) , isClickable: false, type: '',),
         //ClaimDetailsTextItem(itemName: 'assignTo'.tr, itemValue: employeeName() , isClickable: false, type: '',),
-        ClaimDetailsStatusWidget(itemName: 'priority'.tr, isStatus: false, itemValue: claimDetailsModel!.data.priority),
-        ClaimDetailsTextItem(itemName: 'availableTime'.tr, itemValue: '${Helper.convertSecondsToDate(claimDetailsModel!.data.availableDate.toString())} - ${Helper.getAvailableTime(claimDetailsModel!.data.availableTime)}' , isClickable: false, type: '',),
+        ClaimDetailsStatusWidget(
+            itemName: 'priority'.tr,
+            isStatus: false,
+            itemValue: claimDetailsModel!.data.priority),
+        ClaimDetailsTextItem(
+          itemName: 'availableTime'.tr,
+          itemValue:
+              '${Helper.convertSecondsToDate(claimDetailsModel!.data.availableDate.toString())} - ${Helper.getAvailableTime(claimDetailsModel!.data.availableTime)}',
+          isClickable: false,
+          type: '',
+        ),
         //ClaimDetailsStatusWidget(itemName: 'status'.tr, isStatus: true, itemValue: claimDetailsModel!.data.status),
-        ClaimDetailsDescriptionItem(itemValue: claimDetailsModel!.data.description),
-        AllFilesWidget(images: claimDetailsModel!.data.comments,files: claimDetailsModel!.data.files)
+        ClaimDetailsDescriptionItem(
+            itemValue: claimDetailsModel!.data.description),
+        AllFilesWidget(
+          images: claimDetailsModel!.data.comments,
+          files: claimDetailsModel!.data.files,
+          ifUpdate: false,
+          claimId: widget.claimId,
+        )
       ],
     ));
   }
 
-  Widget _statusInfoWidget(){
-    return ClaimDetailsCardItem(cardChildWidget: Column(
+  Widget _statusInfoWidget() {
+    return ClaimDetailsCardItem(
+        cardChildWidget: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClaimDetailsStatusWidget(itemName: 'status'.tr, isStatus: true, itemValue: claimDetailsModel!.data.status),
-        ClaimDetailsTextItem(itemName: 'assignTo'.tr, itemValue: employeeName() , isClickable: false, type: '',),
+        ClaimDetailsStatusWidget(
+            itemName: 'status'.tr,
+            isStatus: true,
+            itemValue: claimDetailsModel!.data.status),
+        ClaimDetailsTextItem(
+          itemName: 'assignTo'.tr,
+          itemValue: employeeName(),
+          isClickable: false,
+          type: '',
+        ),
       ],
     ));
   }
 
-  Widget _userInfoWidget(){
-    return ClaimDetailsCardItem(cardChildWidget: Column(
+  Widget _userInfoWidget() {
+    return ClaimDetailsCardItem(
+        cardChildWidget: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ClaimDetailsTextItem(itemName: 'createdAt'.tr, itemValue: Helper.convertSecondsToDate(claimDetailsModel!.data.createdAt.toString()) , isClickable: false, type: '',),
-        ClaimDetailsTextItem(itemName: 'createdBy'.tr, itemValue: claimDetailsModel!.data.creator.data.name , isClickable: false, type: '',),
-        ClaimDetailsTextItem(itemName: 'phoneNumber'.tr, itemValue: claimDetailsModel!.data.creator.data.mobile , isClickable: true, type: AppStrings.tel,),
-        ClaimDetailsTextItem(itemName: 'emailAddress'.tr, itemValue: claimDetailsModel!.data.creator.data.email , isClickable: true, type: AppStrings.email,),
+        ClaimDetailsTextItem(
+          itemName: 'createdAt'.tr,
+          itemValue: Helper.convertSecondsToDate(
+              claimDetailsModel!.data.createdAt.toString()),
+          isClickable: false,
+          type: '',
+        ),
+        ClaimDetailsTextItem(
+          itemName: 'createdBy'.tr,
+          itemValue: claimDetailsModel!.data.creator.data.name,
+          isClickable: false,
+          type: '',
+        ),
+        ClaimDetailsTextItem(
+          itemName: 'phoneNumber'.tr,
+          itemValue: claimDetailsModel!.data.creator.data.mobile,
+          isClickable: true,
+          type: AppStrings.tel,
+        ),
+        ClaimDetailsTextItem(
+          itemName: 'emailAddress'.tr,
+          itemValue: claimDetailsModel!.data.creator.data.email,
+          isClickable: true,
+          type: AppStrings.email,
+        ),
       ],
     ));
   }
@@ -341,124 +432,225 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
       return 'notAssigned'.tr;
     }
     Employee latestEmployee = claimDetailsModel!.data.employees.reduce((a, b) {
-      return DateTime.parse(a.created_at).isAfter(DateTime.parse(b.created_at)) ? a : b;
+      return DateTime.parse(a.created_at).isAfter(DateTime.parse(b.created_at))
+          ? a
+          : b;
     });
     return latestEmployee.name;
   }
 
-  Widget _detailsWidget(){
+  Widget _detailsWidget() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Container(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          child: Column(
-            
-            children: [
-              SizedBox(height: 20.h,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: AppBarItem(
-                      title: 'claimDetails'.tr,
-                      image: AssetsManager.backIcon2,
+      child: Container(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20.h,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: AppBarItem(
+                    title: 'claimDetails'.tr,
+                    image: AssetsManager.backIcon2,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Are you sure?"),
+                      content: const Text(
+                          "Do you really want to delete this claim?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("No"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            if (_permissions.contains("delete_claims")) {
+                              Navigator.pop(context);
+                              await context
+                                  .read<ClaimDetailsCubit>()
+                                  .deleteClaim(
+                                      claimDetailsModel!.data.id.toString());
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'You do not have permission to delete this claim.'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text("Yes"),
+                        ),
+                      ],
                     ),
                   ),
-                  GestureDetector(
-                    onTap: ()=>Navigator.pushNamed(context , Routes.technicianHistory , arguments: TechnicianHistoryArguments(logList: claimDetailsModel!.data.logs, employeesList: claimDetailsModel!.data.employees , timeList: claimDetailsModel!.data.times)),
-                    child: SVGImageWidget(image: AssetsManager.timeHistory,width: 35.w,height: 35.h,),
+                  child: SVGImageWidget(
+                    image: AssetsManager.clearIcon,
+                    width: 30.w,
+                    height: 30.h,
                   ),
-                ],
-              ),
-              Expanded(
-                child: ListView(
-                  children: [
-                    
-                    // SizedBox(height: 20.h,),
-                    _buildClaimCard(),
-                    SizedBox(height: 5.h,),
-                    _userInfoWidget(),
-                    SizedBox(height: 5.h,),
-                    _statusInfoWidget(),
-                    SizedBox(height: 10.h,),
-                    AppHeadline(title: 'replies'.tr,),
-                    RepliesWidget(claimType: 2 ,ctx: context , submitOnly: false , comments: claimDetailsModel!.data.comments,claimId: widget.claimId,status: claimDetailsModel!.data.status),
-                    _techWorkButtons(),
-                    SizedBox(height: 10.h,),
-                    GestureDetector(
-                      onTap: () async {
-                        showAttachmentDialog(context, (List<File> selectedFiles) async {
-                          uploadFile(context,selectedFiles) ;
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 25,left: 25),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: AppColors.textFieldBorder),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: EdgeInsets.all(8.adaptSize),
-                          child: Row(
-                            children: [
-                              const SVGImageWidget(image: AssetsManager.upload, width: 15, height: 15),
-                              SizedBox(width: 8.w),
-                              Text(
-                                'uploadAnyFiles'.tr,
-                                style: GoogleFonts.montserrat(
-                                  fontSize: 14.fSize,
-                                  fontWeight: FontWeight.w500,
-                                  color: AppColors.mainColor,
-                                ),
+                ),
+                SizedBox(
+                  width: 5.h,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    if (_permissions.contains("update_claims")) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditClaimScreen(
+                                    claimsModel: claimDetailsModel!,
+                                  )));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'You do not have permission to update this claim.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: SVGImageWidget(
+                    image: AssetsManager.editProfile,
+                    width: 30.w,
+                    height: 30.h,
+                  ),
+                ),
+                SizedBox(
+                  width: 5.h,
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.pushNamed(
+                      context, Routes.technicianHistory,
+                      arguments: TechnicianHistoryArguments(
+                          logList: claimDetailsModel!.data.logs,
+                          employeesList: claimDetailsModel!.data.employees,
+                          timeList: claimDetailsModel!.data.times)),
+                  child: SVGImageWidget(
+                    image: AssetsManager.timeHistory,
+                    width: 30.w,
+                    height: 30.h,
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  // SizedBox(height: 20.h,),
+                  _buildClaimCard(),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  _userInfoWidget(),
+                  SizedBox(
+                    height: 5.h,
+                  ),
+                  _statusInfoWidget(),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  AppHeadline(
+                    title: 'replies'.tr,
+                  ),
+                  RepliesWidget(
+                      claimType: 2,
+                      ctx: context,
+                      submitOnly: false,
+                      comments: claimDetailsModel!.data.comments,
+                      claimId: widget.claimId,
+                      status: claimDetailsModel!.data.status),
+                  _techWorkButtons(),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      showAttachmentDialog(context,
+                          (List<File> selectedFiles) async {
+                        uploadFile(context, selectedFiles);
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 25, left: 25),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: AppColors.textFieldBorder),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.all(8.adaptSize),
+                        child: Row(
+                          children: [
+                            const SVGImageWidget(
+                                image: AssetsManager.upload,
+                                width: 15,
+                                height: 15),
+                            SizedBox(width: 8.w),
+                            Text(
+                              'uploadAnyFiles'.tr,
+                              style: GoogleFonts.montserrat(
+                                fontSize: 14.fSize,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.mainColor,
                               ),
-                              const Spacer(),
-                              imageFiles .isEmpty ? const SizedBox() : InkWell(
-                                onTap: () async {
-                                  setState(() {
-                                    imageFiles.clear();
-                                    filePicker.path == '';
-                                  });
-                                },
-                                child: const Icon(Icons.close),
-                              ),
-                            ],
-                          ),
+                            ),
+                            const Spacer(),
+                            imageFiles.isEmpty
+                                ? const SizedBox()
+                                : InkWell(
+                                    onTap: () async {
+                                      setState(() {
+                                        imageFiles.clear();
+                                        filePicker.path == '';
+                                      });
+                                    },
+                                    child: const Icon(Icons.close),
+                                  ),
+                          ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 10.h,),
-                    AddMaterialsButton(materials: claimDetailsModel!.data.material,referenceId:claimDetailsModel!.data.referenceId,claimId: claimDetailsModel!.data.id,),
-                    SizedBox(height: 10.h,),
-                    PriorityButton(claimId: widget.claimId,referenceId: widget.referenceId,ctx: context),
-                    SizedBox(height: 10.h,),
-                    CompleteButton(ctx: context, claimId: widget.claimId, referenceId: widget.referenceId,),
-                    SizedBox(height: 10.h,),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  AddMaterialsButton(
+                    materials: claimDetailsModel!.data.material,
+                    referenceId: claimDetailsModel!.data.referenceId,
+                    claimId: claimDetailsModel!.data.id,
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  PriorityButton(
+                      claimId: widget.claimId,
+                      referenceId: widget.referenceId,
+                      ctx: context),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  CompleteButton(
+                    ctx: context,
+                    claimId: widget.claimId,
+                    referenceId: widget.referenceId,
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-    );
-  }
-
-  Widget _techWorkButtons(){
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30.w),
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            InkWell(
-              onTap: (){
-                BlocProvider.of<ClaimDetailsCubit>(context).startAndEndWork(widget.claimId).then((value){
-                  if(value){
-                    getData();
-                  }
-                });
-              },
-              child: AssignButton(borderColor: AppColors.mainColor , horizontalMargin: 0 , btText: btName , image: '',width: 327 , height: 40 , btColor: AppColors.whiteColor , btTextColor: AppColors.mainColor,),
             ),
           ],
         ),
@@ -466,25 +658,64 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
     );
   }
 
-  Widget checkState(ClaimDetailsState state){
-    if(state is ClaimDetailsIsLoading){
-      return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
-    } else if(state is ClaimDetailsError){
+  Widget _techWorkButtons() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30.w),
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            InkWell(
+              onTap: () {
+                BlocProvider.of<ClaimDetailsCubit>(context)
+                    .startAndEndWork(widget.claimId)
+                    .then((value) {
+                  if (value) {
+                    getData();
+                  }
+                });
+              },
+              child: AssignButton(
+                borderColor: AppColors.mainColor,
+                horizontalMargin: 0,
+                btText: btName,
+                image: '',
+                width: 327,
+                height: 40,
+                btColor: AppColors.whiteColor,
+                btTextColor: AppColors.mainColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget checkState(ClaimDetailsState state) {
+    if (state is ClaimDetailsIsLoading) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: AppColors.mainColor,
+        ),
+      );
+    } else if (state is ClaimDetailsError) {
       bool isUnauthenticated = state.msg.contains('Unauthenticated.');
-      return ErrorWidgetItem(onTap: (){
-        if(isUnauthenticated){
-          Get.offAll(const LoginScreen());
-        }else{
-          getData();
-        }
-      },
+      return ErrorWidgetItem(
+        onTap: () {
+          if (isUnauthenticated) {
+            Get.offAll(const LoginScreen());
+          } else {
+            getData();
+          }
+        },
         isUnauthenticated: isUnauthenticated,
       );
-    } else if(state is ClaimDetailsLoaded) {
+    } else if (state is ClaimDetailsLoaded) {
       claimDetailsModel = state.model;
       checkEndDate();
       return _detailsWidget();
-    } else if(state is AssignedClaimLoaded){
+    } else if (state is AssignedClaimLoaded) {
       return _detailsWidget();
     } else {
       return _detailsWidget();
@@ -493,10 +724,31 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ClaimDetailsCubit , ClaimDetailsState>(builder: (context , state){
-      return Scaffold(
-          body: checkState(state)
-      );
-    });
+    return BlocConsumer<ClaimDetailsCubit, ClaimDetailsState>(
+      listener: (context, state) {
+        if (state is ClaimDeleted) {
+          print("✅ Claim deleted — navigating to home");
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Routes.home,
+            (route) => false,
+          );
+        }
+        else if (state is ClaimDetailsError){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  state.msg),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        return BlocBuilder<ClaimDetailsCubit, ClaimDetailsState>(
+            builder: (context, state) {
+          return Scaffold(body: checkState(state));
+        });
+      },
+    );
   }
 }

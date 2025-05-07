@@ -13,3 +13,17 @@ class AddNewClaimUseCase implements UseCase<AddNewClaim , AddNewClaimParams>{
   Future<Either<Failures, AddNewClaim>> call(AddNewClaimParams params) => newClaimRepository.addNewClaim(params.unitId , params.categoryId , params.subCategoryId , params.claimTypeId , params.description , params.availableTime , params.availableDate,params.file);
 
 }
+class UpdateClaimUseCase implements UseCase<AddNewClaim , UpdateClaimParams>{
+
+  final NewClaimRepository newClaimRepository;
+  UpdateClaimUseCase({required this.newClaimRepository});
+
+  @override
+  Future<Either<Failures, AddNewClaim>> call(UpdateClaimParams params) =>
+      newClaimRepository.updateClaim( params.categoryId ,
+          params.subCategoryId , params.claimTypeId , params.description ,
+          params.availableTime , params.availableDate,
+          // params.file
+          params.claimId,params.priority);
+
+}

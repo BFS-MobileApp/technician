@@ -99,6 +99,11 @@ class ClaimsDetailsDataSourceImpl extends ClaimsDetailsDataSource {
     return res;
   }
   @override
+  Future<Map<String, dynamic>> deleteClaim(String claimId) async {
+    final res = await consumer.delete(EndPoints.deleteClaim(claimId));
+    return res;
+  }
+  @override
   Future<Map<String, dynamic>> editMaterialQuantity(String materialId, int quantity) async {
     final response = await consumer.patch(
       EndPoints.editMaterial(materialId),
@@ -152,6 +157,20 @@ class ClaimsDetailsDataSourceImpl extends ClaimsDetailsDataSource {
     print("File upload response: $res");
     return res;
   }
+
+  @override
+  Future<Map<String, dynamic>> uploadFile(String claimId, List<File> files) async {
+    final Map<String, File> fileMap = {
+      for (int i = 0; i < files.length; i++) 'file[$i]': files[i],
+    };
+
+
+    final res = await consumer.postFile(EndPoints.uploadFile(claimId), files: fileMap);
+
+    print("File upload response: $res");
+    return res;
+  }
+
 
 
   @override

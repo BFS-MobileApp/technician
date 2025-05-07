@@ -24,3 +24,20 @@ class UploadCommentFileParams {
 
   UploadCommentFileParams({required this.claimId, required this.commentId, required this.file, required this.status});
 }
+class UploadFileUseCase implements UseCase<bool, UploadFileParams> {
+  final ClaimsDetailsRepository repository;
+
+  UploadFileUseCase({required this.repository});
+
+  @override
+  Future<Either<Failures, bool>> call(UploadFileParams params) {
+    return repository.uploadFile(params.claimId, params.files);
+  }
+}
+class UploadFileParams {
+  final String claimId;
+  final List<File> files;
+
+  UploadFileParams({required this.claimId, required this.files});
+}
+

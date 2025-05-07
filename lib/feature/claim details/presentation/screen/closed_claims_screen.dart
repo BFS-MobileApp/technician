@@ -27,6 +27,7 @@ import '../../../login/presentation/screen/login_screen.dart';
 import '../widgets/add_materials_button.dart';
 import '../widgets/claim_details_card_item.dart';
 import '../widgets/claim_details_id_widget.dart';
+import 'edit_claim_screen.dart';
 
 class ClosedClaimsScreen extends StatefulWidget {
   String referenceId;
@@ -83,7 +84,7 @@ class _ClosedClaimsScreenState extends State<ClosedClaimsScreen> {
         ClaimDetailsTextItem(itemName: 'availableTime'.tr, itemValue: '${Helper.convertSecondsToDate(claimDetailsModel!.data.availableDate.toString())} - ${Helper.getAvailableTime(claimDetailsModel!.data.availableTime)}' , isClickable: false, type: '',),
         //ClaimDetailsStatusWidget(itemName: 'status'.tr, isStatus: true, itemValue: claimDetailsModel!.data.status),
         ClaimDetailsDescriptionItem(itemValue: claimDetailsModel!.data.description),
-        AllFilesWidget(images: claimDetailsModel!.data.comments,files: claimDetailsModel!.data.files)
+        AllFilesWidget(images: claimDetailsModel!.data.comments,files: claimDetailsModel!.data.files,ifUpdate: false,claimId: widget.claimId,)
       ],
     ));
   }
@@ -138,9 +139,68 @@ class _ClosedClaimsScreenState extends State<ClosedClaimsScreen> {
                     image: AssetsManager.backIcon2,
                   ),
                 ),
+                 GestureDetector(
+                      onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text("Are you sure?"),
+                          content: const Text("Do you really want to delete this claim?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("No"),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                if (_permissions.contains("delete_claims")) {
+                                  Navigator.pop(context);
+                                  await context.read<ClaimDetailsCubit>()
+                                      .deleteClaim(claimDetailsModel!.data.id.toString());
+                                }else{
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('You do not have permission to delete this claim.'),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                  );
+                                }
+                              },
+                              child: const Text("Yes"),
+                            ),
+                          ],
+                        ),
+                      ),
+                      child: SVGImageWidget(
+                        image: AssetsManager.clearIcon,
+                        width: 30.w,
+                        height: 30.h,
+                      ),
+                    ),
+                SizedBox(width: 5.h,),
+                GestureDetector(
+                  onTap: (){
+                    if (_permissions.contains("update_claims")) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditClaimScreen(
+                                claimsModel: claimDetailsModel!,
+                              )));
+                    }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('You do not have permission to update this claim.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: SVGImageWidget(image: AssetsManager.editProfile,width: 30.w,height: 30.h,),
+                ),
+                SizedBox(width: 5.h,),
                 GestureDetector(
                   onTap: ()=>Navigator.pushNamed(context , Routes.technicianHistory , arguments: TechnicianHistoryArguments(logList: claimDetailsModel!.data.logs, employeesList: claimDetailsModel!.data.employees , timeList: claimDetailsModel!.data.times)),
-                  child: SVGImageWidget(image: AssetsManager.timeHistory,width: 35.w,height: 35.h,),
+                  child: SVGImageWidget(image: AssetsManager.timeHistory,width: 30.w,height: 30.h,),
                 ),
               ],
             ),
@@ -159,11 +219,10 @@ class _ClosedClaimsScreenState extends State<ClosedClaimsScreen> {
                   SizedBox(height: 10.h,),
                   RepliesWidget(claimType: 4,ctx: context , submitOnly: true , comments: claimDetailsModel!.data.comments,claimId: widget.claimId,status: claimDetailsModel!.data.status),
                   SizedBox(height: 10.h,),
-                 _permissions.contains('add_materials_to_closed_claim') ? AddMaterialsButton(materials: claimDetailsModel!.data.material,referenceId:claimDetailsModel!.data.referenceId,claimId: claimDetailsModel!.data.id,) : const SizedBox(),
+                 _permissions.contains('add_items_to_closed_claim_request') ? AddMaterialsButton(materials: claimDetailsModel!.data.material,referenceId:claimDetailsModel!.data.referenceId,claimId: claimDetailsModel!.data.id,) : const SizedBox(),
                   SizedBox(height: 10.h,),
                   TenantSignatureButton(claimId: widget.claimId,referenceId: widget.referenceId , ctx: context,),
                   SizedBox(height: 10.h,),
-              
                 ],
               ),
             ),
@@ -197,10 +256,32 @@ class _ClosedClaimsScreenState extends State<ClosedClaimsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocConsumer<ClaimDetailsCubit, ClaimDetailsState>(
+      listener: (context, state) {
+        if (state is ClaimDeleted) {
+          print("✅ Claim deleted — navigating to home");
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            Routes.home,
+                (route) => false,
+          );
+        }
+        else if (state is ClaimDetailsError){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  state.msg),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+  builder: (context, state) {
     return BlocBuilder<ClaimDetailsCubit , ClaimDetailsState>(builder: (context , state){
       return Scaffold(
           body: checkState(state)
       );
     });
+  },
+);
   }
 }

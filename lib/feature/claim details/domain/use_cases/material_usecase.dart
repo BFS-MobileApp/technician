@@ -25,6 +25,16 @@ class DeleteMaterialUseCase implements UseCase<bool, String> {
     return claimsDetailsRepository.deleteMaterial(materialId);
   }
 }
+class DeleteClaimUseCase implements UseCase<bool, String> {
+  final ClaimsDetailsRepository claimsDetailsRepository;
+
+  DeleteClaimUseCase({required this.claimsDetailsRepository});
+
+  @override
+  Future<Either<Failures, bool>> call(String claimId) {
+    return claimsDetailsRepository.deleteClaim(claimId);
+  }
+}
 class EditMaterialQuantityUseCase implements UseCase<bool, EditMaterialParams> {
   final ClaimsDetailsRepository claimsDetailsRepository;
 

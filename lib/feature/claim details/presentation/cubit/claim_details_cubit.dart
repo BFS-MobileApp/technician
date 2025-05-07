@@ -32,10 +32,12 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
   final ClaimDetailsUseCase claimDetailsUseCase;
   final MaterialUseCase materialUseCase;
   final DeleteMaterialUseCase deleteMaterialUseCase;
+  final DeleteClaimUseCase deleteClaimUseCase;
   final EditMaterialQuantityUseCase editMaterialQuantityUseCase;
   final AddMaterialUseCase addMaterialUseCase;
   final StartAndEndWorkUseCase startAndEndWorkUseCase;
   final AddCommentUseCase addCommentUseCase;
+  final UploadFileUseCase uploadFileUseCase;
   final AddSignatureUseCase addSignatureUseCase;
   final ChangeClaimStatusUseCase changeClaimStatusUseCase;
   final UploadCommentFileUseCase uploadCommentFileUseCase;
@@ -44,7 +46,7 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
   bool isLoadingMore = false;
   bool hasMore = true;
 
-  ClaimDetailsCubit( {required this.changeClaimStatusUseCase ,required this.addMaterialUseCase,required this.editMaterialQuantityUseCase,required this.deleteMaterialUseCase,required this.materialUseCase, required this.addSignatureUseCase , required this.addCommentUseCase , required this.downloadSignatureUseCase , required this.assignClaimUseCase , required this.changePriorityUseCase , required this.claimDetailsUseCase , required this.startAndEndWorkUseCase, required this.uploadCommentFileUseCase}) : super(ClaimDetailsInitial());
+  ClaimDetailsCubit( {required this.changeClaimStatusUseCase ,required this.uploadFileUseCase,required this.deleteClaimUseCase,required this.addMaterialUseCase,required this.editMaterialQuantityUseCase,required this.deleteMaterialUseCase,required this.materialUseCase, required this.addSignatureUseCase , required this.addCommentUseCase , required this.downloadSignatureUseCase , required this.assignClaimUseCase , required this.changePriorityUseCase , required this.claimDetailsUseCase , required this.startAndEndWorkUseCase, required this.uploadCommentFileUseCase}) : super(ClaimDetailsInitial());
 
   void initLoginPage() => emit(ClaimDetailsInitial());
 
@@ -63,6 +65,24 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
             (failures) => ClaimDetailsError(msg: failures.msg),
             (params) => ClaimDetailsLoaded(model: params)));
   }
+  Future<void> deleteClaim(String claimId) async {
+    emit(ClaimDetailsIsLoading());
+
+    Either<Failures, bool> response = await deleteClaimUseCase(claimId);
+
+    emit(response.fold(
+          (failure) => ClaimDetailsError(msg: failure.msg),
+          (success) {
+        if (success) {
+          print("🔥 Emitting ClaimDeleted");
+          return ClaimDeleted();
+        } else {
+          return ClaimDetailsError(msg: "Failed to delete Claim.");
+        }
+      },
+    ));
+  }
+
   Future<void> getMaterial(String referenceId, {int page = 1, String? search}) async {
     emit(ClaimDetailsIsLoading());
 
@@ -98,6 +118,7 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
       },
     ));
   }
+
   Future<void> addMaterial(int claimId, List<ProductItem> products) async {
     emit(ClaimDetailsIsLoading());
 
@@ -224,6 +245,36 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
         context.read<ClaimDetailsCubit>().getClaimDetails(referenceId);
       },
     );
+  }
+
+  Future<bool> uploadFile(BuildContext context, String claimId, List<File> files) async {
+    try {
+      emit(UploadingCommentFile());
+      
+      Either<Failures, bool> response = await uploadFileUseCase(UploadFileParams(claimId: claimId, files: files));
+      
+     return response.fold(
+            (failure) {
+          emit(UploadCommentFileError(msg: failure.msg));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Failed to upload file: ${failure.msg}"), backgroundColor: Colors.red),
+          );
+          return false;
+        },
+            (success) {
+          emit(UploadCommentFileSuccess());
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("File uploaded successfully!"), backgroundColor: Colors.green),
+      
+          );
+          context.read<ClaimDetailsCubit>().getClaimDetails(claimId);
+          return true;
+        },
+      );
+    } catch (e) {
+      emit(UploadCommentFileError(msg: e.toString()));
+      return false;
+    }
   }
 
 
