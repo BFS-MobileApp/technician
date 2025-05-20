@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:technician/config/routes/app_routes.dart';
 import '../../../../config/PrefHelper/helper.dart';
 
 import 'package:technician/core/utils/app_consts.dart';
@@ -258,7 +259,7 @@ class _ReassignButtonState extends State<ReassignButton> {
                               Helper.assignFormatDateTime(endDate.toString()),
                             ).then((value){
                               if(value){
-                                Navigator.pop(widget.ctx , true);
+                                Navigator.pushReplacementNamed(context, Routes.home);
                                 //BlocProvider.of<ClaimDetailsCubit>(context).getClaimDetails(widget.referenceId);
                               }
                             });

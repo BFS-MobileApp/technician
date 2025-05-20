@@ -84,19 +84,15 @@ class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
   @override
   Future<Either<Failures, ClaimDetailsModel>> getClaimDetails(String referenceId) async {
     if(await networkInfo.isConnected){
-      try{
         final response = await claimsDetailsDataSource.getClaimDetails(referenceId);
         print(response['data']);
         final int statusCode = response['statusCode'];
-        if(statusCode == 200){
+        if(statusCode == 200 || statusCode == 201){
           final ClaimDetailsModel claims = ClaimDetailsModel.fromJson(response['data']);
           return Right(claims);
         } else {
           return Left(ServerFailure(msg: 'error'.tr));
         }
-      } on ServerException{
-        return Left(ServerFailure(msg: 'error'.tr));
-      }
     } else {
       return Left(CashFailure(msg: 'connectionError'.tr));
     }
@@ -266,7 +262,7 @@ class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
         final response = await claimsDetailsDataSource.uploadFile(claimId, files);
         final int statusCode = response['statusCode'];
 
-        if (statusCode == 200) {
+        if (statusCode == 200 || statusCode == 201) {
           return const Right(true);
         } else {
           return Left(ServerFailure(msg: 'Failed to upload file'));

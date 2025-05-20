@@ -267,7 +267,7 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
             SnackBar(content: Text("File uploaded successfully!"), backgroundColor: Colors.green),
       
           );
-          context.read<ClaimDetailsCubit>().getClaimDetails(claimId);
+          // context.read<ClaimDetailsCubit>().getClaimDetails(claimId);
           return true;
         },
       );

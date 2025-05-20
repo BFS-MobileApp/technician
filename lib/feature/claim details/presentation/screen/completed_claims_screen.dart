@@ -246,7 +246,7 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
           onPressed: (){
             BlocProvider.of<ClaimDetailsCubit>(context).changeClaimStatus(widget.claimId , 'closed').then((value){
               if(value){
-                Navigator.pop(context , true);
+                Navigator.pushReplacementNamed(context, Routes.home);
               }
             });
           },

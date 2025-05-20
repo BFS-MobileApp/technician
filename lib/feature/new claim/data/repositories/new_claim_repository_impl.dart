@@ -177,7 +177,6 @@ class NewClaimRepositoryImpl extends NewClaimRepository{
       String priority,
       ) async{
     if(await networkInfo.isConnected){
-      try{
         final response = await newClaimDataSource.updateClaim(categoryId ,
             subCategoryId , claimTypeId , description , availableTime , availableDate,
             // file,
@@ -186,17 +185,14 @@ class NewClaimRepositoryImpl extends NewClaimRepository{
         );
         final int statusCode = response['statusCode'];
         print(response['data']);
-        if(statusCode == 200){
-          MessageWidget.showSnackBar(response['data']['message'], AppColors.green);
+        if(statusCode == 200 || statusCode == 201){
+          // MessageWidget.showSnackBar(response['data']['message'], AppColors.green);
           AddNewClaim addNewClaim = const AddNewClaim(result: true , claimId: "ok");
           return Right(addNewClaim);
         } else {
           MessageWidget.showSnackBar(response['data']['message'], AppColors.red);
           return Left(ServerFailure(msg: response['data']['errors'].toString()));
         }
-      } on ServerException{
-        return Left(ServerFailure(msg: 'error'.tr));
-      }
     } else {
       return Left(CashFailure(msg: 'connectionError'.tr));
     }

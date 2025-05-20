@@ -810,11 +810,25 @@ class _EditClaimScreenState extends State<EditClaimScreen> {
                                                 selectedTime != null &&
                                                 _descriptionController.text.trim().isNotEmpty) {
 
-                                              // ✅ Check if user selected images
+                                              final now = DateTime.now();
+                                              final today = DateTime(now.year, now.month, now.day);
+                                              final selected = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+
+                                              // ✅ Check if selected date is today or in the future
+                                              if (selected.isBefore(today)) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text('Available Date Must be today or day after this.'),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                                return;
+                                              }
+
+                                              // ✅ Upload images if any
                                               if (imageFiles.isNotEmpty) {
                                                 final files = imageFiles.map((xfile) => File(xfile.path)).toList();
 
-                                                // ✅ Call uploadFile first
                                                 final success = await context.read<ClaimDetailsCubit>().uploadFile(
                                                   context,
                                                   widget.claimsModel.data.id.toString(),
@@ -822,15 +836,17 @@ class _EditClaimScreenState extends State<EditClaimScreen> {
                                                 );
 
                                                 if (!success) {
-                                                  // ❌ Upload failed, show error and STOP
                                                   ScaffoldMessenger.of(context).showSnackBar(
-                                                    SnackBar(content: Text('Failed to upload files. Please try again.'), backgroundColor: Colors.red),
+                                                    SnackBar(
+                                                      content: Text('Failed to upload files. Please try again.'),
+                                                      backgroundColor: Colors.red,
+                                                    ),
                                                   );
-                                                  return; // Stop here
+                                                  return;
                                                 }
                                               }
 
-                                              // ✅ If upload successful or no files, continue updateClaim
+                                              // ✅ Continue with updateClaim
                                               context.read<NewClaimCubit>().updateClaim(
                                                 selectedCategory!,
                                                 selectedSubCategory!,
@@ -844,7 +860,10 @@ class _EditClaimScreenState extends State<EditClaimScreen> {
 
                                             } else {
                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(content: Text('Please fill all fields before updating.'), backgroundColor: Colors.red),
+                                                SnackBar(
+                                                  content: Text('Please fill all fields before updating.'),
+                                                  backgroundColor: Colors.red,
+                                                ),
                                               );
                                             }
                                           },
