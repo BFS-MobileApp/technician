@@ -73,7 +73,7 @@ class _AllFilesWidgetState extends State<AllFilesWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextWidget(
-              text: 'allFiles'.tr,
+              text: 'uploadedFiles'.tr,
               fontSize: 16.fSize,
               fontWeight: FontWeight.w600,
               fontColor: Theme.of(context).textTheme.bodySmall?.color,

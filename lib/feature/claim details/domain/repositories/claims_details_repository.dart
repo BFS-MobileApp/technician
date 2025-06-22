@@ -25,6 +25,8 @@ abstract class ClaimsDetailsRepository{
 
   Future<Either<Failures, bool>> deleteClaim(String claimId);
 
+  Future<Either<Failures, bool>> deleteComment(String commentId);
+
   Future<Either<Failures, bool>> editMaterialQuantity(String materialId, int quantity);
 
   Future<Either<Failures, bool>> addMaterial(AddMaterialParams params);

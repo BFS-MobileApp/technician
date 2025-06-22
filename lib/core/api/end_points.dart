@@ -46,6 +46,8 @@ class EndPoints{
 
   static String deleteClaim(String claimId) => 'claims/$claimId';
 
+  static String deleteComment(String commentId) => 'claims/comment/$commentId/delete';
+
   static String editMaterial(String materialId) => 'claims/update_qty/$materialId';
 
   static String uploadFile(String claimId) => 'claims/$claimId/addFile';

@@ -85,11 +85,12 @@ class Helper{
     }
   }
 
-  static String convertSecondsToDate(String selectedDate){
+  static String convertSecondsToDate(String selectedDate) {
     DateTime dateTime = DateTime.parse(selectedDate);
-    String formattedDate = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+    String formattedDate = DateFormat('yyyy-MM-dd hh:mm a').format(dateTime);
     return formattedDate;
   }
+
 
   static String extractDate(String dateTime) {
     if(dateTime == ''){
@@ -108,7 +109,7 @@ class Helper{
 
   static String calculateDuration(String startOn, String endOn) {
     if(startOn == '' || endOn == ''){
-      return '${0}d ${0}h ${0}m';
+      return '${0}D ${0}H ${0}M';
     }
     DateTime start = DateTime.parse(startOn);
     DateTime end = DateTime.parse(endOn);

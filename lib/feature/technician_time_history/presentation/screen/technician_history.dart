@@ -151,7 +151,13 @@ class _TechnicianHistoryState extends State<TechnicianHistory>
                       SizedBox(
                         height: 610.h,
                         child: ListView.builder(itemCount: widget.timeList.length , itemBuilder: (ctx , pos){
-                          return buildRow(widget.timeList[pos].createdBy.avatar,Helper.extractDate(widget.timeList[pos].startOn) , Helper.extractTime(widget.timeList[pos].startOn), Helper.extractDate(widget.timeList[pos].endOn) , Helper.extractTime(widget.timeList[pos].endOn), Helper.calculateDuration(widget.timeList[pos].startOn , widget.timeList[pos].endOn));
+                          return buildRow(widget.timeList[pos].createdBy.avatar,
+                              Helper.extractDate(widget.timeList[pos].startOn) ,
+                              Helper.extractTime(widget.timeList[pos].startOn),
+                              Helper.extractDate(widget.timeList[pos].endOn) ,
+                              Helper.extractTime(widget.timeList[pos].endOn),
+                              Helper.calculateDuration(widget.timeList[pos].startOn ,
+                                  widget.timeList[pos].endOn));
                         }),
                       )
                     ],

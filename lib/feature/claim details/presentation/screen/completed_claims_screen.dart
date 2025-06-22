@@ -27,6 +27,7 @@ import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 
 import '../../../../config/PrefHelper/prefs.dart';
+import '../../../../res/colors.dart';
 import '../../../login/presentation/screen/login_screen.dart';
 import '../widgets/add_materials_button.dart';
 import 'edit_claim_screen.dart';
@@ -85,15 +86,21 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
     ));
   }
 
-  Widget _statusInfoWidget(){
-    return ClaimDetailsCardItem(cardChildWidget: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClaimDetailsStatusWidget(itemName: 'status'.tr, isStatus: true, itemValue: claimDetailsModel!.data.status),
-        ClaimDetailsTextItem(itemName: 'assignTo'.tr, itemValue: employeeName() , isClickable: false, type: '',),
-      ],
-    ));
+  Widget _statusInfoWidget() {
+    return ClaimDetailsCardItem(
+        cardChildWidget: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClaimDetailsTextItem(
+              itemName: 'assignTo'.tr,
+              itemValue: employeeName(),
+              isClickable: false,
+              type: '',
+            ),
+          ],
+        ));
   }
+
 
   String employeeName() {
     if (claimDetailsModel!.data.employees.isEmpty) {
@@ -121,7 +128,7 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: MColors.gray,
         child: Column(
           children: [
             SizedBox(height: 20.h,),
@@ -135,64 +142,56 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
                     image: AssetsManager.backIcon2,
                   ),
                 ),
-               GestureDetector(
-                      onTap: () => showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text("Are you sure?"),
-                          content: const Text("Do you really want to delete this claim?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text("No"),
-                            ),
-                            TextButton(
-                              onPressed: () async {
-                                if (_permissions.contains("delete_claims")) {
-                                  Navigator.pop(context);
-                                  await context.read<ClaimDetailsCubit>()
-                                      .deleteClaim(claimDetailsModel!.data.id.toString());
-                                }else{
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('You do not have permission to delete this claim.'),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
-                                }
-                              },
-                              child: const Text("Yes"),
-                            ),
-                          ],
+                _permissions.contains("delete_claims") ? GestureDetector(
+                  onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text("Are you sure?"),
+                      content: const Text("Do you really want to delete this claim?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("No"),
                         ),
-                      ),
-                      child: SVGImageWidget(
-                        image: AssetsManager.clearIcon,
-                        width: 30.w,
-                        height: 30.h,
-                      ),
+                        TextButton(
+                          onPressed: () async {
+                            if (_permissions.contains("delete_claims")) {
+                              Navigator.pop(context);
+                              await context.read<ClaimDetailsCubit>()
+                                  .deleteClaim(claimDetailsModel!.data.id.toString());
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('You do not have permission to delete this claim.'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          },
+                          child: const Text("Yes"),
+                        ),
+                      ],
                     ),
+                  ),
+                  child: SVGImageWidget(
+                    image: AssetsManager.clearIcon,
+                    width: 30.w,
+                    height: 30.h,
+                  ),
+                )  : const SizedBox(),
                 SizedBox(width: 5.h,),
-                GestureDetector(
+                _permissions.contains("update_claims") ? GestureDetector(
                   onTap: (){
-                    if (_permissions.contains("update_claims")) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditClaimScreen(
-                                claimsModel: claimDetailsModel!,
-                              )));
-                    }else{
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('You do not have permission to update this claim.'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditClaimScreen(
+                              claimsModel: claimDetailsModel!,
+                            )));
+
                   },
                   child: SVGImageWidget(image: AssetsManager.editProfile,width: 30.w,height: 30.h,),
-                ),
+                ):  const SizedBox() ,
                 SizedBox(width: 5.h,),
                 GestureDetector(
                   onTap: ()=>Navigator.pushNamed(context , Routes.technicianHistory , arguments: TechnicianHistoryArguments(logList: claimDetailsModel!.data.logs, employeesList: claimDetailsModel!.data.employees , timeList: claimDetailsModel!.data.times)),
@@ -211,15 +210,19 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
                   SizedBox(height: 5.h,),
                   _statusInfoWidget(),
                   SizedBox(height: 10.h,),
-                  AppHeadline(title: 'replies'.tr,),
-                  RepliesWidget(claimType: 3,ctx: context , submitOnly: false , comments: claimDetailsModel!.data.comments,claimId: widget.claimId,status: claimDetailsModel!.data.status),
-                  SizedBox(height: 10.h,),
                   AddMaterialsButton(materials: claimDetailsModel!.data.material,referenceId:claimDetailsModel!.data.referenceId,claimId: claimDetailsModel!.data.id,),
                   SizedBox(height: 10.h,),
                   _submitButtonWidget(),
                   SizedBox(height: 10.h,),
                   TenantSignatureButton(claimId: widget.claimId,referenceId: widget.referenceId , ctx: context,),
                   SizedBox(height: 10.h,),
+                  ClaimDetailsCardItem(
+                    cardChildWidget: RepliesWidget(claimType: 3,ctx: context ,
+                      submitOnly: false , comments: claimDetailsModel!.data.comments,
+                      claimId: widget.claimId,status: claimDetailsModel!.data.status,
+                      referenceId: widget.referenceId,
+                      claimDetailsModel: claimDetailsModel!,),
+                  ),
                 ],
               ),
             ),
@@ -311,6 +314,7 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
   builder: (context, state) {
     return BlocBuilder<ClaimDetailsCubit , ClaimDetailsState>(builder: (context , state){
       return Scaffold(
+        backgroundColor: MColors.gray,
           body: checkState(state)
       );
     });

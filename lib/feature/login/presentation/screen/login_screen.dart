@@ -174,7 +174,11 @@ class _LoginScreenState extends State<LoginScreen> {
       showErrorMessage(state.msg);
       return loginWidget();
     } else if(state is LoginLoaded) {
-      moveToLoginScreen();
+      if(state.login.role.contains("employee")){
+        moveToLoginScreen();
+      }else{
+        showErrorMessage('permissionDenied'.tr);
+      }
       return loginWidget();
     } else {
       return loginWidget();

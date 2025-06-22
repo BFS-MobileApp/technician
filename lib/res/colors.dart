@@ -71,7 +71,7 @@ class MColors {
 
   static const Color darkGrey = Color(0xFF848B92);
   static const Color dividerColor = Color(0xFFEBEBEB);
-  static const Color gray = Color(0xFFE7E8EA);
+  static const Color gray = Color(0xFFECEEEF);
   static const Color gold = Color(0xFFdebc29);
   static const Color yellow = Color(0xFFF0DF00);
   static const Color orange = Color(0xFFE8590C);

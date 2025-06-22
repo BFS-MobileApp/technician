@@ -45,12 +45,12 @@ class ClaimDetailsTextItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10.w , vertical: 10.h),
-      child: Column(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextWidget(text: itemName, fontSize: 16.fSize , fontWeight: FontWeight.w600, fontColor: const Color(0xFF2E435C),),
-          SizedBox(height: 5.h,),
+          SizedBox(width: 5.w,),
           isClickable ? GestureDetector(
             onTap: (){
               launchItem();

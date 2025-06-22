@@ -104,6 +104,11 @@ class ClaimsDetailsDataSourceImpl extends ClaimsDetailsDataSource {
     return res;
   }
   @override
+  Future<Map<String, dynamic>> deleteComment(String commentId) async {
+    final res = await consumer.delete(EndPoints.deleteComment(commentId));
+    return res;
+  }
+  @override
   Future<Map<String, dynamic>> editMaterialQuantity(String materialId, int quantity) async {
     final response = await consumer.patch(
       EndPoints.editMaterial(materialId),

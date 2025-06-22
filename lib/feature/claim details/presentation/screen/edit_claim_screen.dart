@@ -814,16 +814,16 @@ class _EditClaimScreenState extends State<EditClaimScreen> {
                                               final today = DateTime(now.year, now.month, now.day);
                                               final selected = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
 
-                                              // ✅ Check if selected date is today or in the future
-                                              if (selected.isBefore(today)) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text('Available Date Must be today or day after this.'),
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                );
-                                                return;
-                                              }
+                                              // // ✅ Check if selected date is today or in the future
+                                              // if (selected.isBefore(today)) {
+                                              //   ScaffoldMessenger.of(context).showSnackBar(
+                                              //     const SnackBar(
+                                              //       content: Text('Available Date Must be today or day after this.'),
+                                              //       backgroundColor: Colors.red,
+                                              //     ),
+                                              //   );
+                                              //   return;
+                                              // }
 
                                               // ✅ Upload images if any
                                               if (imageFiles.isNotEmpty) {

@@ -31,6 +31,7 @@ import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 
 import '../../../../config/PrefHelper/prefs.dart';
+import '../../../../res/colors.dart';
 import '../../../login/presentation/screen/login_screen.dart';
 import '../cubit/claim_details_cubit.dart';
 import '../widgets/add_materials_button.dart';
@@ -377,21 +378,18 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
   Widget _statusInfoWidget() {
     return ClaimDetailsCardItem(
         cardChildWidget: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClaimDetailsStatusWidget(
-            itemName: 'status'.tr,
-            isStatus: true,
-            itemValue: claimDetailsModel!.data.status),
-        ClaimDetailsTextItem(
-          itemName: 'assignTo'.tr,
-          itemValue: employeeName(),
-          isClickable: false,
-          type: '',
-        ),
-      ],
-    ));
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClaimDetailsTextItem(
+              itemName: 'assignTo'.tr,
+              itemValue: employeeName(),
+              isClickable: false,
+              type: '',
+            ),
+          ],
+        ));
   }
+
 
   Widget _userInfoWidget() {
     return ClaimDetailsCardItem(
@@ -443,7 +441,7 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.w),
       child: Container(
-        color: Theme.of(context).scaffoldBackgroundColor,
+        color: MColors.gray,
         child: Column(
           children: [
             SizedBox(
@@ -459,7 +457,7 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                     image: AssetsManager.backIcon2,
                   ),
                 ),
-                GestureDetector(
+                _permissions.contains("delete_claims") ? GestureDetector(
                   onTap: () => showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -499,35 +497,26 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                     width: 30.w,
                     height: 30.h,
                   ),
-                ),
+                ) : const SizedBox(),
                 SizedBox(
                   width: 5.h,
                 ),
-                GestureDetector(
+                _permissions.contains("update_claims") ? GestureDetector(
                   onTap: () {
-                    if (_permissions.contains("update_claims")) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditClaimScreen(
-                                    claimsModel: claimDetailsModel!,
-                                  )));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'You do not have permission to update this claim.'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => EditClaimScreen(
+                              claimsModel: claimDetailsModel!,
+                            )));
+
                   },
                   child: SVGImageWidget(
                     image: AssetsManager.editProfile,
                     width: 30.w,
                     height: 30.h,
                   ),
-                ),
+                ) :  const SizedBox() ,
                 SizedBox(
                   width: 5.h,
                 ),
@@ -562,67 +551,8 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                   SizedBox(
                     height: 10.h,
                   ),
-                  AppHeadline(
-                    title: 'replies'.tr,
-                  ),
-                  RepliesWidget(
-                      claimType: 2,
-                      ctx: context,
-                      submitOnly: false,
-                      comments: claimDetailsModel!.data.comments,
-                      claimId: widget.claimId,
-                      status: claimDetailsModel!.data.status),
+
                   _techWorkButtons(),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  GestureDetector(
-                    onTap: () async {
-                      showAttachmentDialog(context,
-                          (List<File> selectedFiles) async {
-                        uploadFile(context, selectedFiles);
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 25, left: 25),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: AppColors.textFieldBorder),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: EdgeInsets.all(8.adaptSize),
-                        child: Row(
-                          children: [
-                            const SVGImageWidget(
-                                image: AssetsManager.upload,
-                                width: 15,
-                                height: 15),
-                            SizedBox(width: 8.w),
-                            Text(
-                              'uploadAnyFiles'.tr,
-                              style: GoogleFonts.montserrat(
-                                fontSize: 14.fSize,
-                                fontWeight: FontWeight.w500,
-                                color: AppColors.mainColor,
-                              ),
-                            ),
-                            const Spacer(),
-                            imageFiles.isEmpty
-                                ? const SizedBox()
-                                : InkWell(
-                                    onTap: () async {
-                                      setState(() {
-                                        imageFiles.clear();
-                                        filePicker.path == '';
-                                      });
-                                    },
-                                    child: const Icon(Icons.close),
-                                  ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -648,6 +578,17 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                   ),
                   SizedBox(
                     height: 10.h,
+                  ),
+                  ClaimDetailsCardItem(
+                    cardChildWidget: RepliesWidget(
+                      claimType: 2,
+                      ctx: context,
+                      submitOnly: false,
+                      comments: claimDetailsModel!.data.comments,
+                      claimId: widget.claimId,
+                      status: claimDetailsModel!.data.status,
+                      referenceId: widget.referenceId,
+                      claimDetailsModel: claimDetailsModel!,),
                   ),
                 ],
               ),
@@ -746,7 +687,10 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
       builder: (context, state) {
         return BlocBuilder<ClaimDetailsCubit, ClaimDetailsState>(
             builder: (context, state) {
-          return Scaffold(body: checkState(state));
+          return Scaffold(
+            backgroundColor: MColors.gray,
+              body: checkState(state)
+          );
         });
       },
     );

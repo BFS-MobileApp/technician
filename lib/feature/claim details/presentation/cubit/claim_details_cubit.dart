@@ -32,6 +32,7 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
   final ClaimDetailsUseCase claimDetailsUseCase;
   final MaterialUseCase materialUseCase;
   final DeleteMaterialUseCase deleteMaterialUseCase;
+  final DeleteCommentUseCase deleteCommentUseCase;
   final DeleteClaimUseCase deleteClaimUseCase;
   final EditMaterialQuantityUseCase editMaterialQuantityUseCase;
   final AddMaterialUseCase addMaterialUseCase;
@@ -46,7 +47,7 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
   bool isLoadingMore = false;
   bool hasMore = true;
 
-  ClaimDetailsCubit( {required this.changeClaimStatusUseCase ,required this.uploadFileUseCase,required this.deleteClaimUseCase,required this.addMaterialUseCase,required this.editMaterialQuantityUseCase,required this.deleteMaterialUseCase,required this.materialUseCase, required this.addSignatureUseCase , required this.addCommentUseCase , required this.downloadSignatureUseCase , required this.assignClaimUseCase , required this.changePriorityUseCase , required this.claimDetailsUseCase , required this.startAndEndWorkUseCase, required this.uploadCommentFileUseCase}) : super(ClaimDetailsInitial());
+  ClaimDetailsCubit( {required this.changeClaimStatusUseCase ,required this.deleteCommentUseCase,required this.uploadFileUseCase,required this.deleteClaimUseCase,required this.addMaterialUseCase,required this.editMaterialQuantityUseCase,required this.deleteMaterialUseCase,required this.materialUseCase, required this.addSignatureUseCase , required this.addCommentUseCase , required this.downloadSignatureUseCase , required this.assignClaimUseCase , required this.changePriorityUseCase , required this.claimDetailsUseCase , required this.startAndEndWorkUseCase, required this.uploadCommentFileUseCase}) : super(ClaimDetailsInitial());
 
   void initLoginPage() => emit(ClaimDetailsInitial());
 
@@ -60,7 +61,8 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
 
   Future<void> getClaimDetails(String referenceId) async{
     emit(ClaimDetailsIsLoading());
-    Either<Failures , ClaimDetailsModel> response = await claimDetailsUseCase(ClaimsDetailsParams(referenceId: referenceId, page: 0));
+    Either<Failures , ClaimDetailsModel> response = await claimDetailsUseCase(
+        ClaimsDetailsParams(referenceId: referenceId, page: 0));
     emit(response.fold(
             (failures) => ClaimDetailsError(msg: failures.msg),
             (params) => ClaimDetailsLoaded(model: params)));
@@ -221,6 +223,40 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
       },
     );
   }
+
+  Future<bool> deleteComment(String commentId,String claimId) async {
+    emit(ClaimDetailsIsLoading());
+
+    final response = await deleteCommentUseCase(commentId);
+
+    return response.fold(
+          (failure) {
+        emit(ClaimDetailsError(msg: failure.msg));
+        return false;
+      },
+          (success) async {
+        if (success) {
+          final updatedDetails = await claimDetailsUseCase(ClaimsDetailsParams(referenceId: claimId, page: 0)); // You may need to store this ID somewhere in your cubit
+
+          return updatedDetails.fold(
+                (failure) {
+              emit(ClaimDetailsError(msg: failure.msg));
+              return false;
+            },
+                (model) {
+              emit(ClaimDetailsLoaded( model: model));
+              return true;
+            },
+          );
+        } else {
+          emit(ClaimDetailsError(msg: "Failed to delete comment."));
+          return false;
+        }
+      },
+    );
+  }
+
+
 
   Future<void> uploadCommentFile(BuildContext context, String claimId, String commentId, List<File> file, String status,String referenceId) async {
     emit(UploadingCommentFile());

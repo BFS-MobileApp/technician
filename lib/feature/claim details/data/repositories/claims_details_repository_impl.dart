@@ -237,6 +237,25 @@ class ClaimsDetailsRepositoryImpl extends ClaimsDetailsRepository{
     }
   }
   @override
+  Future<Either<Failures, bool>> deleteComment(String commentId) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final response = await claimsDetailsDataSource.deleteComment(commentId);
+        print(response['data']);
+        final int statusCode = response['statusCode'];
+        if (statusCode == 200) {
+          return const Right(true); // Deletion was successful
+        } else {
+          return Left(ServerFailure(msg: 'error'.tr));
+        }
+      } on ServerException {
+        return Left(ServerFailure(msg: 'error'.tr));
+      }
+    } else {
+      return Left(CashFailure(msg: 'connectionError'.tr));
+    }
+  }
+  @override
   Future<Either<Failures, bool>> uploadCommentFile(String claimId, String commentId, List<File> file, String status) async {
     if (await networkInfo.isConnected) {
       try {

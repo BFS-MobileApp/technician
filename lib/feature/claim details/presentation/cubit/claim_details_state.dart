@@ -56,6 +56,10 @@ class MaterialDeleted extends ClaimDetailsState {
   @override
   List<Object?> get props => [];
 }
+class CommentDeleted extends ClaimDetailsState {
+  @override
+  List<Object?> get props => [];
+}
 class MaterialEdited extends ClaimDetailsState {
   @override
   List<Object?> get props => [];

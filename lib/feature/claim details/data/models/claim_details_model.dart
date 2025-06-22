@@ -44,9 +44,10 @@ class Data {
   List<FileElement> files;
   Comments comments;
   List<Employee> employees;
-  Creator creator;
+
   List<Log> logs;
   List<Time> times;
+  Creator creator;
   List<ClaimMaterials> material;
 
   Data({
@@ -132,6 +133,51 @@ class Data {
   };
 }
 
+
+
+class TimeCreatedBy {
+  int id;
+  String name;
+  String avatar;
+
+  TimeCreatedBy({
+    required this.id,
+    required this.name,
+    required this.avatar,
+  });
+
+  factory TimeCreatedBy.fromJson(Map<String, dynamic> json) => TimeCreatedBy(
+    id: json["id"]??0,
+    name: json["name"]??'',
+    avatar: json["avatar"]??'',
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "avatar": avatar,
+  };
+}
+class CreatedBy {
+  int id;
+  String name;
+
+  CreatedBy({
+    required this.id,
+    required this.name,
+  });
+
+  factory CreatedBy.fromJson(Map<String, dynamic> json) => CreatedBy(
+    id: json["id"]??0,
+    name: json["name"]??'',
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+  };
+}
+
 class Time {
   int id;
   String startOn;
@@ -159,31 +205,6 @@ class Time {
     "created_by": createdBy.toJson(),
   };
 }
-
-class TimeCreatedBy {
-  int id;
-  String name;
-  String avatar;
-
-  TimeCreatedBy({
-    required this.id,
-    required this.name,
-    required this.avatar,
-  });
-
-  factory TimeCreatedBy.fromJson(Map<String, dynamic> json) => TimeCreatedBy(
-    id: json["id"]??0,
-    name: json["name"]??'',
-    avatar: json["avatar"]??'',
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "avatar": avatar,
-  };
-}
-
 class Log {
   String name;
   dynamic badge;
@@ -215,27 +236,6 @@ class Log {
     "created_by": createdBy.toJson(),
   };
 }
-
-class CreatedBy {
-  int id;
-  String name;
-
-  CreatedBy({
-    required this.id,
-    required this.name,
-  });
-
-  factory CreatedBy.fromJson(Map<String, dynamic> json) => CreatedBy(
-    id: json["id"]??0,
-    name: json["name"]??'',
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-  };
-}
-
 class Employee {
   int id;
   String name;

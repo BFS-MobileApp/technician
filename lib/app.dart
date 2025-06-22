@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:new_version_plus/new_version_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:technician/config/theme/app_theme.dart';
 import 'package:technician/core/utils/app_strings.dart';
@@ -23,6 +25,7 @@ import 'package:technician/feature/notification_details/presentation/cubit/notif
 import 'package:technician/feature/reset_password/presentation/cubit/reset_password_cubit.dart';
 import 'package:technician/feature/settings/presentation/cubit/settings_cubit.dart';
 import 'package:technician/feature/splash/presentation/cubit/splash_cubit.dart';
+import 'package:technician/widgets/force_update_page.dart';
 import 'config/routes/app_routes.dart';
 import 'config/theme/dark_theme_provider.dart';
 import 'config/theme/dark_theme_style.dart';

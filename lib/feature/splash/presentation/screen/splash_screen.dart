@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:new_version_plus/new_version_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../config/PrefHelper/helper.dart';
 
 import 'package:technician/config/PrefHelper/prefs.dart';
@@ -14,6 +16,8 @@ import 'package:technician/core/utils/size_utils.dart';
 import 'package:technician/widgets/logo_widget.dart';
 import 'package:technician/widgets/text_widget.dart';
 
+import '../../../../widgets/force_update_page.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -22,30 +26,59 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  late Timer _timer;
+   Timer? _timer;
   double _opacity = 0.0;
   double _scale = 0.5;
 
   @override
   void initState() {
     super.initState();
+
     Future.delayed(Duration.zero, () {
       Helper.getDefaultLanguage(); // Ensures Get.updateLocale runs after build
     });
     Helper.getCurrentLocal();
-    _handleDeepLink();
+
+
     Future.delayed(const Duration(milliseconds: 200), () {
       setState(() {
         _opacity = 1.0;
         _scale = 1.0;
       });
+      checkVersion(context);
     });
+
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer.cancel();
+    if(_timer != null){
+      _timer!.cancel();
+    }
+
+  }
+  Future<void> checkVersion(BuildContext context) async {
+    final newVersion = NewVersionPlus(
+      androidId: 'com.befalcon.technician',
+      iOSId: '6740636612',
+    );
+
+    final status = await newVersion.getVersionStatus();
+
+    if (status!.canUpdate) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => ForceUpdatePage(updateUrl: status.appStoreLink)),
+      );
+    }else{
+      startTimer();
+    }
+
+  }
+  Future<String> getCurrentVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    return info.version;
   }
 
   Future<void> _handleDeepLink() async {
@@ -57,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> {
         _navigateFromDeepLink(initialLink);
         return;
       } else {
-        startTimer();
+        // startTimer();
       }
       AppLinks().stringLinkStream.listen((String? link) {
         if (link != null) {

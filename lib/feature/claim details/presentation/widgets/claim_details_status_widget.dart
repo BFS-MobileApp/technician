@@ -77,16 +77,16 @@ class ClaimDetailsStatusWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10.w , vertical: 10.h),
-      child: Column(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextWidget(text: itemName, fontSize: 16.fSize , fontWeight: FontWeight.w600, fontColor: const Color(0xFF2E435C),),
-          SizedBox(height: 5.h,),
+          SizedBox(width: 10.w,),
           Row(
             children: [
               isStatus ? SVGImageWidget(image: checkStatusImage(), width: 20.w, height: 20.h) : SVGImageWidget(image: checkPriorityImage(), width: 20.w, height: 20.h) ,
-              SizedBox(width: 5.w,),
+              SizedBox(width: 2.w,),
               isStatus ? TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: Theme.of(context).textTheme.bodySmall!.color,) : TextWidget(text: itemValue, fontSize: 14.fSize , fontWeight: FontWeight.w400, fontColor: Helper.getPriorityColor(itemValue),) ,
             ],
           )

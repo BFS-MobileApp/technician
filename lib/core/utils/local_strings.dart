@@ -5,6 +5,7 @@ class LocalStrings extends Translations {
   Map<String, Map<String, String>> get keys => {
     'ar_AR': {
       "editClaim":"تعديل الطلب",
+      "uploadedFiles" : "الملفات المرفوعه",
       "welcome":"اهلا",
       "noData":"لا يوجد بيانات",
       "welcomePhase":"مرحبا بك في كلاميزر",
@@ -216,8 +217,13 @@ class LocalStrings extends Translations {
       "pleaseAddRemarksFirst":"من فضلك قم بأضافه ملاحظه",
       "sessionExpired": "مده صلاحيه الدخول انتهت",
       "pleaseSignInAgain": "من فضلك سجل الدخول مجددا",
+      "uploadFiles" : "رفع الملفات",
+      "permissionDenied" : "لا تمتلك صلاحيه لتسجيل الدخول"
     },
     'en_US': {
+      "permissionDenied" : "You Don't Have Permission To LogIn",
+      "uploadedFiles" : "Uploaded Files",
+      "uploadFiles" : "Upload Files",
       "editClaim" : "Edit Claim",
       "From Gallery" : "From Gallery",
       "pleaseSignInAgain": "Please sign in again to continue",

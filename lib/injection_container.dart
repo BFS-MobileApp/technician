@@ -130,7 +130,7 @@ Future<void> init() async{
       uploadCommentFileUseCase: sl(),materialUseCase: sl(), deleteMaterialUseCase: sl(),
       editMaterialQuantityUseCase: sl(),
       addMaterialUseCase: sl(),
-      deleteClaimUseCase: sl(), uploadFileUseCase: sl()));
+      deleteClaimUseCase: sl(), uploadFileUseCase: sl(), deleteCommentUseCase: sl()));
   sl.registerFactory(() => ClaimsCubit(allClaimsUseCase: sl() , technicianUseCase: sl()));
   sl.registerFactory(() => TechnicalCubit(technicianUseCase: sl()));
   sl.registerFactory(() => ForgotPasswordCubit(forgotPasswordUseCase: sl()));
@@ -151,6 +151,7 @@ Future<void> init() async{
   sl.registerLazySingleton(() => MaterialUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => DeleteMaterialUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => DeleteClaimUseCase(claimsDetailsRepository: sl()));
+  sl.registerLazySingleton(() => DeleteCommentUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => EditMaterialQuantityUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => AddMaterialUseCase(claimsDetailsRepository: sl()));
   sl.registerLazySingleton(() => SettingsUseCase(settingRepository: sl()));
