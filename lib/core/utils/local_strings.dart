@@ -4,6 +4,7 @@ class LocalStrings extends Translations {
   @override
   Map<String, Map<String, String>> get keys => {
     'ar_AR': {
+      "addClaim":'طلب صيانة',
       "editClaim":"تعديل الطلب",
       "uploadedFiles" : "الملفات المرفوعه",
       "welcome":"اهلا",
@@ -57,7 +58,7 @@ class LocalStrings extends Translations {
       "disable":"تعطيل",
       "claimsScreen":"الطلبات",
       "notification":"الاشعارات",
-      "home":"الصفحة الرئيسية",
+      "home":"الرئيسية",
       "calendar":"المواعيد",
       "settings":"الاعدادات",
       "somethingWentWrong":"حدث خطأ ما",
@@ -221,6 +222,7 @@ class LocalStrings extends Translations {
       "permissionDenied" : "لا تمتلك صلاحيه لتسجيل الدخول"
     },
     'en_US': {
+      "addClaim":'Add Claim',
       "permissionDenied" : "You Don't Have Permission To LogIn",
       "uploadedFiles" : "Uploaded Files",
       "uploadFiles" : "Upload Files",

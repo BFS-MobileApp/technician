@@ -582,7 +582,7 @@ class _ClaimScreenState extends State<ClaimScreen> {
   }
 
   Widget _addNewClaim(){
-    if(widget.screenId == 0 && AppConst.createClaims){
+    if(widget.screenId == 0 && AppConst.createClaims.value){
       return Container(
         margin: EdgeInsets.only(bottom: 10.h),
         child: FloatingActionButton(

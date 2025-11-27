@@ -18,7 +18,7 @@ class EndPoints{
 
   static const String buildings = 'buildings';
 
-  static const String units = 'units';
+  static const String units = 'units?per_page=200';
 
   static const String category = 'claims/categories';
 
