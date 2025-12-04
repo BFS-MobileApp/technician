@@ -31,7 +31,7 @@ dependencies:
   path_provider: ^2.1.4
   permission_handler: ^12.0.1
   saver_gallery: ^4.1.0
-  syncfusion_flutter_signaturepad: ^28.2.12
+  syncfusion_flutter_signaturepad: ^26.2.8
   pdf: ^3.11.1
   printing: ^5.13.3
   google_maps_flutter: any
