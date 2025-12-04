@@ -35,8 +35,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.befalcon.technician"
-    compileSdk 34
-    ndkVersion "25.1.8937393"
+    compileSdk 35
+    ndkVersion "27.0.12077973"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -60,21 +60,17 @@ android {
 
     defaultConfig {
         applicationId "com.befalcon.technician"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()+11
-        versionName "1.0.11"
+        minSdkVersion 23
+        targetSdkVersion 35
+        versionCode flutterVersionCode.toInteger()+22
+        versionName "1.0.22"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     bundle {
         abi {
             enableSplit = true
-        }
-    }
-
-    packagingOptions {
-        jniLibs {
-            useLegacyPackaging = false
         }
     }
 
@@ -101,4 +97,11 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
