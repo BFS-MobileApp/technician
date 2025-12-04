@@ -82,14 +82,14 @@ class DarkStyle {
       ),
 
       // 🔹 Card Theme (Dark Background for Cards)
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: Colors.grey[850], // Dark grey for a clean look
         shadowColor: Colors.black26,
         elevation: 2,
       ),
 
       // 🔹 Dialog Theme
-      dialogTheme: DialogThemeData(
+      dialogTheme: DialogTheme(
         backgroundColor: Colors.grey[850], // Dark background for popups
         titleTextStyle: GoogleFonts.montserrat(
           fontSize: screenWidth * 0.05,
