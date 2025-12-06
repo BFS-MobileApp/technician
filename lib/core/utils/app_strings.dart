@@ -39,6 +39,12 @@ class AppStrings{
 
   static const String createClaims = "create_claims";
 
+  static const String addClaimSignature = "add_claim_signature";
+
+  static const String startEndClaimWork = "start_end_claim_work";
+
+  static const String deleteClaimRepliesAndUpdates = "delete_claim_comments_and_updates";
+
   static const String updateClaims = "update_claims";
 
   static const String viewUpdates = "view_updates";

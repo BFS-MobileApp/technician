@@ -4,6 +4,8 @@ abstract class HomeRemoteDataSource {
 
   Future<Map<String, dynamic>> getUserInfo();
 
+  Future<Map<String, dynamic>> setFcmToken();
+
   Future<Map<String, dynamic>> getClaimsCount();
 
 }

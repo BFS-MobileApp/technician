@@ -868,7 +868,12 @@ class _RepliesWidgetState extends State<RepliesWidget> {
     }
   },
   builder: (context, state) {
-    return repliesWidget();
+
+    if (AppConst.deleteClaimRepliesAndUpdates) {
+      return repliesWidget();
+    }else{
+      return const SizedBox();
+    }
   },
 );
   }

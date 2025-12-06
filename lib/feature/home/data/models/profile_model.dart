@@ -30,6 +30,7 @@ class Data {
   String avatar;
   Profile profile;
   List<String> permissions;
+  //String fcmToken;
 
   Data({
     required this.id,
@@ -39,6 +40,7 @@ class Data {
     required this.avatar,
     required this.profile,
     required this.permissions,
+    //required this.fcmToken
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -49,6 +51,7 @@ class Data {
     avatar: json["avatar"]??'',
     profile: Profile.fromJson(json["profile"]??{}),
     permissions: List<String>.from(json["permissions"].map((x) => x)),
+    //fcmToken: json["fcm_token"] ?? ""
   );
 
   Map<String, dynamic> toJson() => {
@@ -59,6 +62,7 @@ class Data {
     "avatar": avatar,
     "profile": profile.toJson(),
     "permissions": List<dynamic>.from(permissions.map((x) => x)),
+    //"fcm_token": fcmToken
   };
 }
 

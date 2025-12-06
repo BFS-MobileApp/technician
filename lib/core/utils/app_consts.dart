@@ -6,6 +6,12 @@ class AppConst{
 
   static bool readClaims = false;
 
+  static bool startEndClaimWork = false;
+
+  static bool deleteClaimRepliesAndUpdates = false;
+
+  static bool addClaimSignature = false;
+
   static bool updateClaims = false;
 
   static bool viewUpdates = false;

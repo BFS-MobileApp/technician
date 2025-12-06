@@ -15,6 +15,12 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource{
   }
 
   @override
+  Future<Map<String, dynamic>> setFcmToken() async{
+    final res = await consumer.post(EndPoints.setFcmToken);
+    return res;
+  }
+
+  @override
   Future<Map<String, dynamic>> getClaimsCount() async{
     final res = await consumer.get(EndPoints.homeClaims);
     return res;

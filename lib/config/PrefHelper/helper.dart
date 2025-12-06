@@ -43,7 +43,10 @@ class Helper{
 
   static setPermissionRoles(List<String> permissions) {
     if (permissions.contains(AppStrings.createClaims)) AppConst.createClaims.value = true;
+    if (permissions.contains(AppStrings.startEndClaimWork)) AppConst.startEndClaimWork = true;
+    if (permissions.contains(AppStrings.deleteClaimRepliesAndUpdates)) AppConst.deleteClaimRepliesAndUpdates = true;
     if (permissions.contains(AppStrings.readClaims)) AppConst.readClaims = true;
+    if (permissions.contains(AppStrings.addClaimSignature)) AppConst.addClaimSignature = true;
     if (permissions.contains(AppStrings.updateClaims)) AppConst.updateClaims = true;
     if (permissions.contains(AppStrings.viewUpdates)) AppConst.viewUpdates = true;
     if (permissions.contains(AppStrings.viewClaims)) AppConst.viewClaims = true;

@@ -9,6 +9,7 @@ class UserInfo extends Equatable{
   final String mobile;
   final int emailNotification;
   final List<String> permissions;
+  //final String fcmToken;
   const UserInfo({required this.name,required this.email , required this.image , required this.mobile , required this.permissions , required this.id , required this.emailNotification});
 
   @override

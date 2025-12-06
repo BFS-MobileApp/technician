@@ -291,9 +291,11 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     } else if(state is HomeLoaded) {
       print('here');
-      Helper.setPermissionRoles(state.userInfo.permissions);
-      setData(state.userInfo.name);
-      BlocProvider.of<HomeCubit>(context).getClaimsInfo();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Helper.setPermissionRoles(state.userInfo.permissions);
+        setData(state.userInfo.name);
+        BlocProvider.of<HomeCubit>(context).getClaimsInfo();
+      });
       return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
     } else if(state is ClaimsLoaded){
       model = state.homeModel;
