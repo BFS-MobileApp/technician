@@ -62,8 +62,8 @@ android {
         applicationId "com.befalcon.technician"
         minSdkVersion 23
         targetSdkVersion 35
-        versionCode flutterVersionCode.toInteger()+23
-        versionName "1.0.23"
+        versionCode flutterVersionCode.toInteger()+25
+        versionName "1.0.25"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
