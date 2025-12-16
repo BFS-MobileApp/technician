@@ -133,7 +133,7 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
                     ),
                   ),
                   // This button will always show
-                  Padding(
+                  _permissions.contains("add_items_to_claim_request") ? Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: SizedBox(
                       width: double.infinity,
@@ -180,7 +180,7 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
                         ),
                       ),
                     ),
-                  ),
+                  ) : const SizedBox(),
                 ],
               );
             } else if (state is ClaimDetailsError) {

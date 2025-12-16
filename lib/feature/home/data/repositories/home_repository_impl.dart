@@ -22,34 +22,66 @@ class HomeRepositoryImpl extends HomeRepository {
 
   @override
   Future<Either<Failures, UserInfo>> getUserInfo() async {
+    print("🔍 getUserInfo() CALLED");
+
     if (await networkInfo.isConnected) {
+      print("📡 Network Connected");
+
       try {
+        print("➡️ Calling homeRemoteDataSource.getUserInfo()");
         final response = await homeRemoteDataSource.getUserInfo();
+
+        print("📥 Raw Response: $response");
+
         final int statusCode = response['statusCode'];
+        print("🔢 Status Code: $statusCode");
 
         if (statusCode == 200) {
+          print("✅ Success 200 - Parsing ProfileModel");
+
           final ProfileModel model = ProfileModel.fromJson(response['data']);
-          saveUserInfo(model.email, model.name, model.image, model.mobile, model.permissions, model.id, model.emailNotification);
-          // String? token = await FirebaseMessaging.instance.getToken();
-          // if (token != model.fcmToken && model.fcmToken == null){
-          //   homeRemoteDataSource.setFcmToken();
-          // }
+          print("👤 Parsed Model: $model");
+          print("📧 Email: ${model.email}");
+          print("📱 Mobile: ${model.mobile}");
+          print("🎫 Permissions: ${model.permissions}");
+          print("🧿 FCM Token on server: ${model.fcmToken}");
+
+          saveUserInfo(
+            model.email,
+            model.name,
+            model.image,
+            model.mobile,
+            model.permissions,
+            model.id,
+            model.emailNotification,
+          );
+
+          String? token = await FirebaseMessaging.instance.getToken();
+
+          if (token != model.fcmToken) {
+            await homeRemoteDataSource.setFcmToken();
+          } else {
+          }
+
           return Right(model);
+
         } else {
+
           final String errorMsg = response['data']['error'] ?? 'error'.tr;
           return Left(ServerFailure(msg: errorMsg));
         }
+
       } on ServerException catch (e) {
-        // If ServerException has a message field
-        return Left(ServerFailure(msg: e.message!));
-      } catch (e) {
-        // Catch any unexpected error (optional but good practice)
+        return Left(ServerFailure(msg: e.message ?? "Server Error"));
+      } catch (e, stack) {
         return Left(ServerFailure(msg: 'error'.tr));
       }
+
     } else {
       return Left(CashFailure(msg: 'connectionError'.tr));
     }
   }
+
 
 
   @override

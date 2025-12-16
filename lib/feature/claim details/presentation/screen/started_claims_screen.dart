@@ -557,26 +557,26 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                   SizedBox(
                     height: 10.h,
                   ),
-                  AddMaterialsButton(
+                  _permissions.contains("add_items_to_claim_request") ? AddMaterialsButton(
                     materials: claimDetailsModel!.data.material,
                     referenceId: claimDetailsModel!.data.referenceId,
                     claimId: claimDetailsModel!.data.id,
-                  ),
+                  ) : const SizedBox(),
                   SizedBox(
                     height: 10.h,
                   ),
-                  PriorityButton(
+                  _permissions.contains("update_claim_priority") ?  PriorityButton(
                       claimId: widget.claimId,
                       referenceId: widget.referenceId,
-                      ctx: context),
+                      ctx: context) : const SizedBox(),
                   SizedBox(
                     height: 10.h,
                   ),
-                  CompleteButton(
+                  _permissions.contains("submit_done_button") ?  CompleteButton(
                     ctx: context,
                     claimId: widget.claimId,
                     referenceId: widget.referenceId,
-                  ),
+                  ) : const SizedBox(),
                   SizedBox(
                     height: 10.h,
                   ),
