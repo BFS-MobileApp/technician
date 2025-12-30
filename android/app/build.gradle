@@ -2,6 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id("com.google.gms.google-services")
 }
 
 def localProperties = new Properties()
@@ -35,12 +36,13 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.befalcon.technician"
-    compileSdk 34
-    ndkVersion "25.1.8937393"
+    compileSdk 35
+    ndkVersion "27.0.12077973"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
 
     kotlinOptions {
@@ -59,20 +61,20 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.befalcon.technician"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion flutter.targetSdkVersion
-        versionCode flutterVersionCode.toInteger()+4
-        versionName "1.0.4"
+        targetSdkVersion 35
+        versionCode 29
+        versionName "1.0.29"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
-//    lintOptions {
-//        // If you see -Werror here, you can remove it.
-//        // Or change this flag to treat warnings as information
-//        // (not errors)
-//        warningsAsErrors = false
-//    }
+    bundle {
+        abi {
+            enableSplit = true
+        }
+    }
 
     signingConfigs {
         release {
@@ -86,24 +88,24 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-//            signingConfig signingConfigs.debug
             minifyEnabled true
             shrinkResources false
         }
     }
-    /*buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            minifyEnabled false
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
-        }
-    }*/
 }
+
 
 flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+}

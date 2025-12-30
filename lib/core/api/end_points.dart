@@ -10,6 +10,8 @@ class EndPoints{
 
   static const String profile = 'emp-profile';
 
+  static const String setFcmToken = 'fcm-token';
+
   static const String claims = 'claims';
 
   static  String updateClaims(String claimId) => 'claims/$claimId/update';

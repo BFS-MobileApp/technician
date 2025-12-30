@@ -58,6 +58,9 @@ dependencies:
   flutter_slidable: ^4.0.0
   mobile_scanner: ^6.0.7
   new_version_plus: ^0.1.0
+  firebase_core: ^4.2.1
+  firebase_messaging: ^16.0.4
+  flutter_local_notifications: ^19.5.0
 
 dev_dependencies:
   flutter_test:

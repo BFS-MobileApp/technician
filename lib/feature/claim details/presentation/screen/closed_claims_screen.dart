@@ -23,6 +23,7 @@ import 'package:technician/widgets/bar_widget.dart';
 import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 import '../../../../config/PrefHelper/prefs.dart';
+import '../../../../core/utils/app_consts.dart';
 import '../../../../res/colors.dart';
 import '../../../login/presentation/screen/login_screen.dart';
 import '../widgets/add_materials_button.dart';
@@ -217,8 +218,7 @@ class _ClosedClaimsScreenState extends State<ClosedClaimsScreen> {
 
                  _permissions.contains('add_items_to_closed_claim_request') ? AddMaterialsButton(materials: claimDetailsModel!.data.material,referenceId:claimDetailsModel!.data.referenceId,claimId: claimDetailsModel!.data.id,) : const SizedBox(),
                   SizedBox(height: 10.h,),
-                  TenantSignatureButton(claimId: widget.claimId,referenceId: widget.referenceId , ctx: context,),
-                  SizedBox(height: 10.h,),
+                  AppConst.addClaimSignature ?  TenantSignatureButton(claimId: widget.claimId,referenceId: widget.referenceId , ctx: context,) : const SizedBox(),                  SizedBox(height: 10.h,),
                   SizedBox(height: 10.h,),
                   ClaimDetailsCardItem(
                     cardChildWidget: RepliesWidget(claimType: 4,ctx: context ,

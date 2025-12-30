@@ -577,7 +577,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                   ),
                 ),
                 SizedBox(width: 8.0.w),
-                Flexible(
+                AppConst.submitButton ? Flexible(
                   child: InkWell(
                     onTap: () {
                       if (_controller.value.text.isEmpty) {
@@ -630,7 +630,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                       ),
                     ),
                   ),
-                ),
+                ) : const SizedBox(),
               ],
             ),
             SizedBox(height: 16.0.h),
@@ -712,6 +712,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                                       ),
                                     ),
                                     // Delete Icon
+                                    AppConst.deleteClaimRepliesAndUpdates ?
                                     InkWell(
                                       onTap: () async {
                                         final shouldDelete = await showDialog<bool>(
@@ -757,7 +758,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                                         }
                                       },
                                       child: const Icon(Icons.delete, color: Colors.grey),
-                                    ),
+                                    ) : const SizedBox(),
 
 
                                   ],
@@ -868,7 +869,8 @@ class _RepliesWidgetState extends State<RepliesWidget> {
     }
   },
   builder: (context, state) {
-    return repliesWidget();
+      return repliesWidget();
+
   },
 );
   }

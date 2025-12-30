@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:technician/config/PrefHelper/prefs.dart';
 import 'package:technician/core/error/exceptions.dart';
@@ -29,6 +30,9 @@ class HomeRepositoryImpl extends HomeRepository {
         if (statusCode == 200) {
           final ProfileModel model = ProfileModel.fromJson(response['data']);
           saveUserInfo(model.email, model.name, model.image, model.mobile, model.permissions, model.id, model.emailNotification);
+          if (model.fcmToken == ""){
+            homeRemoteDataSource.setFcmToken();
+          }
           return Right(model);
         } else {
           final String errorMsg = response['data']['error'] ?? 'error'.tr;

@@ -538,16 +538,17 @@ class _AssignedClaimsScreenState extends State<AssignedClaimsScreen> {
                       height: 10.h,
                     ),
 
-                    _techWorkButtons(),
+                    _permissions.contains("start_end_claim_work") ?   _techWorkButtons() : const SizedBox(),
 
                     SizedBox(
                       height: 10.h,
                     ),
-                    AddMaterialsButton(
-                      materials: claimDetailsModel!.data.material,
-                      referenceId: claimDetailsModel!.data.referenceId,
-                      claimId: claimDetailsModel!.data.id,
-                    ),
+                _permissions.contains("view_items_in_claim_request") ?  AddMaterialsButton(
+                  materials: claimDetailsModel!.data.material,
+                  referenceId: claimDetailsModel!.data.referenceId,
+                  claimId: claimDetailsModel!.data.id,
+                )
+              : const SizedBox(),
                     SizedBox(
                       height: 10.h,
                     ),

@@ -550,23 +550,24 @@ class _NewClaimsState extends State<NewClaims> {
                     height: 10.h,
                   ),
 
-                  ReassignButton(
-                      ctx: context,
-                      estimateTime: claimDetailsModel!
-                          .data.subCategory.estimationTime
-                          .toString(),
-                      btName: 'assign'.tr,
-                      technicalList: technicalList,
-                      claimId: widget.claimId,
-                      referenceId: widget.referenceId),
+                _permissions.contains("assign_role_to_employee") ?  ReassignButton(
+                    ctx: context,
+                    estimateTime: claimDetailsModel!
+                        .data.subCategory.estimationTime
+                        .toString(),
+                    btName: 'assign'.tr,
+                    technicalList: technicalList,
+                    claimId: widget.claimId,
+                referenceId: widget.referenceId) : const SizedBox(),
                   SizedBox(
                     height: 10.h,
                   ),
-                  AddMaterialsButton(
-                    materials: claimDetailsModel!.data.material,
-                    referenceId: claimDetailsModel!.data.referenceId,
-                    claimId: claimDetailsModel!.data.id,
-                  ),
+              _permissions.contains("add_items_to_claim_request") ? AddMaterialsButton(
+                materials: claimDetailsModel!.data.material,
+                referenceId: claimDetailsModel!.data.referenceId,
+                claimId: claimDetailsModel!.data.id,
+              )
+            : const SizedBox(),
                   SizedBox(
                     height: 10.h,
                   ),
