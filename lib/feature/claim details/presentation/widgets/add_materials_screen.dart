@@ -69,79 +69,85 @@ class _AddMaterialsScreenState extends State<AddMaterialsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, true);
+        return false;
+      },
+      child: Scaffold(
         backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          'Add Materials',
-          style: TextStyle(
-            color: Color(0xFF1A2F4B),
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.pop(context, true),
-        ),
-      ),
-      body: Column(
-        children: [
-          _buildSearchBar(),
-          _buildHeader(),
-          Expanded(
-            child: BlocBuilder<ClaimDetailsCubit, ClaimDetailsState>(
-              builder: (context, state) {
-                if (state is ClaimDetailsIsLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is ClaimDetailsError) {
-                  return Center(child: Text(state.msg));
-                } else if (state is MaterialLoaded) {
-                  final materials = state.model;
-                  final cubit = context.read<ClaimDetailsCubit>();
-
-                  return ListView.builder(
-                    controller: _scrollController,
-                    itemCount: materials.data.length + (cubit.isLoadingMore ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == materials.data.length) {
-                        return const Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Center(child: CircularProgressIndicator()),
-                        );
-                      }
-
-                      final material = materials.data[index];
-                      final isExpanded = expandedItemIndex == index;
-                      final currentQuantity = quantities[index] ?? 1;
-
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            MaterialItem(
-                              title: material.name,
-                              category: material.category,
-                              onExpandPressed: () => toggleExpanded(index),
-                              image: material.image,
-                            ),
-                            if (isExpanded)
-                              buildExpandedSection(index, currentQuantity,material.id),
-                            // const Divider(height: 1, indent: 16, endIndent: 16),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return const SizedBox();
-                }
-              },
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: const Text(
+            'Add Materials',
+            style: TextStyle(
+              color: Color(0xFF1A2F4B),
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
           ),
-        ],
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
+            onPressed: () => Navigator.pop(context, true),
+          ),
+        ),
+        body: Column(
+          children: [
+            _buildSearchBar(),
+            _buildHeader(),
+            Expanded(
+              child: BlocBuilder<ClaimDetailsCubit, ClaimDetailsState>(
+                builder: (context, state) {
+                  if (state is ClaimDetailsIsLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is ClaimDetailsError) {
+                    return Center(child: Text(state.msg));
+                  } else if (state is MaterialLoaded) {
+                    final materials = state.model;
+                    final cubit = context.read<ClaimDetailsCubit>();
+
+                    return ListView.builder(
+                      controller: _scrollController,
+                      itemCount: materials.data.length + (cubit.isLoadingMore ? 1 : 0),
+                      itemBuilder: (context, index) {
+                        if (index == materials.data.length) {
+                          return const Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+
+                        final material = materials.data[index];
+                        final isExpanded = expandedItemIndex == index;
+                        final currentQuantity = quantities[index] ?? 1;
+
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              MaterialItem(
+                                title: material.name,
+                                category: material.category,
+                                onExpandPressed: () => toggleExpanded(index),
+                                image: material.image,
+                              ),
+                              if (isExpanded)
+                                buildExpandedSection(index, currentQuantity,material.id),
+                              // const Divider(height: 1, indent: 16, endIndent: 16),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

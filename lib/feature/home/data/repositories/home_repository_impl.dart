@@ -29,7 +29,7 @@ class HomeRepositoryImpl extends HomeRepository {
 
         if (statusCode == 200) {
           final ProfileModel model = ProfileModel.fromJson(response['data']);
-          saveUserInfo(model.email, model.name, model.image, model.mobile, model.permissions, model.id, model.emailNotification);
+          saveUserInfo(model.email, model.name, model.image, model.mobile, model.permissions, model.id, model.emailNotification,model.maxUploadFiles);
           if (model.fcmToken == ""){
             homeRemoteDataSource.setFcmToken();
           }
@@ -52,7 +52,7 @@ class HomeRepositoryImpl extends HomeRepository {
 
 
   @override
-  Future<void> saveUserInfo(String email, String name, String image, String phone, List<String> permissions , int userId , int emailNotification) async{
+  Future<void> saveUserInfo(String email, String name, String image, String phone, List<String> permissions , int userId , int emailNotification , int maxUploadFiles) async{
     Prefs.setString(AppStrings.email, email);
     Prefs.setString(AppStrings.userName, name);
     Prefs.setString(AppStrings.image, image);
@@ -60,6 +60,7 @@ class HomeRepositoryImpl extends HomeRepository {
     Prefs.setInt(AppStrings.userId, userId);
     Prefs.setStringList(AppStrings.permissions, permissions);
     Prefs.setInt(AppStrings.emailNotification, emailNotification);
+    Prefs.setInt(AppStrings.maxUploadFiles, maxUploadFiles);
 
   }
 

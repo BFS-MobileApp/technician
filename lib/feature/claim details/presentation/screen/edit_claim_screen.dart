@@ -254,7 +254,11 @@ class _EditClaimScreenState extends State<EditClaimScreen> {
     }
   }
   void getSubCategoriesItems(int id) {
-    final matchedParent = categoryModel!.data.firstWhere((e) => e.id == id);
+    final matchedParent = categoryModel!.data.firstWhere(
+          (e) => e.id == id,
+      orElse: () => categoryModel!.data.first,
+    );
+
     final subCats = matchedParent.child;
 
     if (subCats != null && subCats.data.isNotEmpty) {

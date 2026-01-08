@@ -22,7 +22,9 @@ import 'package:technician/feature/claim%20details/presentation/widgets/submit_b
 import 'package:technician/widgets/message_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 
+import '../../../../config/PrefHelper/prefs.dart';
 import '../../../../core/utils/app_colors.dart';
+import '../../../../core/utils/app_strings.dart';
 import '../../../../widgets/app_headline_widget.dart';
 
 class RepliesWidget extends StatefulWidget {
@@ -59,7 +61,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
   File filePicker = File('');
   List<XFile> imageFiles = [];
   ClaimDetailsModel? claimDetailsModel;
-
+  int maxUploadFiles = Prefs.getInt(AppStrings.maxUploadFiles);
   String _formatDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return '';
     try {
@@ -71,93 +73,143 @@ class _RepliesWidgetState extends State<RepliesWidget> {
   }
 
   void showAttachmentDialog(
-      BuildContext context, Function(List<File>) onFilesSelected) {
+      BuildContext context,
+      int maxUploadFiles,
+      Function(List<File>) onFilesSelected,
+      ) {
     List<XFile> selectedFiles = [];
+
+    void showLimitDialog() {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Upload Limit Reached'),
+          content: Text(
+            'You can upload a maximum of $maxUploadFiles files.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
 
     showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            final bool limitReached =
+                selectedFiles.length >= maxUploadFiles;
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 25),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
+                  const Text(
                     'Add Attachment',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 20),
-                  SizedBox(
-                    width: 220,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await pickImages((List<XFile> images) {
-                          setState(() {
-                            selectedFiles =
-                                images; // Update bottom sheet images
-                          });
-                        });
-                      },
-                      icon: Icon(Icons.upload, color: Colors.blue),
-                      label: Text(
-                        'Upload Photo',
-                        style: TextStyle(fontSize: 16, color: Colors.blue),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: Colors.blue),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  SizedBox(
-                    width: 220,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await getImageFromCamera((List<XFile> images) {
-                          setState(() {
-                            selectedFiles
-                                .addAll(images); // Update bottom sheet images
-                          });
-                        });
-                      },
-                      icon: Icon(Icons.camera_alt, color: Colors.blue),
-                      label: Text(
-                        'Take a New Photo',
-                        style: TextStyle(fontSize: 16, color: Colors.blue),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                          side: BorderSide(color: Colors.blue),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 12),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
 
-                  // Show selected files as thumbnails
+                  const SizedBox(height: 8),
+
+                  /// 🔢 Counter
+                  Text(
+                    '${selectedFiles.length} / $maxUploadFiles files selected',
+                    style: TextStyle(
+                      color: limitReached ? Colors.red : Colors.grey,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// 📁 Gallery
+                  SizedBox(
+                    width: 220,
+                    child: ElevatedButton.icon(
+                      onPressed: limitReached
+                          ? () => showLimitDialog()
+                          : () async {
+                        await pickImages((List<XFile> images) {
+                          final remaining =
+                              maxUploadFiles - selectedFiles.length;
+
+                          if (images.length > remaining) {
+                            showLimitDialog();
+                            images = images.take(remaining).toList();
+                          }
+
+                          setState(() {
+                            selectedFiles.addAll(images);
+                          });
+                        });
+                      },
+                      icon: const Icon(Icons.upload),
+                      label: const Text('Upload Photo'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                        limitReached ? Colors.grey.shade300 : Colors.white,
+                        foregroundColor:
+                        limitReached ? Colors.grey : Colors.blue,
+                        side: const BorderSide(color: Colors.blue),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  /// 📸 Camera
+                  SizedBox(
+                    width: 220,
+                    child: ElevatedButton.icon(
+                      onPressed: limitReached
+                          ? () => showLimitDialog()
+                          : () async {
+                        await getImageFromCamera((List<XFile> images) {
+                          final remaining =
+                              maxUploadFiles - selectedFiles.length;
+
+                          if (images.length > remaining) {
+                            showLimitDialog();
+                            images = images.take(remaining).toList();
+                          }
+
+                          setState(() {
+                            selectedFiles.addAll(images);
+                          });
+                        });
+                      },
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text('Take a New Photo'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                        limitReached ? Colors.grey.shade300 : Colors.white,
+                        foregroundColor:
+                        limitReached ? Colors.grey : Colors.blue,
+                        side: const BorderSide(color: Colors.blue),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// 🖼 Preview
                   if (selectedFiles.isNotEmpty) ...[
-                    SizedBox(height: 10),
-                    Text("Selected Files:",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    SizedBox(height: 10),
                     SizedBox(
                       height: 80,
                       child: ListView.builder(
@@ -169,7 +221,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 5),
+                                const EdgeInsets.symmetric(horizontal: 5),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10),
                                   child: Image.file(
@@ -189,7 +241,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                                       selectedFiles.removeAt(index);
                                     });
                                   },
-                                  child: CircleAvatar(
+                                  child: const CircleAvatar(
                                     radius: 12,
                                     backgroundColor: Colors.red,
                                     child: Icon(Icons.close,
@@ -204,30 +256,28 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                     ),
                   ],
 
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
+
+                  /// ✅ Use
                   ElevatedButton(
-                    onPressed: () {
-                      if (selectedFiles.isNotEmpty) {
-                        List<File> filesToUpload = selectedFiles
-                            .map((xFile) => File(xFile.path))
-                            .toList();
-                        onFilesSelected(
-                            filesToUpload); // ✅ Pass list of selected files
-                      }
+                    onPressed: selectedFiles.isEmpty
+                        ? null
+                        : () {
+                      onFilesSelected(
+                        selectedFiles
+                            .map((x) => File(x.path))
+                            .toList(),
+                      );
                       Navigator.pop(context);
                     },
-                    child: Text(
-                      'Use',
-                      style: TextStyle(fontSize: 16, color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
+                      minimumSize: const Size(double.infinity, 45),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      minimumSize: Size(double.infinity, 45),
                     ),
+                    child: const Text('Use'),
                   ),
                 ],
               ),
@@ -238,10 +288,12 @@ class _RepliesWidgetState extends State<RepliesWidget> {
     );
   }
 
+
+
   void uploadFile(BuildContext context, List<File> selectedFiles) {
     if (selectedFiles.isNotEmpty) {
       context.read<ClaimDetailsCubit>().uploadCommentFile(
-          context, // ✅ Pass context for Snackbar & Reload
+          context,
           widget.claimId,
           "latestCommentId",
           selectedFiles,
@@ -526,6 +578,7 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                   child: GestureDetector(
                     onTap: () async {
                       showAttachmentDialog(context,
+                          maxUploadFiles,
                           (List<File> selectedFiles) async {
                         uploadFile(context, selectedFiles);
                       });
@@ -591,7 +644,17 @@ class _RepliesWidgetState extends State<RepliesWidget> {
                             _addItem(getStatus(widget.status), 0);
                           }
                         } else {
-                          _submitButtonsMenu(context);
+                          if(AppConst.submitButton && !AppConst.submitNewButton && !AppConst.submitAssignedButton
+                          && !AppConst.submitStartedButton && !AppConst.submitDoneButton && !AppConst.submitClosedButton && !AppConst.submitCancelledButton){
+                            if (Helper.getCurrentLocal() == 'US') {
+                              _addItem(widget.status.toLowerCase(), 0);
+                            } else {
+                              _addItem(getStatus(widget.status), 0);
+                            }
+                          }else{
+                            _submitButtonsMenu(context);
+                          }
+
                         }
                       }
                     },

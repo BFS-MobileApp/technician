@@ -214,7 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Icon(Icons.dark_mode,color: const Color(0xff44A4F2),),
                 SizedBox(width: 5.w,),
-                Text("Dark Mode".tr, style: TextStyle(fontSize: 18.fSize, fontWeight: FontWeight.w500, color: AppColors.lightTextColor.withOpacity(0.8))),
+                Text("Darkmode".tr, style: TextStyle(fontSize: 18.fSize, fontWeight: FontWeight.w500, color: AppColors.lightTextColor.withOpacity(0.8))),
                 const Spacer(),
                 Transform.scale(
                     scale: 0.6.w,

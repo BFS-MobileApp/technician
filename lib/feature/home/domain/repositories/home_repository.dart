@@ -9,5 +9,5 @@ abstract class HomeRepository {
 
   Future<Either<Failures , HomeModel>> getClaimsCount();
 
-  Future<void> saveUserInfo(String email , String name , String image , String phone , List<String> permissions , int userId , int emailNotification);
+  Future<void> saveUserInfo(String email , String name , String image , String phone , List<String> permissions , int userId , int emailNotification, int maxUploadFiles);
 }
