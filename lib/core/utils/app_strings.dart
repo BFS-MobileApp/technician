@@ -87,6 +87,8 @@ class AppStrings{
 
   static const emailNotification = "Email Notification";
 
+  static const maxUploadFiles = "max Upload Files";
+
   static List<String> cardTitles = [ 'allClaims'.tr, 'newClaims'.tr, 'assignedClaims'.tr, 'startedClaims'.tr, 'completedClaims'.tr, 'cancelledClaims'.tr, 'closedClaims'.tr].obs;
 
 

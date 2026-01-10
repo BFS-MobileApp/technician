@@ -1,15 +1,14 @@
 import 'package:app_links/app_links.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import 'firebase_options.dart';
 import 'app.dart';
 import 'bloc_observer.dart';
 import 'config/PrefHelper/prefs.dart';
+import 'firebase_options.dart';
 import 'injection_container.dart' as di;
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -27,7 +26,6 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
   description: 'This channel is used for important notifications.',
   importance: Importance.high,
 );
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -38,7 +36,6 @@ Future<void> main() async {
   await di.init();
 
   Bloc.observer = AppBlocObserver();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -49,18 +46,11 @@ Future<void> main() async {
 
   await _requestNotificationPermission();
 
-  String? token = await FirebaseMessaging.instance.getToken();
-
   _setupForegroundNotificationListener();
-
   final Uri? initialUri = await AppLinks().getInitialLink();
-
-  await PackageInfo.fromPlatform();
-
+   PackageInfo.fromPlatform();
   runApp(MyApp(initialUri: initialUri));
 }
-
-/// Initialize local notifications
 Future<void> _initLocalNotifications() async {
   const AndroidInitializationSettings androidSettings =
   AndroidInitializationSettings('@mipmap/ic_launcher');

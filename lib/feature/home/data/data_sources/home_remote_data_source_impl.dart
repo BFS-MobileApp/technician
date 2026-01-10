@@ -30,8 +30,6 @@ class HomeRemoteDataSourceImpl extends HomeRemoteDataSource{
 
     return res;
   }
-
-
   @override
   Future<Map<String, dynamic>> getClaimsCount() async{
     final res = await consumer.get(EndPoints.homeClaims);

@@ -11,7 +11,7 @@ class ProfileModel extends UserInfo{
 
   ProfileModel({
     required this.data,
-  }) : super(id: data.id ,  email: data.email , image: data.avatar , mobile: data.profile.mobile , name: data.name , permissions: data.permissions , emailNotification: data.profile.emailNotifications,fcmToken: data.fcmToken);
+  }) : super(id: data.id ,  email: data.email , image: data.avatar , mobile: data.profile.mobile , name: data.name , permissions: data.permissions , emailNotification: data.profile.emailNotifications,fcmToken: data.fcmToken,maxUploadFiles: data.maxUploadFiles);
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) => ProfileModel(
     data: Data.fromJson(json["data"]??{}),
@@ -31,7 +31,7 @@ class Data {
   Profile profile;
   List<String> permissions;
   String fcmToken;
-
+  int maxUploadFiles;
   Data({
     required this.id,
     required this.refCode,
@@ -40,7 +40,8 @@ class Data {
     required this.avatar,
     required this.profile,
     required this.permissions,
-    required this.fcmToken
+    required this.fcmToken,
+    required this.maxUploadFiles
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -51,7 +52,8 @@ class Data {
     avatar: json["avatar"]??'',
     profile: Profile.fromJson(json["profile"]??{}),
     permissions: List<String>.from(json["permissions"].map((x) => x)),
-    fcmToken: json["fcm_token"] ?? ""
+      fcmToken: json["fcm_token"] ?? "",
+      maxUploadFiles: json["max_upload_files"] ?? 0
   );
 
   Map<String, dynamic> toJson() => {

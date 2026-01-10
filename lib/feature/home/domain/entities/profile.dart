@@ -10,9 +10,10 @@ class UserInfo extends Equatable{
   final int emailNotification;
   final List<String> permissions;
   final String fcmToken;
-  const UserInfo({required this.name,required this.email , required this.image , required this.mobile , required this.permissions , required this.id , required this.emailNotification,required this.fcmToken});
+  final int maxUploadFiles;
+  const UserInfo({required this.name,required this.email , required this.image , required this.mobile , required this.permissions , required this.id , required this.emailNotification,required this.fcmToken,required this.maxUploadFiles});
 
   @override
-  List<Object?> get props => [name , email , image , mobile , permissions , id];
+  List<Object?> get props => [name , email , image , mobile , permissions , id,fcmToken ,maxUploadFiles];
 
 }

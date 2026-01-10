@@ -214,8 +214,7 @@ class _CompletedClaimsScreenState extends State<CompletedClaimsScreen> {
                   SizedBox(height: 10.h,),
                   _submitButtonWidget(),
                   SizedBox(height: 10.h,),
-                  AppConst.addClaimSignature ?  TenantSignatureButton(claimId: widget.claimId,referenceId: widget.referenceId , ctx: context,) : const SizedBox(),
-                  SizedBox(height: 10.h,),
+                  AppConst.addClaimSignature ?  TenantSignatureButton(claimId: widget.claimId,referenceId: widget.referenceId , ctx: context,) : const SizedBox(),                  SizedBox(height: 10.h,),
                   ClaimDetailsCardItem(
                     cardChildWidget: RepliesWidget(claimType: 3,ctx: context ,
                       submitOnly: false , comments: claimDetailsModel!.data.comments,

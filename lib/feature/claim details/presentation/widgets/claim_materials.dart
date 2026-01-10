@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:technician/feature/claim%20details/data/models/claim_details_model.dart';
-import 'package:technician/feature/claim%20details/presentation/cubit/claim_details_cubit.dart'; // <-- your existing cubit
+import 'package:technician/feature/claim%20details/presentation/cubit/claim_details_cubit.dart';
 import 'package:technician/feature/claim%20details/presentation/widgets/edit_material_screen.dart';
 import '../../../../config/PrefHelper/prefs.dart';
 import '../../../../core/utils/app_strings.dart';
@@ -13,23 +13,19 @@ class ClaimMaterialsScreen extends StatefulWidget {
   final List<ClaimMaterials> materials;
   final String referenceId;
   final int claimId;
-  const ClaimMaterialsScreen({super.key, required this.materials, required this.referenceId, required this.claimId});
+
+  const ClaimMaterialsScreen({
+    super.key,
+    required this.materials,
+    required this.referenceId,
+    required this.claimId,
+  });
 
   @override
   State<ClaimMaterialsScreen> createState() => _ClaimMaterialsScreenState();
 }
 
 class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
-  int? selectedItemIndex;
-  void toggleSelection(int index) {
-    setState(() {
-      if (selectedItemIndex == index) {
-        selectedItemIndex = null;
-      } else {
-        selectedItemIndex = index;
-      }
-    });
-  }
   List<String> _permissions = [];
 
   @override
@@ -68,20 +64,6 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
             icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          // actions: [
-          //   TextButton(
-          //     onPressed: () {
-          //       // Save logic here
-          //     },
-          //     child: const Text(
-          //       'Save',
-          //       style: TextStyle(
-          //         color: Colors.blue,
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          //     ),
-          //   ),
-          // ],
         ),
         body: BlocBuilder<ClaimDetailsCubit, ClaimDetailsState>(
           builder: (context, state) {
@@ -92,32 +74,29 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
 
               return Column(
                 children: [
-                  // If materials is empty, show text message, else show the list
                   Expanded(
                     child: materials.isEmpty
-                        ? Center(
+                        ? const Center(
                       child: Text(
                         'No materials added yet.',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w500,
+                          color: Colors.grey,
                         ),
                       ),
                     )
                         : ListView.builder(
                       itemCount: materials.length,
                       itemBuilder: (context, index) {
-                        final material = materials[index];
-                        final isSelected = selectedItemIndex == index;
                         return MaterialItem(
-                          material: material,
-                          isSelected: isSelected,
+                          material: materials[index],
+                          permissions: _permissions,
+                          showHint: index == 0, // 👈 show hint only once
                           onEdit: (material) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EditMaterialScreen(
+                                builder: (_) => EditMaterialScreen(
                                   material: material,
                                   id: widget.referenceId,
                                 ),
@@ -125,43 +104,34 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
                             );
                           },
                           onDelete: (id) {
-                            _confirmDelete(context, material.id.toString());
+                            _confirmDelete(context, id.toString());
                           },
-                          permissions: _permissions,
                         );
                       },
                     ),
                   ),
-                  // This button will always show
-                  _permissions.contains("add_items_to_claim_request") ? Padding(
-                    padding: const EdgeInsets.all(16.0),
+                  _permissions.contains("add_items_to_claim_request")
+                      ? Padding(
+                    padding: const EdgeInsets.all(16),
                     child: SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () async {
-                          if (_permissions.contains("add_items_to_claim_request")) {
-                            final result = await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => AddMaterialsScreen(
-                                  referenceId: widget.referenceId,
-                                  claimId: widget.claimId,
-                                ),
+                          final result = await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => AddMaterialsScreen(
+                                referenceId: widget.referenceId,
+                                claimId: widget.claimId,
                               ),
-                            );
+                            ),
+                          );
 
-                            if (result == true) {
-                              context
-                                  .read<ClaimDetailsCubit>()
-                                  .getClaimDetails(widget.referenceId);
-                            }
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'You do not have permission to Add materials.'),
-                              ),
-                            );
+                          if (result == true) {
+                            context
+                                .read<ClaimDetailsCubit>()
+                                .getClaimDetails(widget.referenceId);
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -172,25 +142,20 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
                         ),
                         child: const Text(
                           'Add Material',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          style: TextStyle(fontSize: 16),
                         ),
                       ),
                     ),
-                  ) : const SizedBox(),
+                  )
+                      : const SizedBox(),
                 ],
               );
             } else if (state is ClaimDetailsError) {
               return Center(child: Text(state.msg));
-            } else {
-              return const SizedBox();
             }
+            return const SizedBox();
           },
         ),
-
       ),
     );
   }
@@ -198,19 +163,21 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
   void _confirmDelete(BuildContext context, String id) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: const Text('Delete Material'),
         content: const Text('Are you sure you want to delete this material?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
               context.read<ClaimDetailsCubit>().deleteMaterial(id);
-              context.read<ClaimDetailsCubit>().getClaimDetails(widget.referenceId);
+              context
+                  .read<ClaimDetailsCubit>()
+                  .getClaimDetails(widget.referenceId);
             },
             child: const Text(
               'Delete',
@@ -223,199 +190,145 @@ class _ClaimMaterialsScreenState extends State<ClaimMaterialsScreen> {
   }
 }
 
-class MaterialItem extends StatelessWidget {
+class MaterialItem extends StatefulWidget {
   final ClaimMaterials material;
-  final bool isSelected;
-  final Function(ClaimMaterials material) onEdit;
-  final Function(int materialId) onDelete;
+  final Function(ClaimMaterials) onEdit;
+  final Function(int) onDelete;
   final List<String> permissions;
+  final bool showHint;
 
   const MaterialItem({
-    Key? key,
+    super.key,
     required this.material,
-    required this.isSelected,
     required this.onEdit,
     required this.onDelete,
-    required this.permissions
-  }) : super(key: key);
+    required this.permissions,
+    required this.showHint,
+  });
+
+  @override
+  State<MaterialItem> createState() => _MaterialItemState();
+}
+
+class _MaterialItemState extends State<MaterialItem>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _shake;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+
+    _shake = Tween(begin: 0.0, end: 8.0)
+        .chain(CurveTween(curve: Curves.easeInOut))
+        .animate(_controller);
+
+    if (widget.showHint) {
+      _controller.forward().then((_) => _controller.reverse());
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-      key: Key(material.id.toString()),
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        extentRatio: 0.25,
-        children: [
-          Flexible(
-            child: CustomSlidableAction(
+    return AnimatedBuilder(
+      animation: _shake,
+      builder: (_, child) {
+        return Transform.translate(
+          offset: Offset(-_shake.value, 0),
+          child: child,
+        );
+      },
+      child: Slidable(
+        key: Key(widget.material.id.toString()),
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          children: [
+            SlidableAction(
+              onPressed: (_) {
+                if (widget.permissions.contains('edit_qty_item_claim')) {
+                  widget.onEdit(widget.material);
+                }
+              },
+              backgroundColor: Colors.blue.shade50,
+              foregroundColor: Colors.blue,
               icon: Icons.edit,
-              color: Colors.blue,
-              onPressed: () {
-                if (permissions.contains('edit_qty_item_claim')) {
-                  onEdit(material);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('You do not have permission to edit this material.'),
-                    ),
-                  );
-
+            ),
+            SlidableAction(
+              onPressed: (_) {
+                if (widget.permissions
+                    .contains('delete_item_from_claim_request')) {
+                  widget.onDelete(widget.material.id);
                 }
               },
-            ),
-          ),
-          Flexible(
-            child: CustomSlidableAction(
+              backgroundColor: Colors.red.shade50,
+              foregroundColor: Colors.red,
               icon: Icons.delete,
-              color: Colors.red,
-              onPressed: () {
-                if (permissions.contains('delete_item_from_claim_request')) {
-                  onDelete(material.id);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('You do not have permission to delete this material.'),
-                    ),
-                  );
-                }
-              },
             ),
-          ),
-        ],
-      ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.withOpacity(0.05) : Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? Colors.blue : Colors.transparent,
-            width: 1,
-          ),
+          ],
         ),
-        child: Row(
+        child: Stack(
           children: [
             Container(
-              width: 50,
-              height: 50,
-              child: Center(child: SvgPicture.network(material.image)),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              margin: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Row(
                 children: [
+                  SizedBox(
+                    width: 40,
+                    height: 40,
+                    child: SvgPicture.network(widget.material.image),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      widget.material.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
                   Text(
-                    material.name,
+                    '${widget.material.qty}',
                     style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF1A2F4B),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    material.code,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Text(
-                        material.unit,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        material.category,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        "/",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        material.group,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
             ),
-            Column(
-              children: [
-                const Text(
-                  'Qty.',
-                  style: TextStyle(fontSize: 12, color: Colors.black),
+
+            // 👇 Swipe hint (first item only)
+            if (widget.showHint)
+              Positioned(
+                right: 50,
+                top: 0,
+                bottom: 0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.arrow_back_ios, size: 14, color: Colors.grey),
+                    Text(
+                      'Swipe',
+                      style: TextStyle(fontSize: 10, color: Colors.grey),
+                    ),
+                  ],
                 ),
-                Text(
-                  '${material.qty}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
-                ),
-              ],
-            ),
+              ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class CustomSlidableAction extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final VoidCallback onPressed;
-
-  const CustomSlidableAction({
-    super.key,
-    required this.icon,
-    required this.color,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(
-          icon,
-          color: color,
-          size: 20,
         ),
       ),
     );

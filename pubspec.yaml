@@ -2,7 +2,7 @@ name: technician
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.18+1
+version: 1.0.9+1
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
@@ -57,7 +57,7 @@ dependencies:
   file_picker: ^10.3.7
   flutter_slidable: ^3.1.2
   mobile_scanner: ^6.0.7
-  new_version_plus: ^0.0.12
+  new_version_plus: ^0.1.0
   firebase_core: ^4.2.1
   firebase_messaging: ^16.0.4
   flutter_local_notifications: ^19.5.0
