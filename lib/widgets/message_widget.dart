@@ -8,13 +8,8 @@ class MessageWidget{
   static void showSnackBar(String message , Color color){
     final snackBar = SnackBar(
       content: Text(message , style: TextStyle(fontWeight: FontWeight.w500 , fontSize: 15),),
-      duration: const Duration(seconds: 4),
+      duration: const Duration(seconds: 1),
       backgroundColor: color,
-      action: SnackBarAction(
-        textColor: Colors.white,
-        label: 'ok'.tr,
-        onPressed: () {},
-      ),
     );
     scaffoldMessengerKey.currentState?.showSnackBar(snackBar);
   }

@@ -274,7 +274,6 @@ class ClaimDetailsCubit extends Cubit<ClaimDetailsState> {
           (success) {
         emit(UploadCommentFileSuccess());
 
-        // ✅ Show success snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("File uploaded successfully!"), backgroundColor: Colors.green),
         );

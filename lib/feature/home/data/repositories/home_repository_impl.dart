@@ -40,29 +40,10 @@ class HomeRepositoryImpl extends HomeRepository {
           print("✅ Success 200 - Parsing ProfileModel");
 
           final ProfileModel model = ProfileModel.fromJson(response['data']);
-          print("👤 Parsed Model: $model");
-          print("📧 Email: ${model.email}");
-          print("📱 Mobile: ${model.mobile}");
-          print("🎫 Permissions: ${model.permissions}");
-          print("🧿 FCM Token on server: ${model.fcmToken}");
-
-          saveUserInfo(
-            model.email,
-            model.name,
-            model.image,
-            model.mobile,
-            model.permissions,
-            model.id,
-            model.emailNotification,
-          );
-
-          String? token = await FirebaseMessaging.instance.getToken();
-
-          if (token != model.fcmToken) {
-            await homeRemoteDataSource.setFcmToken();
-          } else {
+          saveUserInfo(model.email, model.name, model.image, model.mobile, model.permissions, model.id, model.emailNotification,model.maxUploadFiles);
+          if (model.fcmToken == ""){
+            homeRemoteDataSource.setFcmToken();
           }
-
           return Right(model);
 
         } else {
@@ -85,7 +66,7 @@ class HomeRepositoryImpl extends HomeRepository {
 
 
   @override
-  Future<void> saveUserInfo(String email, String name, String image, String phone, List<String> permissions , int userId , int emailNotification) async{
+  Future<void> saveUserInfo(String email, String name, String image, String phone, List<String> permissions , int userId , int emailNotification , int maxUploadFiles) async{
     Prefs.setString(AppStrings.email, email);
     Prefs.setString(AppStrings.userName, name);
     Prefs.setString(AppStrings.image, image);
@@ -93,6 +74,7 @@ class HomeRepositoryImpl extends HomeRepository {
     Prefs.setInt(AppStrings.userId, userId);
     Prefs.setStringList(AppStrings.permissions, permissions);
     Prefs.setInt(AppStrings.emailNotification, emailNotification);
+    Prefs.setInt(AppStrings.maxUploadFiles, maxUploadFiles);
 
   }
 

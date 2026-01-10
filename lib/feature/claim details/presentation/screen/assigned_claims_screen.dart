@@ -543,11 +543,12 @@ class _AssignedClaimsScreenState extends State<AssignedClaimsScreen> {
                     SizedBox(
                       height: 10.h,
                     ),
-                    _permissions.contains("view_items_in_claim_request") ?  AddMaterialsButton(
-                      materials: claimDetailsModel!.data.material,
-                      referenceId: claimDetailsModel!.data.referenceId,
-                      claimId: claimDetailsModel!.data.id,
-                    ) : const SizedBox(),
+                _permissions.contains("view_items_in_claim_request") ?  AddMaterialsButton(
+                  materials: claimDetailsModel!.data.material,
+                  referenceId: claimDetailsModel!.data.referenceId,
+                  claimId: claimDetailsModel!.data.id,
+                )
+              : const SizedBox(),
                     SizedBox(
                       height: 10.h,
                     ),

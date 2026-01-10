@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
@@ -36,12 +35,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   String userName = '';
   HomeModel? model;
   List<Datum> claimsModel = [];
   bool loadedData = false;
-
   bool loadingClaims = true;
 
   @override
@@ -50,6 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
     getData();
   }
 
+  /// 🔄 Pull to refresh
+  Future<void> _onRefresh() async {
+    getData();
+    await Future.delayed(const Duration(milliseconds: 600));
+  }
 
   setData(String name) {
     Future.delayed(const Duration(milliseconds: 50), () {
@@ -61,14 +63,20 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  goToClaimScreen(int screenId) async{
-    final result = await Navigator.pushReplacementNamed(context, Routes.claims , arguments: ClaimsArguments(screenId: screenId));
+  goToClaimScreen(int screenId) async {
+    final result = await Navigator.pushReplacementNamed(
+      context,
+      Routes.claims,
+      arguments: ClaimsArguments(screenId: screenId),
+    );
     if (result == true) {
       getData();
     }
   }
-  Widget notificationIcon(){
-    if(Prefs.isContain(AppStrings.userNotification) && Prefs.getBool(AppStrings.userNotification) == true){
+
+  Widget notificationIcon() {
+    if (Prefs.isContain(AppStrings.userNotification) &&
+        Prefs.getBool(AppStrings.userNotification) == true) {
       return InkWell(
         onTap: () => Navigator.pushNamed(context, Routes.notification),
         child: SVGImageWidget(
@@ -82,226 +90,243 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget homeWidget() {
-    if(AppConst.readClaims){
+    if (AppConst.readClaims) {
       return SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 10.h),
-              Padding(
-                padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 200.w,
-                      child: Text(
-                        '${"welcome".tr}, $userName',
-                        maxLines: 2,
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.bodySmall!.color,
-                          fontSize: 22.fSize,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    SizedBox(width: 8.w),
-                    Row(
-                      children: [
-                        InkWell(
-                          onTap: () => Navigator.pushNamed(context, Routes.myAttendance),
-                          child: SVGImageWidget(
-                            image: AssetsManager.locationIcon,
-                            width: 26.w,
-                            height: 26.h,
+        child: RefreshIndicator(
+          color: AppColors.mainColor,
+          onRefresh: _onRefresh,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 10.h),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 200.w,
+                        child: Text(
+                          '${"welcome".tr}, $userName',
+                          maxLines: 2,
+                          style: TextStyle(
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .color,
+                            fontSize: 22.fSize,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 10.w),
-                        notificationIcon(),
-                        SizedBox(width: 10.w),
-                        InkWell(
-                          onTap: () => Navigator.pushNamed(context, Routes.editProfile),
-                          child: Container(
-                            width: 30.w,
-                            height: 30.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(200),
+                      ),
+                      const Spacer(),
+                      SizedBox(width: 8.w),
+                      Row(
+                        children: [
+                          InkWell(
+                            onTap: () => Navigator.pushNamed(
+                                context, Routes.myAttendance),
+                            child: SVGImageWidget(
+                              image: AssetsManager.locationIcon,
+                              width: 26.w,
+                              height: 26.h,
                             ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(200),
-                              child: ImageLoader(
-                                imageUrl: Prefs.getString(AppStrings.image),
+                          ),
+                          SizedBox(width: 10.w),
+                          notificationIcon(),
+                          SizedBox(width: 10.w),
+                          InkWell(
+                            onTap: () => Navigator.pushNamed(
+                                context, Routes.editProfile),
+                            child: Container(
+                              width: 30.w,
+                              height: 30.h,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(200),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(200),
+                                child: ImageLoader(
+                                  imageUrl:
+                                  Prefs.getString(AppStrings.image),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              AppHeadline(
-                title: 'statisticsForYourClaims'.tr,
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-              ),
-              SizedBox(height: 10.h),
-              Container(
-                height: 450.h,
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        HomeCardItem(
-                          fontColor: '#ff44A4F2',
-                          cardColor: const Color(0xFF44A4F2),
-                          title: 'allClaims'.tr,
-                          imageIcon: AssetsManager.allClaims,
-                          value: model!.data.claims.all.toString(),
-                          onTap: loadingClaims ? null : () {
-                            goToClaimScreen(0);
-                          },
-                        ),
-                        SizedBox(width: 5.w), // Add spacing
-                        HomeCardItem(
-                          cardColor: const Color(0xFFFF9500),
-                          fontColor: model!.data.claimColor.claimColorNew,
-                          title: 'newClaims'.tr,
-                          imageIcon: AssetsManager.newClaims,
-                          value: model!.data.claims.claimsNew.toString(),
-                          onTap: loadingClaims ? null : () {
-                            goToClaimScreen(1);
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        HomeCardItem(
-                          cardColor: const Color(0xFF3716EE),
-                          fontColor: model!.data.claimColor.assigned,
-                          title: 'assignedClaims'.tr,
-                          imageIcon: AssetsManager.assignedClaims,
-                          value: model!.data.claims.assigned.toString(),
-                          onTap: loadingClaims ? null : () {
-                            goToClaimScreen(2);
-                          },
-                        ),
-                        SizedBox(width: 5.w), // Add spacing
-                        HomeCardItem(
-                          cardColor: const Color(0xFF10D2C8),
-                          fontColor: model!.data.claimColor.started,
-                          title: 'startedClaims'.tr,
-                          imageIcon: AssetsManager.startedClaims,
-                          value: model!.data.claims.inProgress.toString(),
-                          onTap: loadingClaims ? null : () {
-                            goToClaimScreen(3);
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        HomeCardItem(
-                          cardColor: const Color(0xFF0A562E),
-                          fontColor: model!.data.claimColor.completed,
-                          title: 'completedClaims'.tr,
-                          imageIcon: AssetsManager.completedClaims,
-                          value: model!.data.claims.completed.toString(),
-                          onTap: loadingClaims ? null : () {
-                            goToClaimScreen(4);
-                          },
-                        ),
-                        SizedBox(width: 5.w),
-                        HomeCardItem(
-                          cardColor: const Color(0xFFFF0000),
-                          fontColor: model!.data.claimColor.cancelled,
-                          title: 'cancelledClaims'.tr,
-                          imageIcon: AssetsManager.canceledClaims,
-                          value: model!.data.claims.cancelled.toString(),
-                          onTap: loadingClaims ? null : () {
-                            goToClaimScreen(5);
-                          },
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.h,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        HomeCardItem(
-                          cardColor: const Color(0xFF679C0D),
-                          fontColor: model!.data.claimColor.closed,
-                          title: 'closedClaims'.tr,
-                          imageIcon: AssetsManager.closedClaims,
-                          value: model!.data.claims.closed.toString(),
-                          onTap: loadingClaims ? null : () {
-                            goToClaimScreen(6);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                const SizedBox(height: 15),
+                AppHeadline(
+                  title: 'statisticsForYourClaims'.tr,
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              claimsModel.isNotEmpty ? NotificationHomeItem(
-                model: claimsModel,
-              ) : const SizedBox(),
-            ],
+                SizedBox(height: 10.h),
+                Container(
+                  height: 450.h,
+                  margin: EdgeInsets.symmetric(horizontal: 16.w),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          HomeCardItem(
+                            fontColor: '#ff44A4F2',
+                            cardColor: const Color(0xFF44A4F2),
+                            title: 'allClaims'.tr,
+                            imageIcon: AssetsManager.allClaims,
+                            value: model!.data.claims.all.toString(),
+                            onTap: loadingClaims
+                                ? null
+                                : () => goToClaimScreen(0),
+                          ),
+                          SizedBox(width: 5.w),
+                          HomeCardItem(
+                            cardColor: const Color(0xFFFF9500),
+                            fontColor:
+                            model!.data.claimColor.claimColorNew,
+                            title: 'newClaims'.tr,
+                            imageIcon: AssetsManager.newClaims,
+                            value: model!.data.claims.claimsNew.toString(),
+                            onTap: loadingClaims
+                                ? null
+                                : () => goToClaimScreen(1),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          HomeCardItem(
+                            cardColor: const Color(0xFF3716EE),
+                            fontColor: model!.data.claimColor.assigned,
+                            title: 'assignedClaims'.tr,
+                            imageIcon: AssetsManager.assignedClaims,
+                            value: model!.data.claims.assigned.toString(),
+                            onTap: loadingClaims
+                                ? null
+                                : () => goToClaimScreen(2),
+                          ),
+                          SizedBox(width: 5.w),
+                          HomeCardItem(
+                            cardColor: const Color(0xFF10D2C8),
+                            fontColor: model!.data.claimColor.started,
+                            title: 'startedClaims'.tr,
+                            imageIcon: AssetsManager.startedClaims,
+                            value:
+                            model!.data.claims.inProgress.toString(),
+                            onTap: loadingClaims
+                                ? null
+                                : () => goToClaimScreen(3),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          HomeCardItem(
+                            cardColor: const Color(0xFF0A562E),
+                            fontColor: model!.data.claimColor.completed,
+                            title: 'completedClaims'.tr,
+                            imageIcon: AssetsManager.completedClaims,
+                            value:
+                            model!.data.claims.completed.toString(),
+                            onTap: loadingClaims
+                                ? null
+                                : () => goToClaimScreen(4),
+                          ),
+                          SizedBox(width: 5.w),
+                          HomeCardItem(
+                            cardColor: const Color(0xFFFF0000),
+                            fontColor: model!.data.claimColor.cancelled,
+                            title: 'cancelledClaims'.tr,
+                            imageIcon: AssetsManager.canceledClaims,
+                            value:
+                            model!.data.claims.cancelled.toString(),
+                            onTap: loadingClaims
+                                ? null
+                                : () => goToClaimScreen(5),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10.h),
+                      Row(
+                        children: [
+                          HomeCardItem(
+                            cardColor: const Color(0xFF679C0D),
+                            fontColor: model!.data.claimColor.closed,
+                            title: 'closedClaims'.tr,
+                            imageIcon: AssetsManager.closedClaims,
+                            value: model!.data.claims.closed.toString(),
+                            onTap: loadingClaims
+                                ? null
+                                : () => goToClaimScreen(6),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                claimsModel.isNotEmpty
+                    ? NotificationHomeItem(model: claimsModel)
+                    : const SizedBox(),
+              ],
+            ),
           ),
         ),
       );
     } else {
-      if(loadedData){
+      if (loadedData) {
         return const AccessDeniedWidget();
       }
-      return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.mainColor),
+      );
     }
   }
 
-  setColors(){
+  setColors() {
     model!.data.claimColor.toMap().forEach((status, color) {
       Helper.setStatusColors(color, status);
     });
   }
 
-
-  Widget checkState(HomeState state){
-    if(state is HomeIsLoading){
-      return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
-    } else if(state is HomeError){
-      bool isUnauthenticated = state.msg == 'Unauthenticated.';
-      print("${state.msg}++++++++++++++++++++++");
-      return ErrorWidgetItem(onTap: (){
-        if(isUnauthenticated){
-          Get.offAll(const LoginScreen());
-        }else{
-          getData();
-        }
-      },
-        isUnauthenticated: isUnauthenticated,
+  Widget checkState(HomeState state) {
+    if (state is HomeIsLoading) {
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.mainColor),
       );
-    } else if(state is HomeLoaded) {
-      print('here');
+    } else if (state is HomeError) {
+      bool isUnauthenticated = state.msg == 'Unauthenticated.';
+      return ErrorWidgetItem(
+        isUnauthenticated: isUnauthenticated,
+        onTap: () {
+          if (isUnauthenticated) {
+            Get.offAll(const LoginScreen());
+          } else {
+            getData();
+          }
+        },
+      );
+    } else if (state is HomeLoaded) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Helper.setPermissionRoles(state.userInfo.permissions);
         setData(state.userInfo.name);
         BlocProvider.of<HomeCubit>(context).getClaimsInfo();
       });
-      return const Center(child: CircularProgressIndicator(color: AppColors.mainColor,),);
-    } else if(state is ClaimsLoaded){
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.mainColor),
+      );
+    } else if (state is ClaimsLoaded) {
       model = state.homeModel;
       loadedData = true;
       setColors();
-      print(model!.data.claims.completed.toString());
       return homeWidget();
     } else {
       return homeWidget();
@@ -309,76 +334,56 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void sortList() {
-    if (claimsModel.isNotEmpty && claimsModel.length > 1) {
+    if (claimsModel.length > 1) {
       claimsModel.sort((a, b) {
-        Map<String, int> priorityOrder = {};
-        int priorityA = 0;
-        int priorityB = 0;
-        if (Helper.getCurrentLocal() == 'US') {
-          priorityOrder = {
-            "urgent": 0,
-            "high": 1,
-            "medium": 2,
-            "normal": 3,
-            "low": 4
-          };
-        } else {
-          priorityOrder = {
-            "عاجل": 0,
-            "مرتفع": 1,
-            "متوسط": 2,
-            "عادي": 3,
-            "منخفض": 4
-          };
+        final order = Helper.getCurrentLocal() == 'US'
+            ? {
+          "urgent": 0,
+          "high": 1,
+          "medium": 2,
+          "normal": 3,
+          "low": 4
         }
-        if(Helper.getCurrentLocal() == 'US'){
-           priorityA = priorityOrder[a.priority.toLowerCase()] ?? 4;
-           priorityB = priorityOrder[b.priority.toLowerCase()] ?? 4;
-        } else {
-           priorityA = priorityOrder[a.priority.toLowerCase()] ?? 4;
-           priorityB = priorityOrder[b.priority.toLowerCase()] ?? 4;
-        }
-        return priorityA.compareTo(priorityB);
+            : {
+          "عاجل": 0,
+          "مرتفع": 1,
+          "متوسط": 2,
+          "عادي": 3,
+          "منخفض": 4
+        };
+
+        return (order[a.priority.toLowerCase()] ?? 4)
+            .compareTo(order[b.priority.toLowerCase()] ?? 4);
       });
     }
   }
 
-
   void getData() {
-    setState(() {
-      loadedData = false;
-      loadingClaims = true; // Start loading
-    });
+    loadedData = false;
+    loadingClaims = true;
 
-    final data = {
-      "status": "assigned",
-      "per_page": "200"
-    };
+    final data = {"status": "assigned", "per_page": "200"};
 
-    BlocProvider.of<ClaimsCubit>(context).getStartedClaims(data).then((val) {
-      setState(() {
-        if (val != null && val.data != null) {
-          claimsModel = val.data;
-          sortList();
-        }
-        loadingClaims = false; // Finished loading
-      });
+    BlocProvider.of<ClaimsCubit>(context)
+        .getStartedClaims(data)
+        .then((val) {
+      if (val?.data != null) {
+        claimsModel = val!.data;
+        sortList();
+      }
+      loadingClaims = false;
       BlocProvider.of<HomeCubit>(context).getUserInfo();
-    }).catchError((error) {
-      debugPrint("Error fetching claims: $error");
-      setState(() {
-        loadingClaims = false; // Even on error, stop loading
-      });
+    }).catchError((_) {
+      loadingClaims = false;
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return  BlocBuilder<HomeCubit , HomeState>(builder: (context , state){
-      return Scaffold(
-          body: checkState(state)
-      );
-    });
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        return Scaffold(body: checkState(state));
+      },
+    );
   }
 }

@@ -32,6 +32,7 @@ import 'package:technician/widgets/error_widget.dart';
 import 'package:technician/widgets/svg_image_widget.dart';
 
 import '../../../../config/PrefHelper/prefs.dart';
+import '../../../../core/utils/app_consts.dart';
 import '../../../../res/colors.dart';
 import '../../../login/presentation/screen/login_screen.dart';
 import '../cubit/claim_details_cubit.dart';
@@ -557,26 +558,26 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
                   SizedBox(
                     height: 10.h,
                   ),
-                  _permissions.contains("add_items_to_claim_request") ? AddMaterialsButton(
-                    materials: claimDetailsModel!.data.material,
-                    referenceId: claimDetailsModel!.data.referenceId,
-                    claimId: claimDetailsModel!.data.id,
-                  ) : const SizedBox(),
+              _permissions.contains("add_items_to_claim_request") ? AddMaterialsButton(
+                materials: claimDetailsModel!.data.material,
+                referenceId: claimDetailsModel!.data.referenceId,
+                claimId: claimDetailsModel!.data.id,
+              ): const SizedBox(),
                   SizedBox(
                     height: 10.h,
                   ),
-                  _permissions.contains("update_claim_priority") ?  PriorityButton(
-                      claimId: widget.claimId,
-                      referenceId: widget.referenceId,
-                      ctx: context) : const SizedBox(),
-                  SizedBox(
-                    height: 10.h,
-                  ),
-                  _permissions.contains("submit_done_button") ?  CompleteButton(
-                    ctx: context,
+                _permissions.contains("update_claim_priority") ?  PriorityButton(
                     claimId: widget.claimId,
                     referenceId: widget.referenceId,
-                  ) : const SizedBox(),
+                    ctx: context): const SizedBox(),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+              _permissions.contains("submit_done_button") ?  CompleteButton(
+                ctx: context,
+                claimId: widget.claimId,
+                referenceId: widget.referenceId,
+              ) : const SizedBox(),
                   SizedBox(
                     height: 10.h,
                   ),
@@ -607,27 +608,28 @@ class _StartedClaimsScreenState extends State<StartedClaimsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppConst.startEndClaimWork ?  InkWell(
-              onTap: () {
-                BlocProvider.of<ClaimDetailsCubit>(context)
-                    .startAndEndWork(widget.claimId)
-                    .then((value) {
-                  if (value) {
-                    getData();
-                  }
-                });
-              },
-              child: AssignButton(
-                borderColor: AppColors.mainColor,
-                horizontalMargin: 0,
-                btText: btName,
-                image: '',
-                width: 327,
-                height: 40,
-                btColor: AppColors.whiteColor,
-                btTextColor: AppColors.mainColor,
-              ),
-            ) : const SizedBox(),
+        AppConst.startEndClaimWork ?  InkWell(
+        onTap: () {
+      BlocProvider.of<ClaimDetailsCubit>(context)
+          .startAndEndWork(widget.claimId)
+          .then((value) {
+      if (value) {
+      getData();
+      }
+      });
+      },
+        child: AssignButton(
+          borderColor: AppColors.mainColor,
+          horizontalMargin: 0,
+          btText: btName,
+          image: '',
+          width: 327,
+          height: 40,
+          btColor: AppColors.whiteColor,
+          btTextColor: AppColors.mainColor,
+        ),
+      )
+     : const SizedBox(),
           ],
         ),
       ),
