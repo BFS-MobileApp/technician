@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:technician/core/utils/app_consts.dart';
 import '../../../../config/PrefHelper/helper.dart';
 
 import 'package:technician/config/arguments/routes_arguments.dart';

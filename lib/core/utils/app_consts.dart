@@ -1,8 +1,16 @@
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+
 class AppConst{
 
-  static bool createClaims = false;
+  static RxBool createClaims = false.obs;
 
   static bool readClaims = false;
+
+  static bool startEndClaimWork = false;
+
+  static bool deleteClaimRepliesAndUpdates = false;
+
+  static bool addClaimSignature = false;
 
   static bool updateClaims = false;
 

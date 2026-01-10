@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:technician/core/utils/app_consts.dart';
 import '../../../../config/PrefHelper/helper.dart';
 
 import 'package:technician/config/PrefHelper/prefs.dart';
@@ -54,7 +55,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  void logOut(){
+  void logOut() async{
+    await Prefs.clear();
+    AppConst.createClaims.value = false;
     Navigator.of(context).pushNamedAndRemoveUntil(Routes.login, (Route<dynamic> route) => false);
     Prefs.setBool(AppStrings.login, false);
   }
