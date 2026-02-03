@@ -58,7 +58,7 @@ class LocalStrings extends Translations {
       "disable":"تعطيل",
       "claimsScreen":"الطلبات",
       "notification":"الاشعارات",
-      "home":"الصفحة الرئيسية",
+      "home":"الرئيسية",
       "calendar":"المواعيد",
       "settings":"الاعدادات",
       "somethingWentWrong":"حدث خطأ ما",

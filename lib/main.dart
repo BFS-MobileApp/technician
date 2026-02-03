@@ -28,9 +28,13 @@ const AndroidNotificationChannel channel = AndroidNotificationChannel(
 );
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Future.delayed(const Duration(milliseconds: 150));
+
   await Prefs.init();
+
   await di.init();
+
   Bloc.observer = AppBlocObserver();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -49,22 +53,29 @@ Future<void> main() async {
 }
 Future<void> _initLocalNotifications() async {
   const AndroidInitializationSettings androidSettings =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  const DarwinInitializationSettings iosSettings =
+      DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
 
   const InitializationSettings initializationSettings =
-  InitializationSettings(
+      InitializationSettings(
     android: androidSettings,
-    iOS: null,
-    macOS: null,
+    iOS: iosSettings,
   );
 
   await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
 }
+
 
 /// Request FCM notification permission
 Future<void> _requestNotificationPermission() async {
